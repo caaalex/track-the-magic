@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import BottomNav from './components/BottomNav'
@@ -10,21 +9,15 @@ import Trips from './pages/Trips'
 import TripDetail from './pages/TripDetail'
 import Profile from './pages/Profile'
 import ExperienceDetail from './pages/ExperienceDetail'
-import Login from './pages/Login'
-import SignUp from './pages/SignUp'
+import AuthScreen from './pages/AuthScreen'
 import { LogVisitProvider } from './contexts/LogVisitContext'
 
 function AuthGate() {
   const { user, loading } = useAuth()
-  const [showSignUp, setShowSignUp] = useState(false)
 
   if (loading) return <LoadingScreen />
 
-  if (!user) {
-    return showSignUp
-      ? <SignUp onSwitch={() => setShowSignUp(false)} />
-      : <Login onSwitch={() => setShowSignUp(true)} />
-  }
+  if (!user) return <AuthScreen />
 
   return (
     <BrowserRouter>

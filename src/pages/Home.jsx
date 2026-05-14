@@ -4,6 +4,9 @@ import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+import Onboarding from './Onboarding'
+
+const ONBOARDING_KEY = 'ttm_onboarded'
 
 // ── Circular progress ring ─────────────────────────────────────────────────
 function ProgressRing({ completed, total }) {
@@ -70,10 +73,16 @@ export default function Home() {
   const { openLogVisit } = useLogVisit()
   const navigate         = useNavigate()
 
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(ONBOARDING_KEY))
   const [allExps,       setAllExps]       = useState([])   // { id, park }
   const [completedIds,  setCompletedIds]  = useState(new Set())
   const [leaderboard,   setLeaderboard]   = useState(null) // { percentile, active_trackers }
   const [loading,       setLoading]       = useState(true)
+
+  const dismissOnboarding = () => {
+    localStorage.setItem(ONBOARDING_KEY, '1')
+    setShowOnboarding(false)
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -116,6 +125,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-full">
+
+      {showOnboarding && <Onboarding onDismiss={dismissOnboarding} />}
 
       {/* ── Top bar ── */}
       <div className="px-4 pt-4 pb-3 flex items-center justify-between">
