@@ -152,7 +152,7 @@ export default function AuthScreen() {
 
         {/* ── Feature highlights ── */}
         <div className="flex flex-col gap-3.5 mb-8">
-          <Feature emoji="🎢" text="Track 200+ experiences across all 9 Disney World destinations" />
+          <Feature emoji="✨" text="Track 200+ experiences across all 9 Disney World destinations" />
           <Feature emoji="📅" text="Log every visit and build your Disney history" />
           <Feature emoji="🏆" text="Complete challenges only true Disney fans will know" />
         </div>
