@@ -3,7 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+import { PARKS, PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+
+// ── Filter constants ───────────────────────────────────────────────────────
+const ALL_PARKS  = 'All parks'
+const ALL_TIME   = 'All time'
+const PARK_OPTIONS   = [ALL_PARKS, ...PARKS.map(p => p.name)]
+const PERIOD_OPTIONS = [ALL_TIME, 'This month', 'This year']
 
 function groupByMonth(trips) {
   return trips.reduce((acc, trip) => {
@@ -16,6 +22,20 @@ function groupByMonth(trips) {
   }, {})
 }
 
+function applyFilters(trips, park, period) {
+  const now = new Date()
+  return trips.filter(trip => {
+    if (park !== ALL_PARKS && trip.park !== park) return false
+    if (period !== ALL_TIME) {
+      const d = new Date(trip.visit_date + 'T12:00:00')
+      if (period === 'This month' &&
+          (d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear())) return false
+      if (period === 'This year' && d.getFullYear() !== now.getFullYear()) return false
+    }
+    return true
+  })
+}
+
 export default function Trips() {
   const { user }         = useAuth()
   const { openLogVisit } = useLogVisit()
@@ -24,10 +44,35 @@ export default function Trips() {
   const [topAttr, setTopAttr] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // ── Filter state ──────────────────────────────────────────────────────────
+  const [filterPark,   setFilterPark]   = useState(ALL_PARKS)
+  const [filterPeriod, setFilterPeriod] = useState(ALL_TIME)
+  const [sheetOpen,    setSheetOpen]    = useState(false)
+
+  // Pending selections inside the sheet (applied on "Apply")
+  const [pendingPark,   setPendingPark]   = useState(ALL_PARKS)
+  const [pendingPeriod, setPendingPeriod] = useState(ALL_TIME)
+
+  const filtersActive = filterPark !== ALL_PARKS || filterPeriod !== ALL_TIME
+
+  const openSheet = () => {
+    setPendingPark(filterPark)
+    setPendingPeriod(filterPeriod)
+    setSheetOpen(true)
+  }
+  const applySheet = () => {
+    setFilterPark(pendingPark)
+    setFilterPeriod(pendingPeriod)
+    setSheetOpen(false)
+  }
+  const resetSheet = () => {
+    setPendingPark(ALL_PARKS)
+    setPendingPeriod(ALL_TIME)
+  }
+
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-
       const [{ data: tripsData }, { data: uesData }, { data: topData }] = await Promise.all([
         supabase
           .from('trips')
@@ -47,30 +92,29 @@ export default function Trips() {
           .limit(1)
           .maybeSingle(),
       ])
-
       setTrips(tripsData || [])
-
       const map = {}
       ;(uesData || []).forEach(ue => { map[ue.experience_id] = ue.times_visited })
       setUeMap(map)
-
       setTopAttr(topData || null)
       setLoading(false)
     })()
   }, [user.id])
 
-  // Stats
-  const totalVisits = trips.length
-  const parkCounts  = trips.reduce((acc, t) => { acc[t.park] = (acc[t.park] || 0) + 1; return acc }, {})
+  // Stats always reflect ALL trips (not filtered)
+  const totalVisits     = trips.length
+  const parkCounts      = trips.reduce((acc, t) => { acc[t.park] = (acc[t.park] || 0) + 1; return acc }, {})
   const mostVisitedPark = Object.entries(parkCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
 
-  const monthGroups = groupByMonth(trips)
-  const monthKeys   = Object.keys(monthGroups)
+  // Filtered trips for the history list
+  const filteredTrips = applyFilters(trips, filterPark, filterPeriod)
+  const monthGroups   = groupByMonth(filteredTrips)
+  const monthKeys     = Object.keys(monthGroups)
 
   return (
     <div className="flex flex-col min-h-full">
 
-      {/* Header */}
+      {/* ── Header ── */}
       <div className="px-4 pt-4 pb-3 flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">My trips</h2>
         <button
@@ -110,35 +154,161 @@ export default function Trips() {
             />
           </div>
 
-          {/* Visit history */}
+          {/* Visit history header + Filter button */}
           <div className="px-4 pb-2 flex items-center justify-between">
             <p className="text-sm font-bold text-gray-800">Visit history</p>
-            <button className="flex items-center gap-1 text-xs font-medium text-gray-500 px-2.5 py-1 rounded-lg bg-gray-100 active:bg-gray-200 transition-colors">
+            <button
+              onClick={openSheet}
+              className="relative flex items-center gap-1 text-xs font-medium text-gray-500 px-2.5 py-1 rounded-lg bg-gray-100 active:bg-gray-200 transition-colors"
+            >
               Filter
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
+              {/* Active indicator dot */}
+              {filtersActive && (
+                <span
+                  className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white"
+                  style={{ backgroundColor: '#1D9E75' }}
+                />
+              )}
             </button>
           </div>
 
+          {/* Active filter chips */}
+          {filtersActive && (
+            <div className="px-4 pb-2 flex gap-2 flex-wrap">
+              {filterPark !== ALL_PARKS && (
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: '#1D9E75' }}>
+                  {PARK_EMOJI[filterPark]} {filterPark}
+                </span>
+              )}
+              {filterPeriod !== ALL_TIME && (
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: '#1D9E75' }}>
+                  {filterPeriod}
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Month groups */}
-          <div className="px-4 flex flex-col gap-4 pb-8">
-            {monthKeys.map(month => (
-              <div key={month}>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{month}</p>
-                <div className="flex flex-col gap-3">
-                  {monthGroups[month].map(trip => (
-                    <TripCard key={trip.id} trip={trip} ueMap={ueMap} />
-                  ))}
+          {filteredTrips.length === 0 ? (
+            <div className="flex flex-col items-center py-16 gap-3 px-6">
+              <span className="text-4xl">🔍</span>
+              <p className="text-gray-700 font-semibold text-base text-center">No trips match your filters</p>
+              <button
+                onClick={() => { setFilterPark(ALL_PARKS); setFilterPeriod(ALL_TIME) }}
+                className="text-sm font-semibold"
+                style={{ color: '#1D9E75' }}
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <div className="px-4 flex flex-col gap-4 pb-8">
+              {monthKeys.map(month => (
+                <div key={month}>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{month}</p>
+                  <div className="flex flex-col gap-3">
+                    {monthGroups[month].map(trip => (
+                      <TripCard key={trip.id} trip={trip} ueMap={ueMap} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </>
+      )}
+
+      {/* ── Filter bottom sheet ── */}
+      {sheetOpen && (
+        <div
+          className="fixed inset-0 z-40 flex items-end justify-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
+          onClick={() => setSheetOpen(false)}
+        >
+          <div
+            className="w-full max-w-[375px] bg-white rounded-t-3xl pb-8"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Handle */}
+            <div className="flex justify-center pt-3 pb-4">
+              <div className="w-10 h-1 rounded-full bg-gray-200" />
+            </div>
+
+            {/* Park filter */}
+            <p className="px-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">
+              Filter by park
+            </p>
+            <div className="flex flex-col">
+              {PARK_OPTIONS.map(option => (
+                <button
+                  key={option}
+                  onClick={() => setPendingPark(option)}
+                  className="flex items-center justify-between px-5 py-3 active:bg-gray-50 transition-colors"
+                >
+                  <span className={`text-sm ${pendingPark === option ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>
+                    {option !== ALL_PARKS && PARK_EMOJI[option] ? `${PARK_EMOJI[option]}  ` : ''}{option}
+                  </span>
+                  {pendingPark === option && (
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#1D9E75" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="h-px bg-gray-100 mx-5 my-3" />
+
+            {/* Time period filter */}
+            <p className="px-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">
+              Filter by time period
+            </p>
+            <div className="flex flex-col">
+              {PERIOD_OPTIONS.map(option => (
+                <button
+                  key={option}
+                  onClick={() => setPendingPeriod(option)}
+                  className="flex items-center justify-between px-5 py-3 active:bg-gray-50 transition-colors"
+                >
+                  <span className={`text-sm ${pendingPeriod === option ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>
+                    {option}
+                  </span>
+                  {pendingPeriod === option && (
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#1D9E75" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-3 px-5 mt-5">
+              <button
+                onClick={resetSheet}
+                className="flex-1 py-3 rounded-xl text-sm font-bold bg-gray-100 text-gray-600 active:bg-gray-200 transition-colors"
+              >
+                Reset
+              </button>
+              <button
+                onClick={applySheet}
+                className="flex-1 py-3 rounded-xl text-sm font-bold text-white active:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#1D9E75' }}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
 }
+
+// ── Sub-components ─────────────────────────────────────────────────────────
 
 function StatBox({ label, value, sub, emojiValue }) {
   return (
@@ -164,21 +334,15 @@ function TripCard({ trip, ueMap }) {
     weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
   })
 
-  const experiences = (trip.trip_experiences || [])
-    .map(te => te.experiences)
-    .filter(Boolean)
-
-  const firstTime = experiences.filter(e => (ueMap[e.id] ?? 0) === 1)
-  const repeats   = experiences.filter(e => (ueMap[e.id] ?? 0) > 1)
+  const experiences = (trip.trip_experiences || []).map(te => te.experiences).filter(Boolean)
+  const firstTime   = experiences.filter(e => (ueMap[e.id] ?? 0) === 1)
+  const repeats     = experiences.filter(e => (ueMap[e.id] ?? 0) > 1)
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      {/* Card header */}
       <div className="px-4 py-3 flex items-center gap-3">
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-          style={{ backgroundColor: parkColor.bg }}
-        >
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+             style={{ backgroundColor: parkColor.bg }}>
           {emoji}
         </div>
         <div className="flex-1 min-w-0">
@@ -186,63 +350,44 @@ function TripCard({ trip, ueMap }) {
           <p className="text-xs text-gray-500 mt-0.5">{dateDisplay}</p>
         </div>
         {experiences.length > 0 && (
-          <div
-            className="flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
-            style={{ backgroundColor: parkColor.bg, color: parkColor.color }}
-          >
+          <div className="flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
+               style={{ backgroundColor: parkColor.bg, color: parkColor.color }}>
             {experiences.length}
           </div>
         )}
       </div>
 
-      {/* Experience tags */}
       {experiences.length > 0 && (
         <div className="px-4 pb-3 flex flex-wrap gap-1.5">
           {firstTime.map(e => (
-            <span
-              key={e.id}
-              className="text-xs px-2 py-0.5 rounded-full font-medium"
-              style={{ backgroundColor: '#D1FAE5', color: '#065F46' }}
-            >
+            <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium"
+                  style={{ backgroundColor: '#D1FAE5', color: '#065F46' }}>
               {e.name}
             </span>
           ))}
           {repeats.map(e => (
-            <span
-              key={e.id}
-              className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600"
-            >
+            <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600">
               {e.name}
             </span>
           ))}
         </div>
       )}
 
-      {/* Notes */}
       {trip.notes && (
         <div className="px-4 pb-3">
           <p className="text-xs text-gray-500 italic leading-relaxed line-clamp-2">{trip.notes}</p>
         </div>
       )}
 
-      {/* Footer */}
-      <div
-        className="px-4 py-2.5 flex items-center justify-between border-t border-gray-100"
-        style={{ backgroundColor: '#FAFAFA' }}
-      >
+      <div className="px-4 py-2.5 flex items-center justify-between border-t border-gray-100"
+           style={{ backgroundColor: '#FAFAFA' }}>
         <p className="text-xs text-gray-400">
           {firstTime.length > 0 && (
             <span style={{ color: '#059669' }} className="font-medium">{firstTime.length} new</span>
           )}
-          {firstTime.length > 0 && repeats.length > 0 && (
-            <span className="mx-1">·</span>
-          )}
-          {repeats.length > 0 && (
-            <span>{repeats.length} repeat{repeats.length !== 1 ? 's' : ''}</span>
-          )}
-          {experiences.length === 0 && (
-            <span>No experiences logged</span>
-          )}
+          {firstTime.length > 0 && repeats.length > 0 && <span className="mx-1">·</span>}
+          {repeats.length > 0 && <span>{repeats.length} repeat{repeats.length !== 1 ? 's' : ''}</span>}
+          {experiences.length === 0 && <span>No experiences logged</span>}
         </p>
         <button
           onClick={() => navigate(`/trips/${trip.id}`)}
@@ -262,9 +407,7 @@ function EmptyState({ onLog }) {
       <span className="text-5xl">✈️</span>
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No trips logged yet</p>
-        <p className="text-gray-400 text-sm mt-1 leading-relaxed">
-          Tap "Log a visit" to get started.
-        </p>
+        <p className="text-gray-400 text-sm mt-1 leading-relaxed">Tap "Log a visit" to get started.</p>
       </div>
       <button
         onClick={onLog}
