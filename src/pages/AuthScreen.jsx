@@ -108,6 +108,9 @@ export default function AuthScreen() {
       if (data.user && !data.session) {
         setConfirmedEmail(email)
         setNeedsConfirmation(true)
+      } else {
+        // Immediate session (email confirmation disabled) — ensure we land on Home
+        window.history.replaceState({}, '', '/')
       }
     } else {
       const { error: err } = await signIn(email, password)
@@ -115,6 +118,9 @@ export default function AuthScreen() {
       if (err) {
         console.error('Supabase sign-in error:', err)
         setError(friendlySignInError(err.message))
+      } else {
+        // Reset URL so BrowserRouter always mounts at Home, not a stale route
+        window.history.replaceState({}, '', '/')
       }
     }
   }
