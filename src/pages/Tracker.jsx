@@ -117,8 +117,9 @@ export default function Tracker() {
   return (
     <div className="flex flex-col pb-4">
 
-      {/* Park selector */}
+      {/* Title */}
       <div className="px-4 pt-4 pb-3">
+        <h2 className="text-xl font-bold text-gray-900 mb-3">Select Destination</h2>
         <div className="relative">
           <select
             value={selectedPark}
