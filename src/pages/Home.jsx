@@ -123,7 +123,9 @@ export default function Home() {
           <h1 className="text-lg font-bold text-gray-900 tracking-tight">track the magic</h1>
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#1D9E75' }} />
         </div>
-        <Avatar user={user} />
+        <button onClick={() => navigate('/profile')} className="active:opacity-70 transition-opacity">
+          <Avatar user={user} />
+        </button>
       </div>
 
       {loading ? (

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
 import { useAuth } from '../contexts/AuthContext'
@@ -14,28 +14,52 @@ const formatDateDisplay = (dateStr) => {
   })
 }
 
-export default function LogVisitModal({ onClose }) {
+export default function LogVisitModal({
+  onClose,
+  initialPark    = '',   // pre-fill park (skips to step 2)
+  initialDate    = null, // pre-fill date
+  existingTripId = null, // add to existing trip instead of creating new one
+}) {
   const { user }   = useAuth()
   const navigate   = useNavigate()
 
+  const addingToExisting = Boolean(existingTripId)
+
   // ── Step + shared ──
-  const [step, setStep]             = useState(1)
-  const [selectedDate, setSelectedDate] = useState(todayStr())
-  const [selectedPark, setSelectedPark] = useState('')
+  const [step, setStep]                 = useState(addingToExisting ? 2 : 1)
+  const [selectedDate, setSelectedDate] = useState(initialDate || todayStr())
+  const [selectedPark, setSelectedPark] = useState(initialPark)
 
   // ── Step 2 ──
-  const [experiences, setExperiences]       = useState([])
-  const [loadingExps, setLoadingExps]       = useState(false)
-  const [checkedExpIds, setCheckedExpIds]   = useState(new Set())
-  const [searchQuery, setSearchQuery]       = useState('')
+  const [experiences, setExperiences]         = useState([])
+  const [loadingExps, setLoadingExps]         = useState(false)
+  const [checkedExpIds, setCheckedExpIds]     = useState(new Set())
+  const [searchQuery, setSearchQuery]         = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const [tripNotes, setTripNotes]           = useState('')
+  const [tripNotes, setTripNotes]             = useState('')
 
   // ── Save ──
-  const [saving, setSaving] = useState(false)
+  const [saving,    setSaving]    = useState(false)
   const [saveError, setSaveError] = useState('')
 
   const dateInputRef = useRef(null)
+
+  // If opened with a pre-filled park, load experiences immediately
+  useEffect(() => {
+    if (initialPark) {
+      setLoadingExps(true)
+      supabase
+        .from('experiences')
+        .select('id, name, type, category')
+        .eq('park', initialPark)
+        .eq('is_active', true)
+        .order('name')
+        .then(({ data }) => {
+          setExperiences(data || [])
+          setLoadingExps(false)
+        })
+    }
+  }, [initialPark])
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -73,50 +97,67 @@ export default function LogVisitModal({ onClose }) {
     setSaveError('')
 
     try {
-      // 1. Create trip record
-      const { data: trip, error: tripErr } = await supabase
-        .from('trips')
-        .insert({ user_id: user.id, park: selectedPark, visit_date: selectedDate, notes: tripNotes || null })
-        .select()
-        .single()
-      if (tripErr) throw tripErr
+      let tripId = existingTripId
+
+      if (!addingToExisting) {
+        // ── New trip: create the trip record ──
+        const { data: trip, error: tripErr } = await supabase
+          .from('trips')
+          .insert({ user_id: user.id, park: selectedPark, visit_date: selectedDate, notes: tripNotes || null })
+          .select()
+          .single()
+        if (tripErr) throw tripErr
+        tripId = trip.id
+      }
 
       const checkedIds = Array.from(checkedExpIds)
 
       if (checkedIds.length > 0) {
-        // 2. Create trip_experiences
-        await supabase
-          .from('trip_experiences')
-          .insert(checkedIds.map(expId => ({ trip_id: trip.id, experience_id: expId })))
+        // When adding to existing trip, skip experience_ids already logged
+        let newExpIds = checkedIds
+        if (addingToExisting) {
+          const { data: already } = await supabase
+            .from('trip_experiences')
+            .select('experience_id')
+            .eq('trip_id', existingTripId)
+          const alreadySet = new Set((already || []).map(e => e.experience_id))
+          newExpIds = checkedIds.filter(id => !alreadySet.has(id))
+        }
 
-        // 3. Fetch existing user_experiences so we can increment times_visited accurately
-        const { data: existingUEs } = await supabase
-          .from('user_experiences')
-          .select('experience_id, times_visited, wishlist, personal_rating, personal_notes')
-          .eq('user_id', user.id)
-          .in('experience_id', checkedIds)
+        if (newExpIds.length > 0) {
+          // Insert trip_experiences
+          await supabase
+            .from('trip_experiences')
+            .insert(newExpIds.map(expId => ({ trip_id: tripId, experience_id: expId })))
 
-        const ueMap = Object.fromEntries((existingUEs || []).map(ue => [ue.experience_id, ue]))
+          // Fetch existing user_experiences to increment accurately
+          const { data: existingUEs } = await supabase
+            .from('user_experiences')
+            .select('experience_id, times_visited, wishlist, personal_rating, personal_notes')
+            .eq('user_id', user.id)
+            .in('experience_id', newExpIds)
 
-        // 4. Upsert user_experiences (create if new, update if existing)
-        await supabase
-          .from('user_experiences')
-          .upsert(
-            checkedIds.map(expId => ({
-              user_id:           user.id,
-              experience_id:     expId,
-              completed:         true,
-              times_visited:     (ueMap[expId]?.times_visited ?? 0) + 1,
-              last_visited_date: selectedDate,
-              wishlist:          ueMap[expId]?.wishlist    ?? false,
-              personal_rating:   ueMap[expId]?.personal_rating  ?? null,
-              personal_notes:    ueMap[expId]?.personal_notes   ?? null,
-            })),
-            { onConflict: 'user_id,experience_id' }
-          )
+          const ueMap = Object.fromEntries((existingUEs || []).map(ue => [ue.experience_id, ue]))
+
+          await supabase
+            .from('user_experiences')
+            .upsert(
+              newExpIds.map(expId => ({
+                user_id:           user.id,
+                experience_id:     expId,
+                completed:         true,
+                times_visited:     (ueMap[expId]?.times_visited ?? 0) + 1,
+                last_visited_date: selectedDate,
+                wishlist:          ueMap[expId]?.wishlist         ?? false,
+                personal_rating:   ueMap[expId]?.personal_rating  ?? null,
+                personal_notes:    ueMap[expId]?.personal_notes   ?? null,
+              })),
+              { onConflict: 'user_id,experience_id' }
+            )
+        }
       }
 
-      // 5. Confetti 🎉
+      // Confetti 🎉
       confetti({
         particleCount: 160,
         spread: 100,
@@ -128,8 +169,11 @@ export default function LogVisitModal({ onClose }) {
         confetti({ particleCount: 60, spread: 60, origin: { x: 0.9, y: 0.6 }, colors: ['#FF6B6B', '#4FC3F7'] })
       }, 250)
 
-      // 6. Navigate to Trips after short delay
-      setTimeout(() => { navigate('/trips'); onClose() }, 1400)
+      // Navigate back to the same trip if adding to existing, or to trips list
+      setTimeout(() => {
+        navigate(addingToExisting ? `/trips/${existingTripId}` : '/trips')
+        onClose()
+      }, 1400)
 
     } catch (err) {
       console.error('Save trip error:', err)
@@ -139,8 +183,8 @@ export default function LogVisitModal({ onClose }) {
   }
 
   // ── Derived ───────────────────────────────────────────────────────────────
-  const parkData   = PARKS.find(p => p.name === selectedPark)
-  const filtered   = experiences.filter(exp => {
+  const parkData = PARKS.find(p => p.name === selectedPark)
+  const filtered = experiences.filter(exp => {
     if (selectedCategory !== 'All' && exp.category !== selectedCategory) return false
     if (searchQuery && !exp.name.toLowerCase().includes(searchQuery.toLowerCase())) return false
     return true
@@ -154,7 +198,8 @@ export default function LogVisitModal({ onClose }) {
         {/* ── Header ──────────────────────────────────────────────────── */}
         <div className="flex-shrink-0 px-4 pt-4 pb-3 border-b border-gray-100">
           <div className="flex items-center justify-between mb-3">
-            {step === 2 ? (
+            {/* Back: only show on step 2 of a NEW trip (not when adding to existing) */}
+            {step === 2 && !addingToExisting ? (
               <button onClick={handleBack} className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100">
                 <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -165,7 +210,7 @@ export default function LogVisitModal({ onClose }) {
             )}
 
             <p className="text-base font-bold text-gray-900">
-              {step === 1 ? 'Log a visit' : 'Log experiences'}
+              {addingToExisting ? 'Add experiences' : step === 1 ? 'Log a visit' : 'Log experiences'}
             </p>
 
             <button onClick={onClose} disabled={saving}
@@ -176,13 +221,15 @@ export default function LogVisitModal({ onClose }) {
             </button>
           </div>
 
-          {/* Step indicator */}
-          <div className="flex gap-1.5 w-20 mx-auto">
-            {[1, 2].map(s => (
-              <div key={s} className="h-1 flex-1 rounded-full transition-colors duration-300"
-                   style={{ backgroundColor: step >= s ? '#1D9E75' : '#E5E7EB' }} />
-            ))}
-          </div>
+          {/* Step indicator — only show for new trips */}
+          {!addingToExisting && (
+            <div className="flex gap-1.5 w-20 mx-auto">
+              {[1, 2].map(s => (
+                <div key={s} className="h-1 flex-1 rounded-full transition-colors duration-300"
+                     style={{ backgroundColor: step >= s ? '#1D9E75' : '#E5E7EB' }} />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* ── Content (scrollable) ────────────────────────────────────── */}
@@ -208,6 +255,7 @@ export default function LogVisitModal({ onClose }) {
             setSelectedCategory={setSelectedCategory}
             tripNotes={tripNotes}
             setTripNotes={setTripNotes}
+            addingToExisting={addingToExisting}
           />
         )}
 
@@ -232,7 +280,12 @@ export default function LogVisitModal({ onClose }) {
                 className="w-full py-3.5 rounded-xl text-white font-bold text-sm disabled:opacity-60 active:scale-[0.98] transition-all"
                 style={{ backgroundColor: '#1D9E75' }}
               >
-                {saving ? 'Saving…' : `Save trip${checkedExpIds.size > 0 ? ` · ${checkedExpIds.size} experience${checkedExpIds.size !== 1 ? 's' : ''}` : ''}`}
+                {saving
+                  ? 'Saving…'
+                  : addingToExisting
+                    ? `Add${checkedExpIds.size > 0 ? ` ${checkedExpIds.size} experience${checkedExpIds.size !== 1 ? 's' : ''}` : ' experiences'}`
+                    : `Save trip${checkedExpIds.size > 0 ? ` · ${checkedExpIds.size} experience${checkedExpIds.size !== 1 ? 's' : ''}` : ''}`
+                }
               </button>
               <p className="text-xs text-gray-400 text-center mt-2">
                 Your progress will update automatically
@@ -313,6 +366,7 @@ function Step2Content({
   searchQuery, setSearchQuery,
   selectedCategory, setSelectedCategory,
   tripNotes, setTripNotes,
+  addingToExisting,
 }) {
   return (
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col">
@@ -407,19 +461,21 @@ function Step2Content({
         </div>
       )}
 
-      {/* Trip notes */}
-      <div className="px-4 pt-5 pb-4 flex-shrink-0">
-        <SectionLabel>Trip notes</SectionLabel>
-        <textarea
-          value={tripNotes}
-          onChange={e => setTripNotes(e.target.value)}
-          placeholder="Anything memorable from this visit? (optional)"
-          rows={3}
-          className="w-full mt-2 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 outline-none resize-none"
-          onFocus={e => e.target.style.borderColor = '#1D9E75'}
-          onBlur={e  => e.target.style.borderColor = '#e5e7eb'}
-        />
-      </div>
+      {/* Trip notes — only show for new trips */}
+      {!addingToExisting && (
+        <div className="px-4 pt-5 pb-4 flex-shrink-0">
+          <SectionLabel>Trip notes</SectionLabel>
+          <textarea
+            value={tripNotes}
+            onChange={e => setTripNotes(e.target.value)}
+            placeholder="Anything memorable from this visit? (optional)"
+            rows={3}
+            className="w-full mt-2 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 outline-none resize-none"
+            onFocus={e => e.target.style.borderColor = '#1D9E75'}
+            onBlur={e  => e.target.style.borderColor = '#e5e7eb'}
+          />
+        </div>
+      )}
     </div>
   )
 }

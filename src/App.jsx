@@ -7,6 +7,8 @@ import Tracker from './pages/Tracker'
 import Challenges from './pages/Challenges'
 import ChallengeDetail from './pages/ChallengeDetail'
 import Trips from './pages/Trips'
+import TripDetail from './pages/TripDetail'
+import Profile from './pages/Profile'
 import ExperienceDetail from './pages/ExperienceDetail'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
@@ -36,6 +38,8 @@ function AuthGate() {
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/challenges/:id" element={<ChallengeDetail />} />
               <Route path="/trips" element={<Trips />} />
+              <Route path="/trips/:id" element={<TripDetail />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </main>
           <BottomNav />
