@@ -120,7 +120,7 @@ export default function Home() {
       {/* ── Top bar ── */}
       <div className="px-4 pt-4 pb-3 flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <h1 className="text-lg font-bold text-gray-900 tracking-tight">track the magic</h1>
+          <h1 className="text-lg font-bold text-gray-900 tracking-tight">Track the Magic</h1>
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#1D9E75' }} />
         </div>
         <button onClick={() => navigate('/profile')} className="active:opacity-70 transition-opacity">

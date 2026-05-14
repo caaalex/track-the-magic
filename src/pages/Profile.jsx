@@ -163,7 +163,7 @@ export default function Profile() {
     <div className="flex flex-col bg-gray-50 min-h-full">
 
       {/* ── Top bar ── */}
-      <div className="flex items-center px-3 pt-3 pb-2 bg-white border-b border-gray-100 sticky top-0 z-10">
+      <div className="flex items-center px-4 pt-4 pb-3 bg-white border-b border-gray-100 sticky top-0 z-10">
         <button
           onClick={() => navigate('/')}
           className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100 transition-colors"
@@ -172,7 +172,7 @@ export default function Profile() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <p className="ml-1 text-base font-bold text-gray-900">Profile</p>
+        <p className="ml-1 text-xl font-bold text-gray-900">Profile</p>
       </div>
 
       <div className="flex flex-col gap-4 px-4 py-4 pb-8">
