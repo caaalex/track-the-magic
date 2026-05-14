@@ -13,7 +13,10 @@ export default function Login({ onSwitch }) {
     setError('')
     setLoading(true)
     const { error } = await signIn(email, password)
-    if (error) setError(friendlyError(error.message))
+    if (error) {
+      console.error('Supabase sign-in error:', error)
+      setError(friendlyError(error.message))
+    }
     setLoading(false)
   }
 
@@ -95,5 +98,6 @@ function friendlyError(msg) {
   if (msg.includes('Invalid login credentials')) return 'Incorrect email or password.'
   if (msg.includes('Email not confirmed')) return 'Please confirm your email before signing in.'
   if (msg.includes('Too many requests')) return 'Too many attempts. Please wait a moment and try again.'
-  return 'Something went wrong. Please try again.'
+  // Show the real error so we can diagnose unexpected issues
+  return msg || 'Something went wrong. Please try again.'
 }
