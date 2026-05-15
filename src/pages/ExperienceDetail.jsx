@@ -22,7 +22,8 @@ export default function ExperienceDetail() {
   const [savingNotes, setSavingNotes]   = useState(false)
 
   // Guardians-specific state
-  const [songs, setSongs]               = useState([])
+  const [songs, setSongs]                   = useState([])   // [{ id, title, subtitle, sort_order, count }]
+  const [rideLogQueue, setRideLogQueue]     = useState([])   // [{ id, challenge_item_id }] oldest→newest
   const [songPickerOpen, setSongPickerOpen] = useState(false)
 
   // Debounce ref for stepper saves
@@ -70,7 +71,9 @@ export default function ExperienceDetail() {
       if (isGuardians) {
         const { data: items }    = results[3]
         const { data: rideLogs } = results[4]
-        setSongs(buildSongsFromLogs(items || [], rideLogs || []))
+        const logs = rideLogs || []
+        setSongs(buildSongsFromLogs(items || [], logs))
+        setRideLogQueue(logs.map(l => ({ id: l.id, challenge_item_id: l.challenge_item_id })))
       }
 
       setLoading(false)
@@ -101,26 +104,45 @@ export default function ExperienceDetail() {
 
   const toggleStatus = () => {
     clearTimeout(visitTimerRef.current)
-    const today = new Date().toISOString().split('T')[0]
     if (userExp?.completed) {
+      // Undo done — reset everything
       visitValueRef.current = 0
       setUserExp(prev => ({ ...(prev ?? {}), completed: false, times_visited: 0, last_visited_date: null }))
       persist({ completed: false, times_visited: 0, last_visited_date: null })
+      if (isGuardians) {
+        setSongs(prev => prev.map(s => ({ ...s, count: 0 })))
+        setRideLogQueue([])
+      }
     } else {
-      const visits = Math.max(visitValueRef.current, 1)
-      visitValueRef.current = visits
-      setUserExp(prev => ({ ...(prev ?? {}), completed: true, times_visited: visits, last_visited_date: today }))
-      persist({ completed: true, times_visited: visits, last_visited_date: today })
+      // Mark as done
+      if (isGuardians) {
+        // For Guardians, opening the song picker IS confirming the first ride
+        setSongPickerOpen(true)
+      } else {
+        const today  = new Date().toISOString().split('T')[0]
+        const visits = Math.max(visitValueRef.current, 1)
+        visitValueRef.current = visits
+        setUserExp(prev => ({ ...(prev ?? {}), completed: true, times_visited: visits, last_visited_date: today }))
+        persist({ completed: true, times_visited: visits, last_visited_date: today })
+      }
     }
   }
 
   const changeVisits = (delta) => {
+    if (isGuardians) {
+      if (delta > 0) {
+        setSongPickerOpen(true)   // + → pick a song
+      } else {
+        removeLastRide()           // − → remove most recent ride
+      }
+      return
+    }
     const prev = visitValueRef.current
     visitValueRef.current = Math.max(0, prev + delta)
     const next = visitValueRef.current
     const today = new Date().toISOString().split('T')[0]
     let extra = {}
-    if (next === 0 && prev > 0)      extra = { completed: false, last_visited_date: null }
+    if (next === 0 && prev > 0)       extra = { completed: false, last_visited_date: null }
     else if (next === 1 && prev === 0) extra = { completed: true, last_visited_date: today }
     setUserExp(prev => ({ ...(prev ?? {}), times_visited: next, ...extra }))
     clearTimeout(visitTimerRef.current)
@@ -145,24 +167,21 @@ export default function ExperienceDetail() {
     else navigator.clipboard.writeText(window.location.href)
   }
 
-  // ── Guardians: log a song ─────────────────────────────────────────────────
+  // ── Guardians: log a song (called after picker selection) ────────────────
   const logSong = async (challengeItemId) => {
     setSongPickerOpen(false)
     const now       = new Date().toISOString()
     const today     = now.split('T')[0]
     const newVisits = (userExp?.times_visited ?? 0) + 1
-    const tempLogId = `temp-${Date.now()}`
+    const tempId    = `temp-${Date.now()}`
 
-    // Optimistic update
-    setSongs(prev => prev.map(s =>
-      s.id === challengeItemId
-        ? { ...s, count: s.count + 1, logIds: [...s.logIds, tempLogId] }
-        : s
-    ))
+    // Optimistic
+    setSongs(prev => prev.map(s => s.id === challengeItemId ? { ...s, count: s.count + 1 } : s))
+    setRideLogQueue(prev => [...prev, { id: tempId, challenge_item_id: challengeItemId }])
     setUserExp(prev => ({ ...(prev ?? {}), completed: true, times_visited: newVisits, last_visited_date: today }))
     visitValueRef.current = newVisits
 
-    // DB write — get the real log ID back
+    // DB write
     const { data: logData, error: logErr } = await supabase
       .from('ride_logs')
       .insert({ user_id: user.id, experience_id: id, challenge_item_id: challengeItemId, trip_id: tripId, ridden_at: now })
@@ -171,45 +190,33 @@ export default function ExperienceDetail() {
 
     if (logErr) {
       console.error('ride_logs error:', logErr)
-      // Revert optimistic
-      setSongs(prev => prev.map(s =>
-        s.id === challengeItemId
-          ? { ...s, count: s.count - 1, logIds: s.logIds.filter(lid => lid !== tempLogId) }
-          : s
-      ))
+      setSongs(prev => prev.map(s => s.id === challengeItemId ? { ...s, count: s.count - 1 } : s))
+      setRideLogQueue(prev => prev.filter(l => l.id !== tempId))
+      setUserExp(prev => ({ ...(prev ?? {}), times_visited: newVisits - 1, completed: newVisits - 1 > 0 }))
       return
     }
 
-    // Replace temp ID with real ID
-    const realLogId = logData.id
-    setSongs(prev => prev.map(s =>
-      s.id === challengeItemId
-        ? { ...s, logIds: s.logIds.map(lid => lid === tempLogId ? realLogId : lid) }
-        : s
-    ))
+    // Swap temp ID for real ID
+    setRideLogQueue(prev => prev.map(l => l.id === tempId ? { ...l, id: logData.id } : l))
 
-    // Update user_experiences
-    const { error: ueErr } = await supabase.from('user_experiences').upsert(
+    await supabase.from('user_experiences').upsert(
       { user_id: user.id, experience_id: id, completed: true, times_visited: newVisits, last_visited_date: today },
       { onConflict: 'user_id,experience_id' }
     )
-    if (ueErr) console.error('user_experiences error:', ueErr)
   }
 
-  // ── Guardians: remove one ride for a song ─────────────────────────────────
-  const removeSong = async (challengeItemId) => {
-    const song = songs.find(s => s.id === challengeItemId)
-    if (!song || song.count === 0) return
+  // ── Guardians: remove the most recently logged ride ───────────────────────
+  const removeLastRide = async () => {
+    if (rideLogQueue.length === 0) return
 
-    const logIdToDelete = song.logIds[song.logIds.length - 1] // most recent
-    const newVisits     = Math.max(0, (userExp?.times_visited ?? 0) - 1)
+    const last      = rideLogQueue[rideLogQueue.length - 1]
+    const newVisits = Math.max(0, (userExp?.times_visited ?? 0) - 1)
 
-    // Optimistic update
+    // Optimistic
     setSongs(prev => prev.map(s =>
-      s.id === challengeItemId
-        ? { ...s, count: s.count - 1, logIds: s.logIds.slice(0, -1) }
-        : s
+      s.id === last.challenge_item_id ? { ...s, count: Math.max(0, s.count - 1) } : s
     ))
+    setRideLogQueue(prev => prev.slice(0, -1))
     setUserExp(prev => ({
       ...(prev ?? {}),
       times_visited: newVisits,
@@ -218,22 +225,14 @@ export default function ExperienceDetail() {
     }))
     visitValueRef.current = newVisits
 
-    // Only delete real (non-temp) log IDs
-    if (!logIdToDelete.startsWith('temp-')) {
-      const { error: delErr } = await supabase.from('ride_logs').delete().eq('id', logIdToDelete)
-      if (delErr) console.error('ride_logs delete error:', delErr)
+    if (!last.id.startsWith('temp-')) {
+      await supabase.from('ride_logs').delete().eq('id', last.id)
     }
-
-    const { error: ueErr } = await supabase.from('user_experiences').upsert(
-      {
-        user_id: user.id, experience_id: id,
-        times_visited: newVisits,
-        completed: newVisits > 0,
-        last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null,
-      },
+    await supabase.from('user_experiences').upsert(
+      { user_id: user.id, experience_id: id, times_visited: newVisits, completed: newVisits > 0,
+        last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null },
       { onConflict: 'user_id,experience_id' }
     )
-    if (ueErr) console.error('user_experiences error:', ueErr)
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -314,42 +313,35 @@ export default function ExperienceDetail() {
 
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
 
-          {/* Status — hidden for Guardians (song log drives completed state) */}
-          {!isGuardians && (
-            <>
-              <Row label="Status">
-                <button
-                  onClick={toggleStatus}
-                  className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors active:opacity-75 ${
-                    completed ? 'text-white' : 'bg-gray-100 text-gray-500 active:bg-gray-200'
-                  }`}
-                  style={completed ? { backgroundColor: '#1D9E75' } : {}}
-                >
-                  {completed ? 'Done ✓' : 'Mark as done'}
-                </button>
-              </Row>
-              <RowDivider />
-            </>
-          )}
+          {/* Status */}
+          <Row label="Status">
+            <button
+              onClick={toggleStatus}
+              className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors active:opacity-75 ${
+                completed ? 'text-white' : 'bg-gray-100 text-gray-500 active:bg-gray-200'
+              }`}
+              style={completed ? { backgroundColor: '#1D9E75' } : {}}
+            >
+              {completed ? 'Done ✓' : 'Mark as done'}
+            </button>
+          </Row>
 
-          {/* Guardians: songs collected — otherwise: stepper */}
-          {isGuardians ? (
-            <SongsSection
-              songs={songs}
-              timesVisited={timesVisited}
-              onOpenPicker={() => setSongPickerOpen(true)}
-              onRemove={removeSong}
-            />
-          ) : (
-            <Row label="Times visited">
-              <div className="flex items-center gap-3">
-                <StepButton direction="minus" onClick={() => changeVisits(-1)} disabled={timesVisited === 0} />
-                <span className="text-sm font-bold text-gray-800 w-5 text-center tabular-nums">
-                  {timesVisited}
-                </span>
-                <StepButton direction="plus" onClick={() => changeVisits(1)} />
-              </div>
-            </Row>
+          <RowDivider />
+
+          {/* Times visited */}
+          <Row label="Times visited">
+            <div className="flex items-center gap-3">
+              <StepButton direction="minus" onClick={() => changeVisits(-1)} disabled={timesVisited === 0} />
+              <span className="text-sm font-bold text-gray-800 w-5 text-center tabular-nums">
+                {timesVisited}
+              </span>
+              <StepButton direction="plus" onClick={() => changeVisits(1)} />
+            </div>
+          </Row>
+
+          {/* Guardians: song list below stepper */}
+          {isGuardians && songs.length > 0 && (
+            <SongsSection songs={songs} />
           )}
 
           <RowDivider />
@@ -441,73 +433,45 @@ export default function ExperienceDetail() {
 
 // ── Guardians helpers ─────────────────────────────────────────────────────────
 
-/**
- * Merges challenge_items with ride_logs to produce a songs array where
- * each entry has { ...item, count: N, logIds: [uuid, ...] }
- */
+/** Merges challenge_items with ride_logs to produce [{ ...item, count }] */
 function buildSongsFromLogs(items, rideLogs) {
-  const byItem = {}
+  const countById = {}
   for (const log of rideLogs) {
-    if (!byItem[log.challenge_item_id]) byItem[log.challenge_item_id] = []
-    byItem[log.challenge_item_id].push(log.id)
+    countById[log.challenge_item_id] = (countById[log.challenge_item_id] ?? 0) + 1
   }
-  return items.map(item => ({
-    ...item,
-    count:  (byItem[item.id] ?? []).length,
-    logIds: byItem[item.id] ?? [],
-  }))
+  return items.map(item => ({ ...item, count: countById[item.id] ?? 0 }))
 }
 
-// ── Guardians: Songs collected section ────────────────────────────────────────
+// ── Guardians: Songs list (read-only, shown below Times Visited) ──────────────
 
-function SongsSection({ songs, timesVisited, onOpenPicker, onRemove }) {
-  const heard = songs.filter(s => s.count > 0).sort((a, b) => b.count - a.count || a.title.localeCompare(b.title))
-
+function SongsSection({ songs }) {
   return (
-    <div className="px-4 py-3.5">
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <p className="text-sm font-medium text-gray-700">Songs heard</p>
-          {timesVisited > 0 && (
-            <p className="text-xs text-gray-400 mt-0.5">
-              {timesVisited} ride{timesVisited !== 1 ? 's' : ''} total
-            </p>
-          )}
-        </div>
-        <button
-          onClick={onOpenPicker}
-          className="w-8 h-8 rounded-full border-2 flex items-center justify-center active:scale-90 transition-transform"
-          style={{ borderColor: '#1D9E75', color: '#1D9E75' }}
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
-      </div>
-
-      {heard.length === 0 ? (
-        <p className="text-xs text-gray-400">Tap + to log a ride and collect your first song.</p>
-      ) : (
-        <div className="flex flex-col gap-2.5">
-          {heard.map(song => (
-            <button
-              key={song.id}
-              onClick={() => onRemove(song.id)}
-              className="flex items-center gap-3 text-left active:opacity-60 transition-opacity w-full"
-            >
+    <div className="border-t border-gray-100 mx-0 px-4 pt-3 pb-3.5">
+      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2.5">Songs</p>
+      <div className="flex flex-col gap-2.5">
+        {songs.map(song => {
+          const heard = song.count > 0
+          return (
+            <div key={song.id} className="flex items-center gap-3">
               <div
-                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center"
-                style={{ backgroundColor: '#1D9E75' }}
+                className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center border-2"
+                style={heard
+                  ? { backgroundColor: '#1D9E75', borderColor: '#1D9E75' }
+                  : { borderColor: '#D1D5DB' }}
               >
-                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+                {heard && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
+                <p className={`text-sm font-semibold leading-snug ${heard ? 'text-gray-800' : 'text-gray-400'}`}>
+                  {song.title}
+                </p>
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
-              {song.count > 1 && (
+              {song.count > 0 && (
                 <span
                   className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
                   style={{ backgroundColor: '#D1FAE5', color: '#059669' }}
@@ -515,10 +479,10 @@ function SongsSection({ songs, timesVisited, onOpenPicker, onRemove }) {
                   ×{song.count}
                 </span>
               )}
-            </button>
-          ))}
-        </div>
-      )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
