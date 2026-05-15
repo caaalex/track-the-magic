@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, PARK_EMOJI, PARK_COLORS, parkIconSrc } from '../lib/constants'
+import { PARKS, PARK_EMOJI, PARK_COLORS } from '../lib/constants'
 import Onboarding from './Onboarding'
 
 const ONBOARDING_KEY = 'ttm_onboarded'
@@ -220,9 +220,8 @@ export default function Home() {
 }
 
 function ParkCard({ park, onTap }) {
-  const colors  = PARK_COLORS[park.name] ?? { bg: '#F3F4F6', color: '#374151' }
-  const emoji   = PARK_EMOJI[park.name] ?? '🏞️'
-  const iconSrc = parkIconSrc(park.name)
+  const colors = PARK_COLORS[park.name] ?? { bg: '#F3F4F6', color: '#374151' }
+  const emoji  = PARK_EMOJI[park.name] ?? '🏞️'
 
   return (
     <button
@@ -231,13 +230,10 @@ function ParkCard({ park, onTap }) {
     >
       {/* Park icon */}
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: iconSrc ? '#F3F4F6' : colors.bg }}
+        className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+        style={{ backgroundColor: colors.bg }}
       >
-        {iconSrc
-          ? <img src={iconSrc} alt={park.name} className="w-8 h-8 object-contain" />
-          : <span className="text-xl">{emoji}</span>
-        }
+        {emoji}
       </div>
 
       {/* Name + progress bar */}

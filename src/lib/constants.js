@@ -12,15 +12,6 @@ export const PARKS = [
 
 export const PARK_EMOJI = Object.fromEntries(PARKS.map(p => [p.name, p.emoji]))
 
-// Parks that have a custom PNG icon in public/icons/
-const ICON_PARKS = new Set([
-  'Magic Kingdom', 'Epcot', 'Hollywood Studios',
-  'Animal Kingdom', 'Typhoon Lagoon', 'Blizzard Beach',
-])
-// Returns the public path to the park's PNG icon, or null if none exists
-export const parkIconSrc = (parkName) =>
-  ICON_PARKS.has(parkName) ? `/icons/${encodeURIComponent(parkName)}.png` : null
-
 export const PARK_COLORS = {
   'Magic Kingdom':     { bg: '#EBF5FF', color: '#1A6FAB' },
   'Epcot':             { bg: '#E8F5E9', color: '#2E7D32' },
