@@ -177,7 +177,7 @@ export default function TripDetail() {
                 <div key={experience.id}>
                   {idx > 0 && <div className="h-px bg-gray-100 mx-4" />}
                   <button
-                    onClick={() => navigate(`/tracker/${experience.id}`)}
+                    onClick={() => navigate(`/tracker/${experience.id}`, { state: { tripId: trip.id } })}
                     className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50 transition-colors"
                   >
                     <div className="flex-1 min-w-0">

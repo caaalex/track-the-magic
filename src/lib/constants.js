@@ -24,6 +24,10 @@ export const PARK_COLORS = {
   'Sports':            { bg: '#F1F8E9', color: '#33691E' },
 }
 
+// ── Guardians of the Galaxy: Cosmic Rewind ────────────────────────────────
+export const GUARDIANS_EXPERIENCE_ID = '546764b8-1d69-416c-81f4-93db335a851e'
+export const GUARDIANS_CHALLENGE_ID  = 'ac79e3ac-df2a-44db-b001-351d72e4bd78'
+
 export const CATEGORIES = [
   'All',
   'Attractions',

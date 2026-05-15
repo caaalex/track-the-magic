@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES } from '../lib/constants'
+import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 
 const STATUS_FILTERS = ['All', 'Done', 'Not done', 'Wishlist']
 
@@ -256,7 +256,11 @@ function ExperienceRow({ exp, userExp, onToggle }) {
       {/* Circle toggle */}
       <button
         onMouseDown={e => e.stopPropagation()}
-        onClick={e => { e.stopPropagation(); onToggle(exp.id) }}
+        onClick={e => {
+          e.stopPropagation()
+          if (exp.id === GUARDIANS_EXPERIENCE_ID) navigate(`/tracker/${exp.id}`)
+          else onToggle(exp.id)
+        }}
         className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-all active:scale-90 ${
           completed  ? 'border-transparent' :
           wishlisted ? 'border-transparent' :

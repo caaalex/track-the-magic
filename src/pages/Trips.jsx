@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+import { PARKS, PARK_EMOJI, PARK_COLORS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
 
 // ── Filter constants ───────────────────────────────────────────────────────
 const ALL_PARKS  = 'All parks'
@@ -39,10 +39,11 @@ function applyFilters(trips, park, period) {
 export default function Trips() {
   const { user }         = useAuth()
   const { openLogVisit } = useLogVisit()
-  const [trips, setTrips]     = useState([])
-  const [ueMap, setUeMap]     = useState({})
-  const [topAttr, setTopAttr] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [trips, setTrips]           = useState([])
+  const [ueMap, setUeMap]           = useState({})
+  const [topAttr, setTopAttr]       = useState(null)
+  const [songsByTrip, setSongsByTrip] = useState({}) // tripId → [songTitle, ...]
+  const [loading, setLoading]       = useState(true)
 
   // ── Filter state ──────────────────────────────────────────────────────────
   const [filterPark,   setFilterPark]   = useState(ALL_PARKS)
@@ -73,7 +74,7 @@ export default function Trips() {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      const [{ data: tripsData }, { data: uesData }, { data: topData }] = await Promise.all([
+      const [{ data: tripsData }, { data: uesData }, { data: topData }, { data: rideLogs }, { data: songItems }] = await Promise.all([
         supabase
           .from('trips')
           .select('id, park, visit_date, notes, created_at, trip_experiences(experience_id, experiences(id, name, category))')
@@ -91,12 +92,36 @@ export default function Trips() {
           .order('times_visited', { ascending: false })
           .limit(1)
           .maybeSingle(),
+        supabase
+          .from('ride_logs')
+          .select('trip_id, challenge_item_id')
+          .eq('user_id', user.id)
+          .eq('experience_id', GUARDIANS_EXPERIENCE_ID)
+          .not('trip_id', 'is', null),
+        supabase
+          .from('challenge_items')
+          .select('id, title')
+          .eq('challenge_id', GUARDIANS_CHALLENGE_ID),
       ])
+
       setTrips(tripsData || [])
       const map = {}
       ;(uesData || []).forEach(ue => { map[ue.experience_id] = ue.times_visited })
       setUeMap(map)
       setTopAttr(topData || null)
+
+      // Build songsByTrip map
+      const songTitleById = {}
+      ;(songItems || []).forEach(s => { songTitleById[s.id] = s.title })
+      const songMap = {}
+      ;(rideLogs || []).forEach(log => {
+        if (!log.trip_id || !log.challenge_item_id) return
+        if (!songMap[log.trip_id]) songMap[log.trip_id] = []
+        const title = songTitleById[log.challenge_item_id]
+        if (title && !songMap[log.trip_id].includes(title)) songMap[log.trip_id].push(title)
+      })
+      setSongsByTrip(songMap)
+
       setLoading(false)
     })()
   }, [user.id])
@@ -211,7 +236,7 @@ export default function Trips() {
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{month}</p>
                   <div className="flex flex-col gap-3">
                     {monthGroups[month].map(trip => (
-                      <TripCard key={trip.id} trip={trip} ueMap={ueMap} />
+                      <TripCard key={trip.id} trip={trip} ueMap={ueMap} songs={songsByTrip[trip.id] ?? []} />
                     ))}
                   </div>
                 </div>
@@ -326,7 +351,7 @@ function StatBox({ label, value, sub, emojiValue }) {
   )
 }
 
-function TripCard({ trip, ueMap }) {
+function TripCard({ trip, ueMap, songs = [] }) {
   const navigate    = useNavigate()
   const emoji       = PARK_EMOJI[trip.park] ?? '🏞️'
   const parkColor   = PARK_COLORS[trip.park] ?? { bg: '#F3F4F6', color: '#374151' }
@@ -360,7 +385,7 @@ function TripCard({ trip, ueMap }) {
         )}
       </div>
 
-      {experiences.length > 0 && (
+      {(experiences.length > 0 || songs.length > 0) && (
         <div className="px-4 pb-3 flex flex-wrap gap-1.5">
           {firstTime.map(e => (
             <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium"
@@ -371,6 +396,12 @@ function TripCard({ trip, ueMap }) {
           {repeats.map(e => (
             <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600">
               {e.name}
+            </span>
+          ))}
+          {songs.map(song => (
+            <span key={song} className="text-xs px-2 py-0.5 rounded-full font-bold text-white flex items-center gap-1"
+                  style={{ backgroundColor: '#1D9E75' }}>
+              🎵 {song}
             </span>
           ))}
         </div>
