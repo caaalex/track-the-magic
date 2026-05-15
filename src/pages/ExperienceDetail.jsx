@@ -74,6 +74,21 @@ export default function ExperienceDetail() {
         const logs = rideLogs || []
         setSongs(buildSongsFromLogs(items || [], logs))
         setRideLogQueue(logs.map(l => ({ id: l.id, challenge_item_id: l.challenge_item_id })))
+
+        // Sync user_experiences if times_visited is out of step with ride_logs
+        const actualCount = logs.length
+        if (actualCount !== (ueData?.times_visited ?? 0)) {
+          const today = logs.length > 0
+            ? logs[logs.length - 1].ridden_at?.split('T')[0] ?? null
+            : null
+          supabase.from('user_experiences').upsert(
+            { user_id: user.id, experience_id: id,
+              times_visited: actualCount,
+              completed: actualCount > 0,
+              last_visited_date: today },
+            { onConflict: 'user_id,experience_id' }
+          ) // fire-and-forget — display already correct via rideLogQueue.length
+        }
       }
 
       setLoading(false)
@@ -270,9 +285,10 @@ export default function ExperienceDetail() {
   )
   if (!exp) return null
 
-  const completed    = userExp?.completed ?? false
+  // For Guardians, ride_logs is the source of truth — never trust user_experiences counter
+  const timesVisited = isGuardians ? rideLogQueue.length : (userExp?.times_visited ?? 0)
+  const completed    = isGuardians ? rideLogQueue.length > 0 : (userExp?.completed ?? false)
   const wishlisted   = userExp?.wishlist ?? false
-  const timesVisited = userExp?.times_visited ?? 0
   const rating       = userExp?.personal_rating ?? 0
   const lastVisited  = userExp?.last_visited_date
 
