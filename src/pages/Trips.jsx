@@ -343,9 +343,9 @@ function TripCard({ trip, ueMap }) {
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="px-4 py-3 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-             style={{ backgroundColor: parkColor.bg }}>
+             style={{ backgroundColor: iconSrc ? '#F3F4F6' : parkColor.bg }}>
           {iconSrc
-            ? <img src={iconSrc} alt={trip.park} className="w-6 h-6 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+            ? <img src={iconSrc} alt={trip.park} className="w-8 h-8 object-contain" />
             : <span className="text-xl">{emoji}</span>
           }
         </div>

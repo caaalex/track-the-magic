@@ -129,10 +129,10 @@ export default function TripDetail() {
           <div className="flex items-center gap-3">
             <div
               className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: colors.bg }}
+              style={{ backgroundColor: iconSrc ? '#F3F4F6' : colors.bg }}
             >
               {iconSrc
-                ? <img src={iconSrc} alt={trip.park} className="w-7 h-7 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+                ? <img src={iconSrc} alt={trip.park} className="w-9 h-9 object-contain" />
                 : <span className="text-2xl">{emoji}</span>
               }
             </div>
