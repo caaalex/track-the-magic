@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARK_COLORS } from '../lib/constants'
+import { PARK_COLORS, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
 
 export default function ChallengeDetail() {
   const { id }   = useParams()
@@ -78,6 +78,8 @@ export default function ChallengeDetail() {
     </div>
   )
   if (!challenge) return null
+
+  const isTrackerDriven = id === GUARDIANS_CHALLENGE_ID
 
   const doneCount  = items.filter(i => userItemMap[i.id]?.completed).length
   const totalCount = items.length
@@ -173,6 +175,12 @@ export default function ChallengeDetail() {
               {checklistLabel}
             </p>
 
+            {isTrackerDriven && (
+              <p className="text-xs text-gray-400 px-1 -mt-2">
+                Collected automatically when you log rides in the Tracker.
+              </p>
+            )}
+
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               {items.map((item, idx) => {
                 const done = userItemMap[item.id]?.completed ?? false
@@ -180,8 +188,9 @@ export default function ChallengeDetail() {
                   <div key={item.id}>
                     {idx > 0 && <div className="h-px bg-gray-100 mx-4" />}
                     <button
-                      onClick={() => toggleItem(item.id)}
-                      className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50 transition-colors"
+                      onClick={() => !isTrackerDriven && toggleItem(item.id)}
+                      disabled={isTrackerDriven}
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors ${isTrackerDriven ? 'cursor-default' : 'active:bg-gray-50'}`}
                     >
                       {/* Circle toggle */}
                       <div
