@@ -46,10 +46,11 @@ export default function ExperienceDetail() {
             .select('id, title, subtitle, sort_order')
             .eq('challenge_id', GUARDIANS_CHALLENGE_ID)
             .order('sort_order'),
-          supabase.from('user_challenge_items')
-            .select('challenge_item_id')
+          supabase.from('ride_logs')
+            .select('id, challenge_item_id, ridden_at')
             .eq('user_id', user.id)
-            .eq('completed', true)
+            .eq('experience_id', id)
+            .order('ridden_at', { ascending: true })
         )
       }
 
@@ -67,10 +68,9 @@ export default function ExperienceDetail() {
       if (avgData?.[0]) setCommunity(avgData[0])
 
       if (isGuardians) {
-        const { data: items }     = results[3]
-        const { data: userItems } = results[4]
-        const collectedSet = new Set((userItems || []).map(u => u.challenge_item_id))
-        setSongs((items || []).map(item => ({ ...item, collected: collectedSet.has(item.id) })))
+        const { data: items }    = results[3]
+        const { data: rideLogs } = results[4]
+        setSongs(buildSongsFromLogs(items || [], rideLogs || []))
       }
 
       setLoading(false)
@@ -145,12 +145,71 @@ export default function ExperienceDetail() {
     else navigator.clipboard.writeText(window.location.href)
   }
 
-  // ── Guardians: remove a song ──────────────────────────────────────────────
-  const removeSong = async (challengeItemId) => {
-    const newVisits = Math.max(0, (userExp?.times_visited ?? 0) - 1)
+  // ── Guardians: log a song ─────────────────────────────────────────────────
+  const logSong = async (challengeItemId) => {
+    setSongPickerOpen(false)
+    const now       = new Date().toISOString()
+    const today     = now.split('T')[0]
+    const newVisits = (userExp?.times_visited ?? 0) + 1
+    const tempLogId = `temp-${Date.now()}`
 
-    // Optimistic updates
-    setSongs(prev => prev.map(s => s.id === challengeItemId ? { ...s, collected: false } : s))
+    // Optimistic update
+    setSongs(prev => prev.map(s =>
+      s.id === challengeItemId
+        ? { ...s, count: s.count + 1, logIds: [...s.logIds, tempLogId] }
+        : s
+    ))
+    setUserExp(prev => ({ ...(prev ?? {}), completed: true, times_visited: newVisits, last_visited_date: today }))
+    visitValueRef.current = newVisits
+
+    // DB write — get the real log ID back
+    const { data: logData, error: logErr } = await supabase
+      .from('ride_logs')
+      .insert({ user_id: user.id, experience_id: id, challenge_item_id: challengeItemId, trip_id: tripId, ridden_at: now })
+      .select('id')
+      .single()
+
+    if (logErr) {
+      console.error('ride_logs error:', logErr)
+      // Revert optimistic
+      setSongs(prev => prev.map(s =>
+        s.id === challengeItemId
+          ? { ...s, count: s.count - 1, logIds: s.logIds.filter(lid => lid !== tempLogId) }
+          : s
+      ))
+      return
+    }
+
+    // Replace temp ID with real ID
+    const realLogId = logData.id
+    setSongs(prev => prev.map(s =>
+      s.id === challengeItemId
+        ? { ...s, logIds: s.logIds.map(lid => lid === tempLogId ? realLogId : lid) }
+        : s
+    ))
+
+    // Update user_experiences
+    const { error: ueErr } = await supabase.from('user_experiences').upsert(
+      { user_id: user.id, experience_id: id, completed: true, times_visited: newVisits, last_visited_date: today },
+      { onConflict: 'user_id,experience_id' }
+    )
+    if (ueErr) console.error('user_experiences error:', ueErr)
+  }
+
+  // ── Guardians: remove one ride for a song ─────────────────────────────────
+  const removeSong = async (challengeItemId) => {
+    const song = songs.find(s => s.id === challengeItemId)
+    if (!song || song.count === 0) return
+
+    const logIdToDelete = song.logIds[song.logIds.length - 1] // most recent
+    const newVisits     = Math.max(0, (userExp?.times_visited ?? 0) - 1)
+
+    // Optimistic update
+    setSongs(prev => prev.map(s =>
+      s.id === challengeItemId
+        ? { ...s, count: s.count - 1, logIds: s.logIds.slice(0, -1) }
+        : s
+    ))
     setUserExp(prev => ({
       ...(prev ?? {}),
       times_visited: newVisits,
@@ -159,55 +218,22 @@ export default function ExperienceDetail() {
     }))
     visitValueRef.current = newVisits
 
-    await Promise.all([
-      supabase.from('user_challenge_items').upsert(
-        { user_id: user.id, challenge_item_id: challengeItemId, completed: false },
-        { onConflict: 'user_id,challenge_item_id' }
-      ),
-      supabase.from('user_experiences').upsert(
-        {
-          user_id: user.id, experience_id: id,
-          times_visited: newVisits,
-          completed: newVisits > 0,
-          last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null,
-        },
-        { onConflict: 'user_id,experience_id' }
-      ),
-    ])
-  }
+    // Only delete real (non-temp) log IDs
+    if (!logIdToDelete.startsWith('temp-')) {
+      const { error: delErr } = await supabase.from('ride_logs').delete().eq('id', logIdToDelete)
+      if (delErr) console.error('ride_logs delete error:', delErr)
+    }
 
-  // ── Guardians: log a song ─────────────────────────────────────────────────
-  const logSong = async (challengeItemId) => {
-    setSongPickerOpen(false)
-    const today    = new Date().toISOString().split('T')[0]
-    const newVisits = (userExp?.times_visited ?? 0) + 1
-
-    // Optimistic updates
-    setSongs(prev => prev.map(s => s.id === challengeItemId ? { ...s, collected: true } : s))
-    setUserExp(prev => ({ ...(prev ?? {}), completed: true, times_visited: newVisits, last_visited_date: today }))
-    visitValueRef.current = newVisits
-
-    // Parallel DB writes
-    const [{ error: logErr }, { error: ueErr }, { error: ciErr }] = await Promise.all([
-      supabase.from('ride_logs').insert({
-        user_id:           user.id,
-        experience_id:     id,
-        challenge_item_id: challengeItemId,
-        trip_id:           tripId,
-        ridden_at:         new Date().toISOString(),
-      }),
-      supabase.from('user_experiences').upsert(
-        { user_id: user.id, experience_id: id, completed: true, times_visited: newVisits, last_visited_date: today },
-        { onConflict: 'user_id,experience_id' }
-      ),
-      supabase.from('user_challenge_items').upsert(
-        { user_id: user.id, challenge_item_id: challengeItemId, completed: true },
-        { onConflict: 'user_id,challenge_item_id' }
-      ),
-    ])
-    if (logErr) console.error('ride_logs error:', logErr)
-    if (ueErr)  console.error('user_experiences error:', ueErr)
-    if (ciErr)  console.error('user_challenge_items error:', ciErr)
+    const { error: ueErr } = await supabase.from('user_experiences').upsert(
+      {
+        user_id: user.id, experience_id: id,
+        times_visited: newVisits,
+        completed: newVisits > 0,
+        last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null,
+      },
+      { onConflict: 'user_id,experience_id' }
+    )
+    if (ueErr) console.error('user_experiences error:', ueErr)
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -288,20 +314,23 @@ export default function ExperienceDetail() {
 
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
 
-          {/* Status */}
-          <Row label="Status">
-            <button
-              onClick={toggleStatus}
-              className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors active:opacity-75 ${
-                completed ? 'text-white' : 'bg-gray-100 text-gray-500 active:bg-gray-200'
-              }`}
-              style={completed ? { backgroundColor: '#1D9E75' } : {}}
-            >
-              {completed ? 'Done ✓' : 'Mark as done'}
-            </button>
-          </Row>
-
-          <RowDivider />
+          {/* Status — hidden for Guardians (song log drives completed state) */}
+          {!isGuardians && (
+            <>
+              <Row label="Status">
+                <button
+                  onClick={toggleStatus}
+                  className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors active:opacity-75 ${
+                    completed ? 'text-white' : 'bg-gray-100 text-gray-500 active:bg-gray-200'
+                  }`}
+                  style={completed ? { backgroundColor: '#1D9E75' } : {}}
+                >
+                  {completed ? 'Done ✓' : 'Mark as done'}
+                </button>
+              </Row>
+              <RowDivider />
+            </>
+          )}
 
           {/* Guardians: songs collected — otherwise: stepper */}
           {isGuardians ? (
@@ -403,7 +432,6 @@ export default function ExperienceDetail() {
           open={songPickerOpen}
           songs={songs}
           onSelect={logSong}
-          onRemove={removeSong}
           onClose={() => setSongPickerOpen(false)}
         />
       )}
@@ -411,21 +439,40 @@ export default function ExperienceDetail() {
   )
 }
 
+// ── Guardians helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Merges challenge_items with ride_logs to produce a songs array where
+ * each entry has { ...item, count: N, logIds: [uuid, ...] }
+ */
+function buildSongsFromLogs(items, rideLogs) {
+  const byItem = {}
+  for (const log of rideLogs) {
+    if (!byItem[log.challenge_item_id]) byItem[log.challenge_item_id] = []
+    byItem[log.challenge_item_id].push(log.id)
+  }
+  return items.map(item => ({
+    ...item,
+    count:  (byItem[item.id] ?? []).length,
+    logIds: byItem[item.id] ?? [],
+  }))
+}
+
 // ── Guardians: Songs collected section ────────────────────────────────────────
 
 function SongsSection({ songs, timesVisited, onOpenPicker, onRemove }) {
-  const collectedCount = songs.filter(s => s.collected).length
-  const collectedSongs = songs.filter(s => s.collected)
+  const heard = songs.filter(s => s.count > 0).sort((a, b) => b.count - a.count || a.title.localeCompare(b.title))
 
   return (
     <div className="px-4 py-3.5">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-sm font-medium text-gray-700">Songs collected</p>
-          <p className="text-xs text-gray-400 mt-0.5">
-            {collectedCount} of {songs.length}
-            {timesVisited > 0 && ` · ${timesVisited} ride${timesVisited !== 1 ? 's' : ''} total`}
-          </p>
+          <p className="text-sm font-medium text-gray-700">Songs heard</p>
+          {timesVisited > 0 && (
+            <p className="text-xs text-gray-400 mt-0.5">
+              {timesVisited} ride{timesVisited !== 1 ? 's' : ''} total
+            </p>
+          )}
         </div>
         <button
           onClick={onOpenPicker}
@@ -438,30 +485,37 @@ function SongsSection({ songs, timesVisited, onOpenPicker, onRemove }) {
         </button>
       </div>
 
-      {/* Only show collected songs — empty state if none yet */}
-      {collectedSongs.length === 0 ? (
-        <p className="text-xs text-gray-400">
-          Tap + to log a ride and collect your first song.
-        </p>
+      {heard.length === 0 ? (
+        <p className="text-xs text-gray-400">Tap + to log a ride and collect your first song.</p>
       ) : (
         <div className="flex flex-col gap-2.5">
-          {collectedSongs.map(song => (
-            <div key={song.id} className="flex items-center gap-3">
-              {/* Tap circle to deselect */}
-              <button
-                onClick={() => onRemove(song.id)}
-                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center active:scale-90 transition-transform"
+          {heard.map(song => (
+            <button
+              key={song.id}
+              onClick={() => onRemove(song.id)}
+              className="flex items-center gap-3 text-left active:opacity-60 transition-opacity w-full"
+            >
+              <div
+                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center"
                 style={{ backgroundColor: '#1D9E75' }}
               >
                 <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-              </button>
-              <div className="min-w-0">
+              </div>
+              <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
-            </div>
+              {song.count > 1 && (
+                <span
+                  className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: '#D1FAE5', color: '#059669' }}
+                >
+                  ×{song.count}
+                </span>
+              )}
+            </button>
           ))}
         </div>
       )}
@@ -471,7 +525,7 @@ function SongsSection({ songs, timesVisited, onOpenPicker, onRemove }) {
 
 // ── Guardians: Song picker bottom sheet ───────────────────────────────────────
 
-function SongPickerSheet({ open, songs, onSelect, onRemove, onClose }) {
+function SongPickerSheet({ open, songs, onSelect, onClose }) {
   if (!open) return null
   return (
     <>
@@ -488,23 +542,23 @@ function SongPickerSheet({ open, songs, onSelect, onRemove, onClose }) {
 
         <div className="px-5 pt-3 pb-2">
           <p className="text-lg font-bold text-gray-900">Which song played?</p>
-          <p className="text-sm text-gray-400 mt-0.5">Tap to add or remove a song</p>
+          <p className="text-sm text-gray-400 mt-0.5">Select the song that played on your ride</p>
         </div>
 
         <div className="flex flex-col px-3 pb-8">
           {songs.map(song => (
             <button
               key={song.id}
-              onClick={() => song.collected ? onRemove(song.id) : onSelect(song.id)}
+              onClick={() => onSelect(song.id)}
               className="w-full flex items-center gap-3 px-3 py-3.5 rounded-xl text-left active:bg-gray-50 transition-colors"
             >
               <div
-                className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-colors"
-                style={song.collected
+                className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border-2"
+                style={song.count > 0
                   ? { backgroundColor: '#1D9E75', borderColor: '#1D9E75' }
                   : { borderColor: '#1D9E75' }}
               >
-                {song.collected ? (
+                {song.count > 0 ? (
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
@@ -519,6 +573,14 @@ function SongPickerSheet({ open, songs, onSelect, onRemove, onClose }) {
                 <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
+              {song.count > 0 && (
+                <span
+                  className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: '#D1FAE5', color: '#059669' }}
+                >
+                  ×{song.count}
+                </span>
+              )}
             </button>
           ))}
         </div>
