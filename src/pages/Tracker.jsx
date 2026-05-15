@@ -282,13 +282,13 @@ function ExperienceRow({ exp, userExp, onToggle }) {
 
       {/* Name + type */}
       <div className="flex-1 min-w-0 py-0.5">
-        <p className={`text-sm font-semibold leading-snug truncate ${
+        <p className={`text-sm font-semibold leading-snug line-clamp-2 ${
           completed ? 'text-gray-400 line-through' : 'text-gray-800'
         }`}>
           {exp.name}
         </p>
         {exp.type && (
-          <p className="text-xs text-gray-400 mt-0.5 truncate">{exp.type}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{exp.type}</p>
         )}
       </div>
 
