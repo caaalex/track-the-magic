@@ -545,20 +545,12 @@ function SongPickerSheet({ open, songs, onSelect, onClose }) {
             >
               <div
                 className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border-2"
-                style={song.count > 0
-                  ? { backgroundColor: '#1D9E75', borderColor: '#1D9E75' }
-                  : { borderColor: '#1D9E75' }}
+                style={{ borderColor: '#1D9E75' }}
               >
-                {song.count > 0 ? (
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-                       style={{ color: '#1D9E75' }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                )}
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+                     style={{ color: '#1D9E75' }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
