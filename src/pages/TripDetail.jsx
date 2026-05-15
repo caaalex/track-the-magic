@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
@@ -8,6 +8,7 @@ import { PARK_EMOJI, PARK_COLORS } from '../lib/constants'
 export default function TripDetail() {
   const { id }         = useParams()
   const navigate       = useNavigate()
+  const location       = useLocation()
   const { user }       = useAuth()
   const { openLogVisit } = useLogVisit()
 
@@ -87,7 +88,7 @@ export default function TripDetail() {
       setLoading(false)
     })()
     return () => { cancelled = true }
-  }, [id, user.id, navigate])
+  }, [id, user.id, navigate, location.key])
 
   if (loading) return (
     <div className="flex items-center justify-center flex-1 py-20">
