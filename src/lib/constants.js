@@ -19,7 +19,7 @@ const ICON_PARKS = new Set([
 ])
 // Returns the public path to the park's PNG icon, or null if none exists
 export const parkIconSrc = (parkName) =>
-  ICON_PARKS.has(parkName) ? `/icons/${parkName}.png` : null
+  ICON_PARKS.has(parkName) ? `/icons/${encodeURIComponent(parkName)}.png` : null
 
 export const PARK_COLORS = {
   'Magic Kingdom':     { bg: '#EBF5FF', color: '#1A6FAB' },
