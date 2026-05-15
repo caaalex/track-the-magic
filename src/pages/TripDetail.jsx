@@ -132,7 +132,7 @@ export default function TripDetail() {
               style={{ backgroundColor: colors.bg }}
             >
               {iconSrc
-                ? <img src={iconSrc} alt={trip.park} className="w-7 h-7 object-contain" />
+                ? <img src={iconSrc} alt={trip.park} className="w-7 h-7 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
                 : <span className="text-2xl">{emoji}</span>
               }
             </div>

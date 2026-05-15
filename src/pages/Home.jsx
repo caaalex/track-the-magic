@@ -235,7 +235,7 @@ function ParkCard({ park, onTap }) {
         style={{ backgroundColor: colors.bg }}
       >
         {iconSrc
-          ? <img src={iconSrc} alt={park.name} className="w-6 h-6 object-contain" />
+          ? <img src={iconSrc} alt={park.name} className="w-6 h-6 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
           : <span className="text-xl">{emoji}</span>
         }
       </div>
