@@ -189,20 +189,22 @@ export default function ExperienceDetail() {
       .single()
 
     if (logErr) {
-      console.error('ride_logs error:', logErr)
-      setSongs(prev => prev.map(s => s.id === challengeItemId ? { ...s, count: s.count - 1 } : s))
-      setRideLogQueue(prev => prev.filter(l => l.id !== tempId))
-      setUserExp(prev => ({ ...(prev ?? {}), times_visited: newVisits - 1, completed: newVisits - 1 > 0 }))
-      return
+      console.error('ride_logs insert failed:', logErr.message, logErr)
+      // Don't revert the UI — keep the optimistic state and mark the queue entry
+      // with a special prefix so removeLastRide knows it has no real DB row to delete
+      setRideLogQueue(prev => prev.map(l =>
+        l.id === tempId ? { ...l, id: `failed-${Date.now()}` } : l
+      ))
+    } else {
+      // Swap temp ID for real ID
+      setRideLogQueue(prev => prev.map(l => l.id === tempId ? { ...l, id: logData.id } : l))
     }
 
-    // Swap temp ID for real ID
-    setRideLogQueue(prev => prev.map(l => l.id === tempId ? { ...l, id: logData.id } : l))
-
-    await supabase.from('user_experiences').upsert(
+    const { error: ueErr } = await supabase.from('user_experiences').upsert(
       { user_id: user.id, experience_id: id, completed: true, times_visited: newVisits, last_visited_date: today },
       { onConflict: 'user_id,experience_id' }
     )
+    if (ueErr) console.error('user_experiences upsert failed:', ueErr.message, ueErr)
   }
 
   // ── Guardians: remove the most recently logged ride ───────────────────────
@@ -225,7 +227,8 @@ export default function ExperienceDetail() {
     }))
     visitValueRef.current = newVisits
 
-    if (!last.id.startsWith('temp-')) {
+    // Only delete rows that were successfully persisted
+    if (!last.id.startsWith('temp-') && !last.id.startsWith('failed-')) {
       await supabase.from('ride_logs').delete().eq('id', last.id)
     }
     await supabase.from('user_experiences').upsert(
