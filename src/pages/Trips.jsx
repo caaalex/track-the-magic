@@ -339,7 +339,10 @@ function TripCard({ trip, ueMap }) {
   const repeats     = experiences.filter(e => (ueMap[e.id] ?? 0) > 1)
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <button
+      onClick={() => navigate(`/trips/${trip.id}`)}
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full text-left active:scale-[0.98] transition-transform"
+    >
       <div className="px-4 py-3 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
              style={{ backgroundColor: parkColor.bg }}>
@@ -379,8 +382,7 @@ function TripCard({ trip, ueMap }) {
         </div>
       )}
 
-      <div className="px-4 py-2.5 flex items-center justify-between border-t border-gray-100"
-           style={{ backgroundColor: '#FAFAFA' }}>
+      <div className="px-4 py-2.5 border-t border-gray-100" style={{ backgroundColor: '#FAFAFA' }}>
         <p className="text-xs text-gray-400">
           {firstTime.length > 0 && (
             <span style={{ color: '#059669' }} className="font-medium">{firstTime.length} new</span>
@@ -389,15 +391,8 @@ function TripCard({ trip, ueMap }) {
           {repeats.length > 0 && <span>{repeats.length} repeat{repeats.length !== 1 ? 's' : ''}</span>}
           {experiences.length === 0 && <span>No experiences logged</span>}
         </p>
-        <button
-          onClick={() => navigate(`/trips/${trip.id}`)}
-          className="text-xs font-semibold active:opacity-70 transition-opacity"
-          style={{ color: '#1D9E75' }}
-        >
-          View details →
-        </button>
       </div>
-    </div>
+    </button>
   )
 }
 
