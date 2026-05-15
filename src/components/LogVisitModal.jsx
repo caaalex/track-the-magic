@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES } from '../lib/constants'
+import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 
 const todayStr = () => new Date().toISOString().split('T')[0]
 
@@ -169,9 +169,18 @@ export default function LogVisitModal({
         confetti({ particleCount: 60, spread: 60, origin: { x: 0.9, y: 0.6 }, colors: ['#FF6B6B', '#4FC3F7'] })
       }, 250)
 
-      // Navigate back to the same trip if adding to existing, or to trips list
+      // If Guardians was selected, go straight to its song picker
+      const guardiansPicked = checkedIds.includes(GUARDIANS_EXPERIENCE_ID)
+      const finalTripId     = tripId // captured above
+
       setTimeout(() => {
-        navigate(addingToExisting ? `/trips/${existingTripId}` : '/trips')
+        if (guardiansPicked) {
+          navigate(`/tracker/${GUARDIANS_EXPERIENCE_ID}`, {
+            state: { tripId: finalTripId, openSongPicker: true },
+          })
+        } else {
+          navigate(addingToExisting ? `/trips/${existingTripId}` : '/trips')
+        }
         onClose()
       }, 1400)
 

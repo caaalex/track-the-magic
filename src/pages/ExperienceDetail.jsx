@@ -10,8 +10,9 @@ export default function ExperienceDetail() {
   const location      = useLocation()
   const { user }      = useAuth()
 
-  const isGuardians = id === GUARDIANS_EXPERIENCE_ID
-  const tripId      = location.state?.tripId ?? null
+  const isGuardians    = id === GUARDIANS_EXPERIENCE_ID
+  const tripId         = location.state?.tripId ?? null
+  const openPickerOnLoad = location.state?.openSongPicker ?? false
 
   const [exp, setExp]             = useState(null)
   const [userExp, setUserExp]     = useState(null)
@@ -92,9 +93,10 @@ export default function ExperienceDetail() {
       }
 
       setLoading(false)
+      if (isGuardians && openPickerOnLoad) setSongPickerOpen(true)
     })()
     return () => { cancelled = true }
-  }, [id, user.id, navigate, isGuardians])
+  }, [id, user.id, navigate, isGuardians, openPickerOnLoad])
 
   // ── Persist helper ────────────────────────────────────────────────────────
   const persist = async (updates) => {
