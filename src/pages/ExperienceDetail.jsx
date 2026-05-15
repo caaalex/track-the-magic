@@ -200,11 +200,17 @@ export default function ExperienceDetail() {
       setRideLogQueue(prev => prev.map(l => l.id === tempId ? { ...l, id: logData.id } : l))
     }
 
-    const { error: ueErr } = await supabase.from('user_experiences').upsert(
-      { user_id: user.id, experience_id: id, completed: true, times_visited: newVisits, last_visited_date: today },
-      { onConflict: 'user_id,experience_id' }
-    )
-    if (ueErr) console.error('user_experiences upsert failed:', ueErr.message, ueErr)
+    await Promise.all([
+      supabase.from('user_experiences').upsert(
+        { user_id: user.id, experience_id: id, completed: true, times_visited: newVisits, last_visited_date: today },
+        { onConflict: 'user_id,experience_id' }
+      ),
+      // Mark this song as collected in the Challenges section
+      supabase.from('user_challenge_items').upsert(
+        { user_id: user.id, challenge_item_id: challengeItemId, completed: true },
+        { onConflict: 'user_id,challenge_item_id' }
+      ),
+    ])
   }
 
   // ── Guardians: remove the most recently logged ride ───────────────────────
@@ -228,14 +234,32 @@ export default function ExperienceDetail() {
     visitValueRef.current = newVisits
 
     // Only delete rows that were successfully persisted
+    // Find the new count for this song after removal
+    const songNewCount = (songs.find(s => s.id === last.challenge_item_id)?.count ?? 1) - 1
+
+    const writes = [
+      supabase.from('user_experiences').upsert(
+        { user_id: user.id, experience_id: id, times_visited: newVisits, completed: newVisits > 0,
+          last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null },
+        { onConflict: 'user_id,experience_id' }
+      ),
+    ]
+
     if (!last.id.startsWith('temp-') && !last.id.startsWith('failed-')) {
-      await supabase.from('ride_logs').delete().eq('id', last.id)
+      writes.push(supabase.from('ride_logs').delete().eq('id', last.id))
     }
-    await supabase.from('user_experiences').upsert(
-      { user_id: user.id, experience_id: id, times_visited: newVisits, completed: newVisits > 0,
-        last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null },
-      { onConflict: 'user_id,experience_id' }
-    )
+
+    // If this was the last play of this song, unmark it in Challenges
+    if (songNewCount === 0) {
+      writes.push(
+        supabase.from('user_challenge_items').upsert(
+          { user_id: user.id, challenge_item_id: last.challenge_item_id, completed: false },
+          { onConflict: 'user_id,challenge_item_id' }
+        )
+      )
+    }
+
+    await Promise.all(writes)
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
