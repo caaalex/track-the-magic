@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+import { PARKS, PARK_EMOJI, PARK_COLORS, parkIconSrc } from '../lib/constants'
 
 // ── Filter constants ───────────────────────────────────────────────────────
 const ALL_PARKS  = 'All parks'
@@ -329,6 +329,7 @@ function StatBox({ label, value, sub, emojiValue }) {
 function TripCard({ trip, ueMap }) {
   const navigate    = useNavigate()
   const emoji       = PARK_EMOJI[trip.park] ?? '🏞️'
+  const iconSrc     = parkIconSrc(trip.park)
   const parkColor   = PARK_COLORS[trip.park] ?? { bg: '#F3F4F6', color: '#374151' }
   const dateDisplay = new Date(trip.visit_date + 'T12:00:00').toLocaleDateString('en-US', {
     weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
@@ -341,9 +342,12 @@ function TripCard({ trip, ueMap }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="px-4 py-3 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
              style={{ backgroundColor: parkColor.bg }}>
-          {emoji}
+          {iconSrc
+            ? <img src={iconSrc} alt={trip.park} className="w-6 h-6 object-contain" />
+            : <span className="text-xl">{emoji}</span>
+          }
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-gray-800 truncate">{trip.park}</p>

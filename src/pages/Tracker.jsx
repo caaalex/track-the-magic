@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES } from '../lib/constants'
+import { PARKS, CATEGORIES, parkIconSrc } from '../lib/constants'
 
 const STATUS_FILTERS = ['All', 'Done', 'Not done', 'Wishlist']
 
@@ -144,7 +144,10 @@ export default function Tracker() {
       {/* Hero card */}
       <div className="mx-4 rounded-2xl p-4 mb-4" style={{ backgroundColor: '#1D9E75' }}>
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-4xl leading-none">{park?.emoji}</span>
+          {park && parkIconSrc(park.name)
+            ? <img src={parkIconSrc(park.name)} alt={park.name} className="w-10 h-10 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
+            : <span className="text-4xl leading-none">{park?.emoji}</span>
+          }
           <div>
             <p className="text-white font-bold text-base leading-tight">{park?.name}</p>
             <p className="text-white/70 text-xs mt-0.5">
