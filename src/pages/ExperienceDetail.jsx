@@ -145,6 +145,37 @@ export default function ExperienceDetail() {
     else navigator.clipboard.writeText(window.location.href)
   }
 
+  // ── Guardians: remove a song ──────────────────────────────────────────────
+  const removeSong = async (challengeItemId) => {
+    const newVisits = Math.max(0, (userExp?.times_visited ?? 0) - 1)
+
+    // Optimistic updates
+    setSongs(prev => prev.map(s => s.id === challengeItemId ? { ...s, collected: false } : s))
+    setUserExp(prev => ({
+      ...(prev ?? {}),
+      times_visited: newVisits,
+      completed: newVisits > 0,
+      last_visited_date: newVisits > 0 ? (prev?.last_visited_date ?? null) : null,
+    }))
+    visitValueRef.current = newVisits
+
+    await Promise.all([
+      supabase.from('user_challenge_items').upsert(
+        { user_id: user.id, challenge_item_id: challengeItemId, completed: false },
+        { onConflict: 'user_id,challenge_item_id' }
+      ),
+      supabase.from('user_experiences').upsert(
+        {
+          user_id: user.id, experience_id: id,
+          times_visited: newVisits,
+          completed: newVisits > 0,
+          last_visited_date: newVisits > 0 ? (userExp?.last_visited_date ?? null) : null,
+        },
+        { onConflict: 'user_id,experience_id' }
+      ),
+    ])
+  }
+
   // ── Guardians: log a song ─────────────────────────────────────────────────
   const logSong = async (challengeItemId) => {
     setSongPickerOpen(false)
@@ -278,6 +309,7 @@ export default function ExperienceDetail() {
               songs={songs}
               timesVisited={timesVisited}
               onOpenPicker={() => setSongPickerOpen(true)}
+              onRemove={removeSong}
             />
           ) : (
             <Row label="Times visited">
@@ -371,6 +403,7 @@ export default function ExperienceDetail() {
           open={songPickerOpen}
           songs={songs}
           onSelect={logSong}
+          onRemove={removeSong}
           onClose={() => setSongPickerOpen(false)}
         />
       )}
@@ -380,7 +413,7 @@ export default function ExperienceDetail() {
 
 // ── Guardians: Songs collected section ────────────────────────────────────────
 
-function SongsSection({ songs, timesVisited, onOpenPicker }) {
+function SongsSection({ songs, timesVisited, onOpenPicker, onRemove }) {
   const collectedCount = songs.filter(s => s.collected).length
   const collectedSongs = songs.filter(s => s.collected)
 
@@ -414,14 +447,16 @@ function SongsSection({ songs, timesVisited, onOpenPicker }) {
         <div className="flex flex-col gap-2.5">
           {collectedSongs.map(song => (
             <div key={song.id} className="flex items-center gap-3">
-              <div
-                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center"
+              {/* Tap circle to deselect */}
+              <button
+                onClick={() => onRemove(song.id)}
+                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center active:scale-90 transition-transform"
                 style={{ backgroundColor: '#1D9E75' }}
               >
                 <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-              </div>
+              </button>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
@@ -436,7 +471,7 @@ function SongsSection({ songs, timesVisited, onOpenPicker }) {
 
 // ── Guardians: Song picker bottom sheet ───────────────────────────────────────
 
-function SongPickerSheet({ open, songs, onSelect, onClose }) {
+function SongPickerSheet({ open, songs, onSelect, onRemove, onClose }) {
   if (!open) return null
   return (
     <>
@@ -453,18 +488,15 @@ function SongPickerSheet({ open, songs, onSelect, onClose }) {
 
         <div className="px-5 pt-3 pb-2">
           <p className="text-lg font-bold text-gray-900">Which song played?</p>
-          <p className="text-sm text-gray-400 mt-0.5">Select the song that played on your ride</p>
+          <p className="text-sm text-gray-400 mt-0.5">Tap to add or remove a song</p>
         </div>
 
         <div className="flex flex-col px-3 pb-8">
           {songs.map(song => (
             <button
               key={song.id}
-              disabled={song.collected}
-              onClick={() => !song.collected && onSelect(song.id)}
-              className={`w-full flex items-center gap-3 px-3 py-3.5 rounded-xl text-left transition-colors ${
-                song.collected ? 'opacity-40 cursor-default' : 'active:bg-gray-50'
-              }`}
+              onClick={() => song.collected ? onRemove(song.id) : onSelect(song.id)}
+              className="w-full flex items-center gap-3 px-3 py-3.5 rounded-xl text-left active:bg-gray-50 transition-colors"
             >
               <div
                 className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-colors"
@@ -484,9 +516,7 @@ function SongPickerSheet({ open, songs, onSelect, onClose }) {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-semibold leading-snug ${song.collected ? 'text-gray-400' : 'text-gray-800'}`}>
-                  {song.title}
-                </p>
+                <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
             </button>
