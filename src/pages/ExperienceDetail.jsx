@@ -382,6 +382,8 @@ export default function ExperienceDetail() {
 
 function SongsSection({ songs, timesVisited, onOpenPicker }) {
   const collectedCount = songs.filter(s => s.collected).length
+  const collectedSongs = songs.filter(s => s.collected)
+
   return (
     <div className="px-4 py-3.5">
       <div className="flex items-center justify-between mb-3">
@@ -403,28 +405,25 @@ function SongsSection({ songs, timesVisited, onOpenPicker }) {
         </button>
       </div>
 
-      {songs.length === 0 ? (
-        <p className="text-xs text-gray-400">Loading songs…</p>
+      {/* Only show collected songs — empty state if none yet */}
+      {collectedSongs.length === 0 ? (
+        <p className="text-xs text-gray-400">
+          Tap + to log a ride and collect your first song.
+        </p>
       ) : (
-        <div className="flex flex-col gap-3">
-          {songs.map(song => (
+        <div className="flex flex-col gap-2.5">
+          {collectedSongs.map(song => (
             <div key={song.id} className="flex items-center gap-3">
               <div
-                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-colors"
-                style={song.collected
-                  ? { backgroundColor: '#1D9E75', borderColor: '#1D9E75' }
-                  : { borderColor: '#D1D5DB' }}
+                className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center"
+                style={{ backgroundColor: '#1D9E75' }}
               >
-                {song.collected && (
-                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
+                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
               </div>
               <div className="min-w-0">
-                <p className={`text-sm font-semibold leading-snug ${song.collected ? 'text-gray-400' : 'text-gray-800'}`}>
-                  {song.title}
-                </p>
+                <p className="text-sm font-semibold text-gray-800 leading-snug">{song.title}</p>
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
             </div>
