@@ -1,9 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --color-brand: #1D9E75;
+}
+
 body {
   margin: 0;
-  background-color: #f3f4f6;
+  background-color: #FAFAF9;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .no-scrollbar {
