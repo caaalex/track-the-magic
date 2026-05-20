@@ -168,15 +168,11 @@ export default function Trips() {
             <StatBox label="Total Visits" value={totalVisits} />
             <StatBox
               label="Most Visited Park"
-              value={mostVisitedPark ? PARK_EMOJI[mostVisitedPark] : '—'}
-              sub={mostVisitedPark ?? '—'}
-              emojiValue
+              value={mostVisitedPark ?? '—'}
             />
             <StatBox
               label="Most Visited Attraction"
-              value="🎢"
-              sub={topAttr?.experiences?.name ?? '—'}
-              emojiValue
+              value={topAttr?.experiences?.name ?? '—'}
             />
           </div>
 
@@ -336,18 +332,14 @@ export default function Trips() {
 
 // ── Sub-components ─────────────────────────────────────────────────────────
 
-function StatBox({ label, value, sub, emojiValue }) {
+function StatBox({ label, value }) {
   return (
     <div className="bg-white rounded-2xl px-3 py-3 shadow-sm border border-gray-100 flex flex-col items-center text-center gap-0.5">
       <p className="text-xs text-gray-400 leading-tight">{label}</p>
-      {emojiValue ? (
-        <>
-          <span className="text-2xl leading-none mt-0.5">{value}</span>
-          <p className="text-xs font-semibold text-gray-700 leading-tight text-center break-words w-full">{sub}</p>
-        </>
-      ) : (
-        <p className="text-2xl font-bold mt-0.5" style={{ color: '#1D9E75' }}>{value}</p>
-      )}
+      <p className="text-sm font-bold mt-0.5 break-words w-full leading-tight"
+         style={{ color: '#1D9E75' }}>
+        {value}
+      </p>
     </div>
   )
 }
