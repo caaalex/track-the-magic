@@ -13,15 +13,15 @@ export const PARKS = [
 export const PARK_EMOJI = Object.fromEntries(PARKS.map(p => [p.name, p.emoji]))
 
 export const PARK_COLORS = {
-  'Magic Kingdom':     { bg: '#EBF5FF', color: '#1A6FAB' },
-  'Epcot':             { bg: '#E8F5E9', color: '#2E7D32' },
-  'Hollywood Studios': { bg: '#FFF3E0', color: '#E65100' },
-  'Animal Kingdom':    { bg: '#F3E5F5', color: '#6A1B9A' },
-  'Typhoon Lagoon':    { bg: '#E0F7FA', color: '#00838F' },
-  'Blizzard Beach':    { bg: '#E8EAF6', color: '#283593' },
-  'Disney Springs':    { bg: '#FCE4EC', color: '#AD1457' },
-  'Resorts':           { bg: '#FFF8E1', color: '#F57F17' },
-  'Sports':            { bg: '#F1F8E9', color: '#33691E' },
+  'Magic Kingdom':     { bg: '#F0EEFF', color: '#7C6FCD' },
+  'Epcot':             { bg: '#E6F7F4', color: '#2A9D8F' },
+  'Hollywood Studios': { bg: '#FFF0E6', color: '#E76F51' },
+  'Animal Kingdom':    { bg: '#EDFAF0', color: '#57A773' },
+  'Typhoon Lagoon':    { bg: '#E6F4FF', color: '#4A90D9' },
+  'Blizzard Beach':    { bg: '#F0EEFF', color: '#9B8EC4' },
+  'Disney Springs':    { bg: '#FFF0F5', color: '#D4688A' },
+  'Resorts':           { bg: '#FFF8E6', color: '#D4A017' },
+  'Sports':            { bg: '#FFF0EC', color: '#E8845A' },
 }
 
 // ── Guardians of the Galaxy: Cosmic Rewind ────────────────────────────────

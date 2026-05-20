@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+import { PARKS, PARK_COLORS } from '../lib/constants'
+import ParkIcon from '../lib/ParkIcon'
+import { Trophy } from 'lucide-react'
 import Onboarding from './Onboarding'
 
 const ONBOARDING_KEY = 'ttm_onboarded'
@@ -215,10 +217,10 @@ export default function Home() {
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: '#FEF3C7' }}
                 >
-                  🏆
+                  <Trophy size={20} color="#D97706" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-bold text-stone-800">
@@ -263,7 +265,6 @@ export default function Home() {
 // ── Park card ─────────────────────────────────────────────────────────────
 function ParkCard({ park, onTap }) {
   const colors = PARK_COLORS[park.name] ?? { bg: '#F5F5F0', color: '#57534e' }
-  const emoji  = PARK_EMOJI[park.name] ?? '🏞️'
 
   return (
     <button
@@ -276,10 +277,10 @@ function ParkCard({ park, onTap }) {
     >
       {/* Park icon */}
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ backgroundColor: colors.bg }}
       >
-        {emoji}
+        <ParkIcon park={park.name} size={20} color={colors.color} />
       </div>
 
       {/* Name + progress bar */}

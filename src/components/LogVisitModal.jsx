@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
+import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
+import ParkIcon from '../lib/ParkIcon'
 
 const todayStr = () => new Date().toISOString().split('T')[0]
 
@@ -354,7 +355,12 @@ function Step1Content({ selectedDate, setSelectedDate, selectedPark, setSelected
                   backgroundColor: active ? '#F0FBF7' : '#FAFAFA',
                 }}
               >
-                <span className="text-3xl mb-2 leading-none">{park.emoji}</span>
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 flex-shrink-0"
+                  style={{ backgroundColor: PARK_COLORS[park.name]?.bg ?? '#F5F5F0' }}
+                >
+                  <ParkIcon park={park.name} size={20} color={PARK_COLORS[park.name]?.color ?? '#555'} />
+                </div>
                 <span className={`text-xs font-semibold text-center leading-tight ${active ? 'text-green-700' : 'text-gray-600'}`}>
                   {park.name}
                 </span>
@@ -383,7 +389,12 @@ function Step2Content({
 
         {/* Context bar */}
         <div className="flex items-center gap-3 bg-gray-50 rounded-xl px-3.5 py-2.5 mb-4">
-          <span className="text-2xl leading-none">{parkData?.emoji}</span>
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: PARK_COLORS[parkData?.name]?.bg ?? '#F5F5F0' }}
+          >
+            <ParkIcon park={parkData?.name} size={18} color={PARK_COLORS[parkData?.name]?.color ?? '#555'} />
+          </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-gray-800 truncate">{parkData?.name}</p>
             <p className="text-xs text-gray-500">{formatDateDisplay(selectedDate)}</p>

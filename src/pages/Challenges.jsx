@@ -3,6 +3,38 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARK_COLORS } from '../lib/constants'
+import {
+  Popcorn, Rocket, Mountain, Globe, Trophy,
+  Zap, Star, Flame, Target, Crown, Compass,
+  Map, Shield, Sword,
+} from 'lucide-react'
+
+// ── Emoji → Lucide icon map ────────────────────────────────────────────────
+const EMOJI_ICON_MAP = {
+  '🍿': Popcorn,
+  '🚀': Rocket,
+  '🏔️': Mountain,
+  '⛰️': Mountain,
+  '🌍': Globe,
+  '🌎': Globe,
+  '🌏': Globe,
+  '🏆': Trophy,
+  '⚡': Zap,
+  '⭐': Star,
+  '🌟': Star,
+  '🔥': Flame,
+  '🎯': Target,
+  '👑': Crown,
+  '🧭': Compass,
+  '🗺️': Map,
+  '🛡️': Shield,
+  '⚔️': Sword,
+}
+
+function ChallengeIcon({ icon, color, size = 22 }) {
+  const LucideIcon = EMOJI_ICON_MAP[icon] ?? Trophy
+  return <LucideIcon size={size} color={color} strokeWidth={1.5} />
+}
 
 // ── Small progress ring ────────────────────────────────────────────────────
 function MiniRing({ pct, size = 56 }) {
@@ -163,10 +195,10 @@ function ChallengeCard({ challenge, onTap }) {
       )}
 
       <div className="px-4 py-3.5 flex items-center gap-3">
-        {/* Emoji icon */}
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+        {/* Icon */}
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
              style={{ backgroundColor: colors.bg }}>
-          {icon || '🏆'}
+          <ChallengeIcon icon={icon} color={colors.color} />
         </div>
 
         {/* Title + bar */}

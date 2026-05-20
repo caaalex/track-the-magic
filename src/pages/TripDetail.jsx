@@ -3,7 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARK_EMOJI, PARK_COLORS } from '../lib/constants'
+import { PARK_COLORS } from '../lib/constants'
+import ParkIcon from '../lib/ParkIcon'
 
 export default function TripDetail() {
   const { id }         = useParams()
@@ -100,7 +101,6 @@ export default function TripDetail() {
   const dateDisplay = new Date(trip.visit_date + 'T12:00:00').toLocaleDateString('en-US', {
     month: 'long', day: 'numeric', year: 'numeric',
   })
-  const emoji  = PARK_EMOJI[trip.park]  ?? '🏞️'
   const colors = PARK_COLORS[trip.park] ?? { bg: '#F3F4F6', color: '#374151' }
 
   const newCount    = experiences.filter(e =>  e.isNew).length
@@ -128,10 +128,10 @@ export default function TripDetail() {
         <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3">
             <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: colors.bg }}
             >
-              {emoji}
+              <ParkIcon park={trip.park} size={22} color={colors.color} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-gray-800">{trip.park}</p>
