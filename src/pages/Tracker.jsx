@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
+import Avatar from '../components/Avatar'
 
 const STATUS_FILTERS = ['All', 'Done', 'Not done', 'Wishlist']
 
@@ -120,7 +121,12 @@ export default function Tracker() {
 
       {/* Title */}
       <div className="px-4 pt-4 pb-3">
-        <h2 className="text-xl font-bold text-gray-900 mb-3">Select Destination</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-gray-900">Tracker</h2>
+          <button onClick={() => navigate('/profile')} className="active:opacity-70">
+            <Avatar user={user} />
+          </button>
+        </div>
         <ParkDropdown
           value={selectedPark}
           onChange={name => { setSelectedPark(name); setSelectedCategory('All'); setSelectedStatus('All') }}

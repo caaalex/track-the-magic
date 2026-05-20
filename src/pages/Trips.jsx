@@ -5,6 +5,7 @@ import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, PARK_EMOJI, PARK_COLORS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
+import Avatar from '../components/Avatar'
 
 // ── Filter constants ───────────────────────────────────────────────────────
 const ALL_PARKS  = 'All parks'
@@ -40,6 +41,7 @@ function applyFilters(trips, park, period) {
 export default function Trips() {
   const { user }         = useAuth()
   const { openLogVisit } = useLogVisit()
+  const navigate         = useNavigate()
   const [trips, setTrips]           = useState([])
   const [ueMap, setUeMap]           = useState({})
   const [topAttr, setTopAttr]       = useState(null)
@@ -143,16 +145,21 @@ export default function Trips() {
       {/* ── Header ── */}
       <div className="px-4 pt-4 pb-3 flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">My trips</h2>
-        <button
-          onClick={openLogVisit}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-white text-xs font-bold active:scale-95 transition-transform"
-          style={{ backgroundColor: '#1D9E75' }}
-        >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Log a visit
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={openLogVisit}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-white text-xs font-bold active:scale-95 transition-transform"
+            style={{ backgroundColor: '#1D9E75' }}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Log a visit
+          </button>
+          <button onClick={() => navigate('/profile')} className="active:opacity-70">
+            <Avatar user={user} />
+          </button>
+        </div>
       </div>
 
       {loading ? (

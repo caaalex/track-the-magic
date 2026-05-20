@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARK_COLORS } from '../lib/constants'
+import Avatar from '../components/Avatar'
 import {
   Popcorn, Rocket, Mountain, Globe, Trophy,
   Zap, Star, Flame, Target, Crown, Compass,
@@ -111,11 +112,16 @@ export default function Challenges() {
     <div className="flex flex-col min-h-full">
 
       {/* ── Top bar ── */}
-      <div className="px-4 pt-4 pb-3">
-        <h2 className="text-xl font-bold text-gray-900">Challenges</h2>
-        <p className="text-xs text-gray-400 mt-0.5">
-          {completedChallenges} of {challenges.length} completed
-        </p>
+      <div className="px-4 pt-4 pb-3 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Challenges</h2>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {completedChallenges} of {challenges.length} completed
+          </p>
+        </div>
+        <button onClick={() => navigate('/profile')} className="active:opacity-70">
+          <Avatar user={user} />
+        </button>
       </div>
 
       {loading ? (
