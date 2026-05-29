@@ -143,7 +143,7 @@ export default function Trips() {
     <div className="flex flex-col min-h-full">
 
       {/* ── Header ── */}
-      <div className="px-4 pt-4 pb-3 flex items-center justify-between">
+      <div className="px-4 pt-5 pb-3 flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">My trips</h2>
         <div className="flex items-center gap-2.5">
           <button

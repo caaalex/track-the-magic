@@ -112,13 +112,8 @@ export default function Challenges() {
     <div className="flex flex-col min-h-full">
 
       {/* ── Top bar ── */}
-      <div className="px-4 pt-4 pb-3 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Challenges</h2>
-          <p className="text-xs text-gray-400 mt-0.5">
-            {completedChallenges} of {challenges.length} completed
-          </p>
-        </div>
+      <div className="px-4 pt-5 pb-3 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-900">Challenges</h2>
         <button onClick={() => navigate('/profile')} className="active:opacity-70">
           <Avatar user={user} />
         </button>
@@ -240,7 +235,9 @@ function ChallengeCard({ challenge, onTap }) {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 py-16">
-      <span className="text-5xl">🏆</span>
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#FEF3C7' }}>
+        <Trophy size={28} color="#D97706" strokeWidth={1.5} />
+      </div>
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No challenges yet</p>
         <p className="text-gray-400 text-sm mt-1 leading-relaxed">Check back soon!</p>

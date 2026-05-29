@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { Ticket, Search } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
 
-const STATUS_FILTERS = ['All', 'Done', 'Not done', 'Wishlist']
+const STATUS_FILTERS = ['All', 'Done', 'Not done', 'Favorites']
 
 export default function Tracker() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const location = useLocation()
   const [selectedPark, setSelectedPark]       = useState(location.state?.park ?? PARKS[0].name)
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -27,7 +29,7 @@ export default function Tracker() {
       .select('*')
       .eq('park', selectedPark)
       .eq('is_active', true)
-      .order('name')
+      .order('sort_name')
 
     if (error) {
       console.error('Error fetching experiences:', error)
@@ -111,7 +113,7 @@ export default function Tracker() {
     if (selectedCategory !== 'All' && exp.category !== selectedCategory) return false
     if (selectedStatus === 'Done'     && !ue?.completed)  return false
     if (selectedStatus === 'Not done' && ue?.completed)   return false
-    if (selectedStatus === 'Wishlist' && !ue?.wishlist)   return false
+    if (selectedStatus === 'Favorites' && !ue?.wishlist)   return false
     return true
   })
 
@@ -120,7 +122,7 @@ export default function Tracker() {
     <div className="flex flex-col pb-4">
 
       {/* Title */}
-      <div className="px-4 pt-4 pb-3">
+      <div className="px-4 pt-5 pb-3">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-gray-900">Tracker</h2>
           <button onClick={() => navigate('/profile')} className="active:opacity-70">
@@ -204,7 +206,11 @@ export default function Tracker() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center py-16 px-6 gap-3">
-          <span className="text-4xl">{experiences.length === 0 ? '🎠' : '🔍'}</span>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#F3F4F6' }}>
+            {experiences.length === 0
+              ? <Ticket size={22} color="#9CA3AF" strokeWidth={1.5} />
+              : <Search size={22} color="#9CA3AF" strokeWidth={1.5} />}
+          </div>
           <p className="text-gray-500 text-sm text-center leading-relaxed">
             {experiences.length === 0
               ? `No experiences added for ${selectedPark} yet.`
@@ -301,7 +307,7 @@ function ExperienceRow({ exp, userExp, onToggle }) {
           </span>
         ) : wishlisted ? (
           <span className="text-xs font-semibold px-2 py-1 rounded-full bg-amber-50 text-amber-500">
-            Wishlist
+            Favorites
           </span>
         ) : (
           <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-400">

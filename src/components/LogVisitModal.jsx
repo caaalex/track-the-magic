@@ -54,7 +54,7 @@ export default function LogVisitModal({
         .select('id, name, type, category')
         .eq('park', initialPark)
         .eq('is_active', true)
-        .order('name')
+        .order('sort_name')
         .then(({ data }) => {
           setExperiences(data || [])
           setLoadingExps(false)

@@ -110,7 +110,7 @@ export default function TripDetail() {
     <div className="flex flex-col bg-gray-50 min-h-full">
 
       {/* ── Top bar ── */}
-      <div className="flex items-center px-3 pt-3 pb-2 bg-white border-b border-gray-100 sticky top-0 z-10">
+      <div className="flex items-center px-4 pt-4 pb-3 bg-white border-b border-gray-100 sticky top-0 z-10">
         <button
           onClick={() => navigate('/trips')}
           className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100 transition-colors"

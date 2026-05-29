@@ -53,8 +53,8 @@ function ProgressRing({ completed, total }) {
       </svg>
       {/* Center label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <p className="text-lg font-bold text-stone-800 leading-none tabular-nums">{completed}</p>
-        <p className="text-[9px] text-stone-400 font-medium leading-tight mt-0.5">of {total}</p>
+        <p className="text-lg font-bold text-gray-800 leading-none tabular-nums">{completed}</p>
+        <p className="text-[9px] text-gray-400 font-medium leading-tight mt-0.5">of {total}</p>
       </div>
     </div>
   )
@@ -63,7 +63,7 @@ function ProgressRing({ completed, total }) {
 // ── Section label ─────────────────────────────────────────────────────────
 function SectionLabel({ children }) {
   return (
-    <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-[0.12em] mb-2.5">
+    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
       {children}
     </p>
   )
@@ -122,7 +122,7 @@ export default function Home() {
       {/* ── Top bar ── */}
       <div className="px-4 pt-5 pb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h1 className="text-[17px] font-bold text-stone-900 tracking-[-0.02em]">
+          <h1 className="text-xl font-bold text-gray-900">
             Track the Magic
           </h1>
           <span
@@ -162,7 +162,7 @@ export default function Home() {
               <div className="flex items-center gap-4">
                 <ProgressRing completed={completedAll} total={totalAll} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-stone-800 leading-snug">
+                  <p className="text-[13px] font-semibold text-gray-800 leading-snug">
                     You've done{' '}
                     <span style={{ color: '#1D9E75' }}>{completedAll}</span>{' '}
                     experience{completedAll !== 1 ? 's' : ''} —{' '}
@@ -206,10 +206,10 @@ export default function Home() {
                   <Trophy size={20} color="#D97706" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-stone-800">
+                  <p className="text-[13px] font-bold text-gray-800">
                     Top {leaderboard?.percentile ?? 1}% of all users
                   </p>
-                  <p className="text-[11px] text-stone-400 mt-0.5">
+                  <p className="text-[11px] text-gray-400 mt-0.5">
                     {leaderboard
                       ? `${leaderboard.active_trackers} active tracker${leaderboard.active_trackers !== 1 ? 's' : ''} this month`
                       : 'Ranking across all Disney trackers'}
@@ -268,11 +268,11 @@ function ParkCard({ park, onTap }) {
 
       {/* Name + progress bar */}
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-semibold text-stone-800 truncate">{park.name}</p>
-        <p className="text-[11px] text-stone-400 mt-0.5">
+        <p className="text-[13px] font-semibold text-gray-800 truncate">{park.name}</p>
+        <p className="text-[11px] text-gray-400 mt-0.5">
           {park.completed} of {park.total} experiences
         </p>
-        <div className="mt-2 h-1 rounded-full bg-stone-100 overflow-hidden">
+        <div className="mt-2 h-1 rounded-full bg-gray-100 overflow-hidden">
           <div
             className="h-full rounded-full"
             style={{
@@ -303,11 +303,11 @@ function LoadingSkeleton() {
       <div className="bg-white rounded-[1.375rem] p-4 h-[100px]"
            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
         <div className="flex gap-4 items-center h-full">
-          <div className="w-[88px] h-[88px] rounded-full bg-stone-100 flex-shrink-0" />
+          <div className="w-[88px] h-[88px] rounded-full bg-gray-100 flex-shrink-0" />
           <div className="flex-1 flex flex-col gap-2">
-            <div className="h-3 rounded-full bg-stone-100 w-3/4" />
-            <div className="h-3 rounded-full bg-stone-100 w-1/2" />
-            <div className="h-8 rounded-full bg-stone-100 w-28 mt-1" />
+            <div className="h-3 rounded-full bg-gray-100 w-3/4" />
+            <div className="h-3 rounded-full bg-gray-100 w-1/2" />
+            <div className="h-8 rounded-full bg-gray-100 w-28 mt-1" />
           </div>
         </div>
       </div>

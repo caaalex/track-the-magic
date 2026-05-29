@@ -205,9 +205,7 @@ export default function Profile() {
               <RowDivider />
               <StatRow
                 label="Most visited park"
-                value={stats.mostVisitedPark
-                  ? `${mostParkEmoji} ${stats.mostVisitedPark}`
-                  : '—'}
+                value={stats.mostVisitedPark ?? '—'}
               />
               <RowDivider />
               <StatRow
