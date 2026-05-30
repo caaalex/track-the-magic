@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Ticket, Search } from 'lucide-react'
+import { Ticket, Search, ChevronRight } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
@@ -217,9 +217,8 @@ export default function Tracker() {
               className="absolute top-0 right-0 h-full w-14 pointer-events-none"
               style={{ background: 'linear-gradient(to right, transparent, white)' }}
             />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 font-light"
-                 style={{ fontSize: 20, lineHeight: 1 }}>
-              ›
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+              <ChevronRight size={18} color="#9CA3AF" strokeWidth={2.5} />
             </div>
           </>
         )}
