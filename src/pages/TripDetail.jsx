@@ -27,7 +27,7 @@ export default function TripDetail() {
         supabase.from('trips').select('*').eq('id', id).single(),
         supabase
           .from('trip_experiences')
-          .select('experience_id, experiences(id, name, category, type)')
+          .select('experience_id, experiences(id, name, category, type, location)')
           .eq('trip_id', id),
       ])
 
@@ -185,9 +185,11 @@ export default function TripDetail() {
                       <p className="text-sm font-semibold text-gray-800 leading-snug">
                         {experience.name}
                       </p>
-                      {(experience.category || experience.type) && (
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {[experience.category, experience.type].filter(Boolean).join(' · ')}
+                      {(experience.location || experience.type) && (
+                        <p className="text-xs mt-0.5 flex items-center gap-1">
+                          {experience.location && <span className="text-gray-500 font-medium">{experience.location}</span>}
+                          {experience.location && experience.type && <span className="text-gray-300">|</span>}
+                          {experience.type && <span className="text-gray-400">{experience.type}</span>}
                         </p>
                       )}
                     </div>

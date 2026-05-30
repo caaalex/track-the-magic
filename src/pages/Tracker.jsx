@@ -320,8 +320,10 @@ function ExperienceRow({ exp, userExp, onToggle }) {
           {exp.name}
         </p>
         {(exp.location || exp.type) && (
-          <p className="text-xs text-gray-400 mt-0.5">
-            {[exp.location, exp.type].filter(Boolean).join(' · ')}
+          <p className="text-xs mt-0.5 flex items-center gap-1">
+            {exp.location && <span className="text-gray-500 font-medium">{exp.location}</span>}
+            {exp.location && exp.type && <span className="text-gray-300">|</span>}
+            {exp.type && <span className="text-gray-400">{exp.type}</span>}
           </p>
         )}
       </div>
