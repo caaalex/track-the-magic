@@ -240,7 +240,7 @@ export default function Trips() {
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{month}</p>
                   <div className="flex flex-col gap-3">
                     {monthGroups[month].map(trip => (
-                      <TripCard key={trip.id} trip={trip} ueMap={ueMap} songs={songsByTrip[trip.id] ?? []} />
+                      <TripCard key={trip.id} trip={trip} />
                     ))}
                   </div>
                 </div>
@@ -351,23 +351,20 @@ function StatBox({ label, value }) {
   )
 }
 
-function TripCard({ trip, ueMap, songs = [] }) {
+function TripCard({ trip }) {
   const navigate    = useNavigate()
   const parkColor   = PARK_COLORS[trip.park] ?? { bg: '#F3F4F6', color: '#374151' }
   const dateDisplay = new Date(trip.visit_date + 'T12:00:00').toLocaleDateString('en-US', {
     weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
   })
-
-  const experiences = (trip.trip_experiences || []).map(te => te.experiences).filter(Boolean)
-  const firstTime   = experiences.filter(e => (ueMap[e.id] ?? 0) === 1)
-  const repeats     = experiences.filter(e => (ueMap[e.id] ?? 0) > 1)
+  const expCount = (trip.trip_experiences || []).length
 
   return (
     <button
       onClick={() => navigate(`/trips/${trip.id}`)}
       className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full text-left active:scale-[0.98] transition-transform"
     >
-      <div className="px-4 py-3 flex items-center gap-3">
+      <div className="px-4 py-3.5 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
              style={{ backgroundColor: parkColor.bg }}>
           <ParkIcon park={trip.park} size={20} color={parkColor.color} />
@@ -376,40 +373,18 @@ function TripCard({ trip, ueMap, songs = [] }) {
           <p className="text-sm font-bold text-gray-800 truncate">{trip.park}</p>
           <p className="text-xs text-gray-500 mt-0.5">{dateDisplay}</p>
         </div>
-        {experiences.length > 0 && (
+        {expCount > 0 && (
           <div className="flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
                style={{ backgroundColor: parkColor.bg, color: parkColor.color }}>
-            {experiences.length}
+            {expCount} {expCount === 1 ? 'experience' : 'experiences'}
           </div>
         )}
       </div>
 
-      {experiences.length > 0 && (
-        <div className="px-4 pb-3 flex flex-wrap gap-1.5">
-          {experiences.map(e => (
-            <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium"
-                  style={{ backgroundColor: '#D1FAE5', color: '#065F46' }}>
-              {e.name}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {trip.notes && (
-        <div className="px-4 pb-3">
-          <p className="text-xs text-gray-500 italic leading-relaxed line-clamp-2">{trip.notes}</p>
-        </div>
-      )}
-
-      <div className="px-4 py-2.5 border-t border-gray-100" style={{ backgroundColor: '#FAFAFA' }}>
-        <p className="text-xs text-gray-400">
-          {firstTime.length > 0 && (
-            <span style={{ color: '#059669' }} className="font-medium">{firstTime.length} new</span>
-          )}
-          {firstTime.length > 0 && repeats.length > 0 && <span className="mx-1">·</span>}
-          {repeats.length > 0 && <span>{repeats.length} repeat{repeats.length !== 1 ? 's' : ''}</span>}
-          {experiences.length === 0 && <span>No experiences logged</span>}
-        </p>
+      <div className="px-4 pb-3 flex justify-end">
+        <span className="text-xs font-semibold" style={{ color: '#1D9E75' }}>
+          View details →
+        </span>
       </div>
     </button>
   )
