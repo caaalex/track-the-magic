@@ -334,6 +334,7 @@ export default function ExperienceDetail() {
 
           <div className="flex flex-wrap gap-1.5 mb-2">
             {exp.park     && <Pill color="blue">{exp.park}</Pill>}
+            {exp.location && <Pill color="gray">{exp.location}</Pill>}
             {exp.category && <Pill color="purple">{exp.category}</Pill>}
             {exp.type     && <Pill color="green">{exp.type}</Pill>}
           </div>
