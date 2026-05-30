@@ -155,6 +155,25 @@ export default function LogVisitModal({
               })),
               { onConflict: 'user_id,experience_id' }
             )
+
+          // ── Sync linked challenge items ──────────────────────────────────
+          const { data: linkedItems } = await supabase
+            .from('challenge_items')
+            .select('id')
+            .in('experience_id', newExpIds)
+
+          if (linkedItems?.length > 0) {
+            await supabase
+              .from('user_challenge_items')
+              .upsert(
+                linkedItems.map(item => ({
+                  user_id:           user.id,
+                  challenge_item_id: item.id,
+                  completed:         true,
+                })),
+                { onConflict: 'user_id,challenge_item_id' }
+              )
+          }
         }
       }
 

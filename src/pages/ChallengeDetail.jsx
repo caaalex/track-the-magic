@@ -66,9 +66,44 @@ export default function ChallengeDetail() {
       )
 
     if (error) {
-      // Revert on failure
       setUserItemMap(prev => ({ ...prev, [itemId]: { ...(prev[itemId] ?? {}), completed: current } }))
       console.error('Save error:', error)
+      return
+    }
+
+    // ── Sync linked experience if any ──────────────────────────────────────
+    const expId = items.find(i => i.id === itemId)?.experience_id
+    if (expId) {
+      const today = new Date().toISOString().split('T')[0]
+
+      if (next) {
+        // Fetch existing record to preserve / increment times_visited
+        const { data: existing } = await supabase
+          .from('user_experiences')
+          .select('completed, times_visited')
+          .eq('user_id', user.id)
+          .eq('experience_id', expId)
+          .maybeSingle()
+
+        const alreadyDone = existing?.completed ?? false
+        const visits = alreadyDone
+          ? (existing?.times_visited ?? 1)
+          : (existing?.times_visited ?? 0) + 1
+
+        await supabase
+          .from('user_experiences')
+          .upsert(
+            { user_id: user.id, experience_id: expId, completed: true, times_visited: visits, last_visited_date: today },
+            { onConflict: 'user_id,experience_id' }
+          )
+      } else {
+        await supabase
+          .from('user_experiences')
+          .upsert(
+            { user_id: user.id, experience_id: expId, completed: false, times_visited: 0, last_visited_date: null },
+            { onConflict: 'user_id,experience_id' }
+          )
+      }
     }
   }
 

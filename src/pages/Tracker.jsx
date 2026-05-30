@@ -100,13 +100,38 @@ export default function Tracker() {
     if (error) {
       console.error('Toggle error:', error)
       setUserExps(prev => ({ ...prev, [expId]: current })) // revert
+      return
+    }
+
+    // ── Sync linked challenge items ────────────────────────────────────────
+    const { data: linkedItems } = await supabase
+      .from('challenge_items')
+      .select('id')
+      .eq('experience_id', expId)
+
+    if (linkedItems?.length > 0) {
+      await supabase
+        .from('user_challenge_items')
+        .upsert(
+          linkedItems.map(item => ({
+            user_id:           user.id,
+            challenge_item_id: item.id,
+            completed:         newCompleted,
+          })),
+          { onConflict: 'user_id,challenge_item_id' }
+        )
     }
   }
 
   // ── Derived values ─────────────────────────────────────────────────────────
-  const park          = PARKS.find(p => p.name === selectedPark)
-  const completedCount = experiences.filter(e => userExps[e.id]?.completed).length
-  const progress      = experiences.length > 0 ? (completedCount / experiences.length) * 100 : 0
+  const park = PARKS.find(p => p.name === selectedPark)
+
+  // Hero card follows category filter only (not status filter)
+  const heroExperiences  = selectedCategory === 'All'
+    ? experiences
+    : experiences.filter(e => e.category === selectedCategory)
+  const heroCompleted    = heroExperiences.filter(e => userExps[e.id]?.completed).length
+  const heroProgress     = heroExperiences.length > 0 ? (heroCompleted / heroExperiences.length) * 100 : 0
 
   const filtered = experiences.filter(exp => {
     const ue = userExps[exp.id]
@@ -147,14 +172,14 @@ export default function Tracker() {
           <div>
             <p className="text-white font-bold text-base leading-tight">{park?.name}</p>
             <p className="text-white/70 text-xs mt-0.5">
-              {completedCount} of {experiences.length} experiences done
+              {heroCompleted} of {heroExperiences.length} {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
             </p>
           </div>
         </div>
         <div className="rounded-full h-2 overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.25)' }}>
           <div
             className="h-full bg-white"
-            style={{ width: `${progress}%`, transition: 'width 0.5s ease' }}
+            style={{ width: `${heroProgress}%`, transition: 'width 0.5s ease' }}
           />
         </div>
       </div>
