@@ -40,7 +40,7 @@ function applyFilters(trips, park, period) {
 
 export default function Trips() {
   const { user }         = useAuth()
-  const { openLogVisit } = useLogVisit()
+  const { openLogVisit, savedCount } = useLogVisit()
   const navigate         = useNavigate()
   const [trips, setTrips]           = useState([])
   const [ueMap, setUeMap]           = useState({})
@@ -127,7 +127,7 @@ export default function Trips() {
 
       setLoading(false)
     })()
-  }, [user.id])
+  }, [user.id, savedCount])
 
   // Stats always reflect ALL trips (not filtered)
   const totalVisits     = trips.length

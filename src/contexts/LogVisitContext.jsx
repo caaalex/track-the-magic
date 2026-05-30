@@ -1,14 +1,13 @@
 import { createContext, useContext, useState } from 'react'
 import LogVisitModal from '../components/LogVisitModal'
 
-const LogVisitContext = createContext({ openLogVisit: () => {} })
+const LogVisitContext = createContext({ openLogVisit: () => {}, savedCount: 0 })
 
 export function LogVisitProvider({ children }) {
   const [open,        setOpen]        = useState(false)
   const [initialData, setInitialData] = useState(null)
+  const [savedCount,  setSavedCount]  = useState(0)
 
-  // Can be called with no args (blank new-trip modal) or with
-  // { park, date, tripId } to add experiences to an existing trip
   const openLogVisit = (data = null) => {
     setInitialData(data)
     setOpen(true)
@@ -19,12 +18,18 @@ export function LogVisitProvider({ children }) {
     setInitialData(null)
   }
 
+  const handleSave = () => {
+    setSavedCount(c => c + 1)
+    handleClose()
+  }
+
   return (
-    <LogVisitContext.Provider value={{ openLogVisit }}>
+    <LogVisitContext.Provider value={{ openLogVisit, savedCount }}>
       {children}
       {open && (
         <LogVisitModal
           onClose={handleClose}
+          onSave={handleSave}
           initialPark={initialData?.park   ?? ''}
           initialDate={initialData?.date   ?? null}
           existingTripId={initialData?.tripId ?? null}

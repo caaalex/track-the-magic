@@ -17,6 +17,7 @@ const formatDateDisplay = (dateStr) => {
 
 export default function LogVisitModal({
   onClose,
+  onSave,
   initialPark    = '',   // pre-fill park (skips to step 2)
   initialDate    = null, // pre-fill date
   existingTripId = null, // add to existing trip instead of creating new one
@@ -51,7 +52,7 @@ export default function LogVisitModal({
       setLoadingExps(true)
       supabase
         .from('experiences')
-        .select('id, name, type, category')
+        .select('id, name, type, category, location')
         .eq('park', initialPark)
         .eq('is_active', true)
         .order('sort_name')
@@ -69,10 +70,10 @@ export default function LogVisitModal({
     setStep(2)
     const { data } = await supabase
       .from('experiences')
-      .select('id, name, type, category')
+      .select('id, name, type, category, location')
       .eq('park', selectedPark)
       .eq('is_active', true)
-      .order('name')
+      .order('sort_name')
     setExperiences(data || [])
     setLoadingExps(false)
   }
@@ -201,7 +202,7 @@ export default function LogVisitModal({
         } else {
           navigate(addingToExisting ? `/trips/${existingTripId}` : '/trips')
         }
-        onClose()
+        onSave ? onSave() : onClose()
       }, 1400)
 
     } catch (err) {
@@ -487,12 +488,18 @@ function Step2Content({
                   )}
                 </span>
 
-                {/* Name + type */}
+                {/* Name + location | type */}
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-semibold leading-snug truncate ${checked ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
                     {exp.name}
                   </p>
-                  {exp.type && <p className="text-xs text-gray-400 mt-0.5 truncate">{exp.type}</p>}
+                  {(exp.location || exp.type) && (
+                    <p className="text-xs mt-0.5 flex items-center gap-1">
+                      {exp.location && <span className="text-gray-500 font-medium">{exp.location}</span>}
+                      {exp.location && exp.type && <span className="text-gray-300">|</span>}
+                      {exp.type && <span className="text-gray-400">{exp.type}</span>}
+                    </p>
+                  )}
                 </div>
               </button>
             )
