@@ -185,7 +185,7 @@ export default function Trips() {
 
           {/* Visit history header + Filter button */}
           <div className="px-4 pb-2 flex items-center justify-between">
-            <p className="text-sm font-bold text-gray-800">Visit history</p>
+            <p className="text-sm font-bold text-gray-800">Visit History</p>
             <button
               onClick={openSheet}
               className="relative flex items-center gap-1 text-xs font-medium text-gray-500 px-2.5 py-1 rounded-lg bg-gray-100 active:bg-gray-200 transition-colors"
