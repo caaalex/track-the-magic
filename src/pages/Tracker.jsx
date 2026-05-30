@@ -185,21 +185,28 @@ export default function Tracker() {
       </div>
 
       {/* Category pills */}
-      <div className="px-4 mb-3 overflow-x-auto no-scrollbar">
-        <div className="flex gap-2 w-max pb-0.5">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                selectedCategory === cat ? 'text-white' : 'bg-gray-100 text-gray-500'
-              }`}
-              style={selectedCategory === cat ? { backgroundColor: '#1D9E75' } : {}}
-            >
-              {cat}
-            </button>
-          ))}
+      <div className="relative mb-3">
+        <div className="pl-4 overflow-x-auto no-scrollbar">
+          <div className="flex gap-2 w-max pb-0.5 pr-10">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+                  selectedCategory === cat ? 'text-white' : 'bg-gray-100 text-gray-500'
+                }`}
+                style={selectedCategory === cat ? { backgroundColor: '#1D9E75' } : {}}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
+        {/* Fade gradient — signals more content to the right */}
+        <div
+          className="absolute top-0 right-0 h-full w-12 pointer-events-none"
+          style={{ background: 'linear-gradient(to right, transparent, white)' }}
+        />
       </div>
 
       {/* Status chips */}
