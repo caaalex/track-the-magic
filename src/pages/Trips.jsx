@@ -384,23 +384,12 @@ function TripCard({ trip, ueMap, songs = [] }) {
         )}
       </div>
 
-      {(experiences.length > 0 || songs.length > 0) && (
+      {experiences.length > 0 && (
         <div className="px-4 pb-3 flex flex-wrap gap-1.5">
-          {firstTime.map(e => (
+          {experiences.map(e => (
             <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium"
                   style={{ backgroundColor: '#D1FAE5', color: '#065F46' }}>
               {e.name}
-            </span>
-          ))}
-          {repeats.map(e => (
-            <span key={e.id} className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600">
-              {e.name}
-            </span>
-          ))}
-          {songs.map(song => (
-            <span key={song} className="text-xs px-2 py-0.5 rounded-full font-bold text-white flex items-center gap-1"
-                  style={{ backgroundColor: '#1D9E75' }}>
-              🎵 {song}
             </span>
           ))}
         </div>
