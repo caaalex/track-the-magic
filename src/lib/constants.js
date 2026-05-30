@@ -31,8 +31,8 @@ export const GUARDIANS_CHALLENGE_ID  = 'ac79e3ac-df2a-44db-b001-351d72e4bd78'
 export const CATEGORIES = [
   'All',
   'Attractions',
-  'Dining',
   'Entertainment',
+  'Dining',
   'Characters',
   'Events & Tours',
 ]
