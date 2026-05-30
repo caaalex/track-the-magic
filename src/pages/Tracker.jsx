@@ -19,6 +19,14 @@ export default function Tracker() {
   const [experiences, setExperiences]         = useState([])
   const [userExps, setUserExps]               = useState({}) // keyed by experience_id
   const [loading, setLoading]                 = useState(false)
+  const pillsRef                              = useRef(null)
+  const [pillsAtEnd, setPillsAtEnd]           = useState(false)
+
+  const handlePillsScroll = () => {
+    const el = pillsRef.current
+    if (!el) return
+    setPillsAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4)
+  }
 
   // ── Data fetching ──────────────────────────────────────────────────────────
   const fetchData = useCallback(async () => {
@@ -186,7 +194,7 @@ export default function Tracker() {
 
       {/* Category pills */}
       <div className="relative mb-3">
-        <div className="pl-4 overflow-x-auto no-scrollbar">
+        <div ref={pillsRef} onScroll={handlePillsScroll} className="pl-4 overflow-x-auto no-scrollbar">
           <div className="flex gap-2 w-max pb-0.5 pr-10">
             {CATEGORIES.map(cat => (
               <button
@@ -202,11 +210,19 @@ export default function Tracker() {
             ))}
           </div>
         </div>
-        {/* Fade gradient — signals more content to the right */}
-        <div
-          className="absolute top-0 right-0 h-full w-12 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, transparent, white)' }}
-        />
+        {/* Fade + chevron — hidden once scrolled to end */}
+        {!pillsAtEnd && (
+          <>
+            <div
+              className="absolute top-0 right-0 h-full w-14 pointer-events-none"
+              style={{ background: 'linear-gradient(to right, transparent, white)' }}
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-300 font-light"
+                 style={{ fontSize: 20, lineHeight: 1 }}>
+              ›
+            </div>
+          </>
+        )}
       </div>
 
       {/* Status chips */}
