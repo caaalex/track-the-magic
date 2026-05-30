@@ -342,7 +342,7 @@ export default function Trips() {
 function StatBox({ label, value }) {
   return (
     <div className="bg-white rounded-2xl px-3 py-3 shadow-sm border border-gray-100 flex flex-col items-center text-center gap-0.5">
-      <p className="text-xs text-gray-400 leading-tight">{label}</p>
+      <p className="text-sm text-gray-400 leading-tight">{label}</p>
       <p className="text-sm font-bold mt-0.5 break-words w-full leading-tight"
          style={{ color: '#1D9E75' }}>
         {value}
