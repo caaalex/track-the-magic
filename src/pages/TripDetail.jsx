@@ -193,18 +193,6 @@ export default function TripDetail() {
                         </p>
                       )}
                     </div>
-                    {isNew ? (
-                      <span
-                        className="flex-shrink-0 text-xs font-bold px-2.5 py-1 rounded-full"
-                        style={{ backgroundColor: '#D1FAE5', color: '#059669' }}
-                      >
-                        New
-                      </span>
-                    ) : (
-                      <span className="flex-shrink-0 text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
-                        Repeat
-                      </span>
-                    )}
                     <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
