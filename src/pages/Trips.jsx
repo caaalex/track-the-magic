@@ -172,7 +172,7 @@ export default function Trips() {
         <>
           {/* Stat boxes */}
           <div className="px-4 pb-4 grid grid-cols-3 gap-2">
-            <StatBox label="Total visits logged" value={totalVisits} />
+            <StatBox label="Total Visits Logged" value={totalVisits} />
             <StatBox
               label="Most Visited Park"
               value={mostVisitedPark ?? '—'}
