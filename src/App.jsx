@@ -48,10 +48,18 @@ function LoadingScreen() {
          style={{ maxWidth: 375, margin: '0 auto' }}>
       <div className="flex flex-col items-center gap-4">
         <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
-          style={{ background: 'linear-gradient(135deg, #e6f7f1, #f0fdf8)', boxShadow: '0 4px 16px rgba(29,158,117,0.12)' }}
+          className="w-14 h-14 rounded-2xl flex items-center justify-center"
+          style={{ background: 'linear-gradient(145deg, #1D9E75 0%, #13855f 100%)', boxShadow: '0 6px 20px rgba(29,158,117,0.28)' }}
         >
-          🏰
+          <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+            <path
+              d="M18 3 C18 3 19.5 12.5 24.5 17.5 C19.5 17.5 19.5 17.5 24.5 17.5 C19.5 22.5 18 33 18 33 C18 33 16.5 22.5 11.5 17.5 C16.5 17.5 16.5 17.5 11.5 17.5 C16.5 12.5 18 3 18 3Z"
+              fill="white"
+              fillOpacity="0.95"
+            />
+            <circle cx="27" cy="9" r="2.2" fill="white" fillOpacity="0.55" />
+            <circle cx="9" cy="27" r="1.5" fill="white" fillOpacity="0.38" />
+          </svg>
         </div>
         <div className="flex gap-1.5">
           {[0, 1, 2].map(i => (
