@@ -125,7 +125,7 @@ export default function TripDetail() {
       <div className="flex flex-col gap-4 px-4 py-4 pb-8">
 
         {/* ── Trip summary card ── */}
-        <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow">
           <div className="flex items-center gap-3">
             <div
               className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -148,11 +148,11 @@ export default function TripDetail() {
 
         {/* ── Stats row ── */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-100 text-center">
+          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow text-center">
             <p className="text-xs text-gray-400 mb-1">New experiences</p>
             <p className="text-2xl font-bold" style={{ color: '#1D9E75' }}>{newCount}</p>
           </div>
-          <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-100 text-center">
+          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow text-center">
             <p className="text-xs text-gray-400 mb-1">Repeats</p>
             <p className="text-2xl font-bold" style={{ color: '#1D9E75' }}>{repeatCount}</p>
           </div>
@@ -160,7 +160,7 @@ export default function TripDetail() {
 
         {/* ── Notes card ── */}
         {trip.notes && (
-          <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Trip notes</p>
             <p className="text-sm text-gray-600 leading-relaxed">{trip.notes}</p>
           </div>
@@ -173,7 +173,7 @@ export default function TripDetail() {
               Experiences logged
             </p>
 
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl card-shadow overflow-hidden">
               {experiences.map(({ experience, isNew }, idx) => (
                 <div key={experience.id}>
                   {idx > 0 && <div className="h-px bg-gray-100 mx-4" />}

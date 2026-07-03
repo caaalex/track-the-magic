@@ -161,7 +161,7 @@ export default function Profile() {
       <div className="flex flex-col gap-4 px-4 py-4 pb-8">
 
         {/* ── Profile card ── */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col items-center gap-2">
+        <div className="bg-white rounded-2xl p-5 card-shadow flex flex-col items-center gap-2">
           <Avatar name={avatarName} size={60} />
           <p className="text-sm font-semibold text-gray-800 mt-1">{user?.email}</p>
           {memberSince && (
@@ -170,7 +170,7 @@ export default function Profile() {
         </div>
 
         {/* ── Your stats ── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl card-shadow overflow-hidden">
           <p className="px-4 pt-3.5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">
             Your stats
           </p>
@@ -207,7 +207,7 @@ export default function Profile() {
         {/* ── Account section ── */}
         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Account</p>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl card-shadow overflow-hidden">
 
           {/* Display name row */}
           <div className="px-4 py-3.5">

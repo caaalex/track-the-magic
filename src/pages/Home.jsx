@@ -162,7 +162,7 @@ export default function Home() {
               <div className="flex items-center gap-4">
                 <ProgressRing completed={completedAll} total={totalAll} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-gray-800 leading-snug">
+                  <p className="text-sm font-semibold text-gray-800 leading-snug">
                     You've done{' '}
                     <span style={{ color: '#1D9E75' }}>{completedAll}</span>{' '}
                     experience{completedAll !== 1 ? 's' : ''} —{' '}
@@ -195,8 +195,7 @@ export default function Home() {
           <div>
             <SectionLabel>Your ranking</SectionLabel>
             <div
-              className="bg-white rounded-2xl px-4 py-3.5"
-              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)' }}
+              className="bg-white rounded-2xl px-4 py-3.5 card-shadow"
             >
               <div className="flex items-center gap-3">
                 <div
@@ -206,10 +205,10 @@ export default function Home() {
                   <Trophy size={20} color="#D97706" strokeWidth={1.5} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold text-gray-800">
+                  <p className="text-sm font-bold text-gray-800">
                     Top {leaderboard?.percentile ?? 1}% of all users
                   </p>
-                  <p className="text-[11px] text-gray-400 mt-0.5">
+                  <p className="text-xs text-gray-400 mt-0.5">
                     {leaderboard
                       ? `${leaderboard.active_trackers} active tracker${leaderboard.active_trackers !== 1 ? 's' : ''} this month`
                       : 'Ranking across all Disney trackers'}
@@ -252,11 +251,8 @@ function ParkCard({ park, onTap }) {
   return (
     <button
       onClick={onTap}
-      className="bg-white rounded-2xl px-4 py-3.5 flex items-center gap-3 text-left w-full active:scale-[0.98]"
-      style={{
-        boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
-        transition: 'transform 0.25s cubic-bezier(0.32,0.72,0,1)',
-      }}
+      className="bg-white rounded-2xl px-4 py-3.5 flex items-center gap-3 text-left w-full active:scale-[0.98] card-shadow"
+      style={{ transition: 'transform 0.25s cubic-bezier(0.32,0.72,0,1)' }}
     >
       {/* Park icon */}
       <div
@@ -268,8 +264,8 @@ function ParkCard({ park, onTap }) {
 
       {/* Name + progress bar */}
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-semibold text-gray-800 truncate">{park.name}</p>
-        <p className="text-[11px] text-gray-400 mt-0.5">
+        <p className="text-sm font-semibold text-gray-800 truncate">{park.name}</p>
+        <p className="text-xs text-gray-400 mt-0.5">
           {park.completed} of {park.total} experiences
         </p>
         <div className="mt-2 h-1 rounded-full bg-gray-100 overflow-hidden">
@@ -300,8 +296,7 @@ function LoadingSkeleton() {
   return (
     <div className="px-4 flex flex-col gap-5 pb-4 animate-pulse">
       {/* Progress card skeleton */}
-      <div className="bg-white rounded-[1.375rem] p-4 h-[100px]"
-           style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+      <div className="bg-white rounded-[1.375rem] p-4 h-[100px] card-shadow">
         <div className="flex gap-4 items-center h-full">
           <div className="w-[88px] h-[88px] rounded-full bg-gray-100 flex-shrink-0" />
           <div className="flex-1 flex flex-col gap-2">
@@ -312,12 +307,10 @@ function LoadingSkeleton() {
         </div>
       </div>
       {/* Ranking skeleton */}
-      <div className="bg-white rounded-2xl px-4 py-3.5 h-16"
-           style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }} />
+      <div className="bg-white rounded-2xl px-4 py-3.5 h-16 card-shadow" />
       {/* Park cards skeletons */}
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="bg-white rounded-2xl px-4 py-3.5 h-[68px]"
-             style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }} />
+        <div key={i} className="bg-white rounded-2xl px-4 py-3.5 h-[68px] card-shadow" />
       ))}
     </div>
   )

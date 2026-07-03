@@ -147,7 +147,7 @@ export default function ChallengeDetail() {
       <div className="flex flex-col gap-4 px-4 py-4 pb-8">
 
         {/* ── Hero card ── */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div className="bg-white rounded-2xl p-4 card-shadow">
 
           {/* Completed banner */}
           {isComplete && (
@@ -217,7 +217,7 @@ export default function ChallengeDetail() {
               </p>
             )}
 
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl card-shadow overflow-hidden">
               {items.map((item, idx) => {
                 const done = userItemMap[item.id]?.completed ?? false
                 return (

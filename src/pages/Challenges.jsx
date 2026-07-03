@@ -99,7 +99,7 @@ export default function Challenges() {
         <div className="px-4 flex flex-col gap-4 pb-8">
 
           {/* ── Progress summary card ── */}
-          <div className="bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-4">
             <MiniRing pct={overallPct} />
             <div>
               <p className="text-sm font-bold text-gray-800">
@@ -152,7 +152,7 @@ function ChallengeCard({ challenge, onTap }) {
   return (
     <button
       onClick={onTap}
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden text-left w-full active:scale-[0.98] transition-transform"
+      className="bg-white rounded-2xl card-shadow overflow-hidden text-left w-full active:scale-[0.98] transition-transform"
     >
       {/* Completed banner */}
       {isComplete && (

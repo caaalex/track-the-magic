@@ -350,7 +350,7 @@ export default function Trips() {
 
 function StatBox({ label, value }) {
   return (
-    <div className="bg-white rounded-2xl px-3 py-3 shadow-sm border border-gray-100 flex flex-col items-center text-center gap-0.5">
+    <div className="bg-white rounded-2xl px-3 py-3 card-shadow flex flex-col items-center text-center gap-0.5">
       <p className="text-sm text-gray-400 leading-tight">{label}</p>
       <p className="text-sm font-bold mt-0.5 break-words w-full leading-tight"
          style={{ color: '#1D9E75' }}>
@@ -371,7 +371,7 @@ function TripCard({ trip }) {
   return (
     <button
       onClick={() => navigate(`/trips/${trip.id}`)}
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full text-left active:scale-[0.98] transition-transform"
+      className="bg-white rounded-2xl card-shadow overflow-hidden w-full text-left active:scale-[0.98] transition-transform"
     >
       <div className="px-4 py-3.5 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"

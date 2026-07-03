@@ -169,7 +169,11 @@ export default function Tracker() {
       </div>
 
       {/* Hero card */}
-      <div className="mx-4 rounded-2xl p-4 mb-4" style={{ backgroundColor: '#1D9E75' }}>
+      <div className="mx-4 rounded-2xl p-4 mb-4"
+           style={{
+             background: 'linear-gradient(135deg, #1D9E75 0%, #16a870 100%)',
+             boxShadow: '0 4px 16px rgba(29,158,117,0.25)',
+           }}>
         <div className="flex items-center gap-3 mb-3">
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -231,8 +235,9 @@ export default function Tracker() {
             key={s}
             onClick={() => setSelectedStatus(s)}
             className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-              selectedStatus === s ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-500'
+              selectedStatus === s ? 'text-white' : 'bg-gray-100 text-gray-500'
             }`}
+            style={selectedStatus === s ? { backgroundColor: '#1D9E75' } : {}}
           >
             {s}
           </button>

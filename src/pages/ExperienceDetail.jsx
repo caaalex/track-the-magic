@@ -320,7 +320,7 @@ export default function ExperienceDetail() {
       <div className="flex flex-col gap-4 px-4 py-4 pb-8">
 
         {/* ── Info card ───────────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-start justify-between gap-3 mb-3">
             <h1 className="text-xl font-bold text-gray-900 leading-tight flex-1">{exp.name}</h1>
             <button onClick={toggleWishlist} className="mt-0.5 flex-shrink-0 active:scale-110 transition-transform">
@@ -357,7 +357,7 @@ export default function ExperienceDetail() {
         {/* ── Your experience ─────────────────────────────────────────── */}
         <SectionLabel>Your experience</SectionLabel>
 
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl card-shadow overflow-hidden">
 
           {/* Status */}
           <Row label="Status">
@@ -414,7 +414,7 @@ export default function ExperienceDetail() {
         {/* ── Your notes ──────────────────────────────────────────────── */}
         <SectionLabel>Your notes</SectionLabel>
 
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div className="bg-white rounded-2xl p-4 card-shadow">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-semibold text-gray-700">Private notes</p>
             {!editingNotes && (
