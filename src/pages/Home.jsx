@@ -125,13 +125,6 @@ export default function Home() {
           <h1 className="text-xl font-bold text-gray-900">
             Track the Magic
           </h1>
-          <span
-            className="w-2 h-2 rounded-full flex-shrink-0"
-            style={{
-              backgroundColor: '#1D9E75',
-              boxShadow: '0 0 0 3px rgba(29,158,117,0.18)',
-            }}
-          />
         </div>
         <button
           onClick={() => navigate('/profile')}
