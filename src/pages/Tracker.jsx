@@ -13,7 +13,11 @@ export default function Tracker() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [selectedPark, setSelectedPark]       = useState(location.state?.park ?? PARKS[0].name)
+  const [selectedPark, setSelectedPark]       = useState(() => {
+    if (location.state?.park) return location.state.park
+    const saved = sessionStorage.getItem('ttm_selected_park')
+    return PARKS.some(p => p.name === saved) ? saved : PARKS[0].name
+  })
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedStatus, setSelectedStatus]   = useState('All')
   const [experiences, setExperiences]         = useState([])
@@ -21,6 +25,11 @@ export default function Tracker() {
   const [loading, setLoading]                 = useState(false)
   const pillsRef                              = useRef(null)
   const [pillsAtEnd, setPillsAtEnd]           = useState(false)
+
+  // Remember park selection across tab switches (session only)
+  useEffect(() => {
+    sessionStorage.setItem('ttm_selected_park', selectedPark)
+  }, [selectedPark])
 
   const handlePillsScroll = () => {
     const el = pillsRef.current
@@ -234,7 +243,7 @@ export default function Tracker() {
           <button
             key={s}
             onClick={() => setSelectedStatus(s)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
               selectedStatus === s ? 'text-white' : 'bg-gray-100 text-gray-500'
             }`}
             style={selectedStatus === s ? { backgroundColor: '#1D9E75' } : {}}
