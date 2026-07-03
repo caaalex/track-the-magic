@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, PARK_EMOJI, PARK_COLORS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
+import { PARKS, PARK_COLORS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
+import { Search, Plane } from 'lucide-react'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
 
@@ -209,7 +210,7 @@ export default function Trips() {
             <div className="px-4 pb-2 flex gap-2 flex-wrap">
               {filterPark !== ALL_PARKS && (
                 <span className="text-xs font-medium px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: '#1D9E75' }}>
-                  {PARK_EMOJI[filterPark]} {filterPark}
+                  {filterPark}
                 </span>
               )}
               {filterPeriod !== ALL_TIME && (
@@ -223,7 +224,9 @@ export default function Trips() {
           {/* Month groups */}
           {filteredTrips.length === 0 ? (
             <div className="flex flex-col items-center py-16 gap-3 px-6">
-              <span className="text-4xl">🔍</span>
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#F3F4F6' }}>
+                <Search size={22} color="#9CA3AF" strokeWidth={1.5} />
+              </div>
               <p className="text-gray-700 font-semibold text-base text-center">No trips match your filters</p>
               <button
                 onClick={() => { setFilterPark(ALL_PARKS); setFilterPeriod(ALL_TIME) }}
@@ -275,10 +278,16 @@ export default function Trips() {
                 <button
                   key={option}
                   onClick={() => setPendingPark(option)}
-                  className="flex items-center justify-between px-5 py-3 active:bg-gray-50 transition-colors"
+                  className="flex items-center gap-3 px-5 py-2.5 active:bg-gray-50 transition-colors"
                 >
-                  <span className={`text-sm ${pendingPark === option ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>
-                    {option !== ALL_PARKS && PARK_EMOJI[option] ? `${PARK_EMOJI[option]}  ` : ''}{option}
+                  {option !== ALL_PARKS && (
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                         style={{ backgroundColor: PARK_COLORS[option]?.bg ?? '#F5F5F0' }}>
+                      <ParkIcon park={option} size={16} color={PARK_COLORS[option]?.color ?? '#555'} />
+                    </div>
+                  )}
+                  <span className={`flex-1 text-left text-sm ${pendingPark === option ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>
+                    {option}
                   </span>
                   {pendingPark === option && (
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#1D9E75" strokeWidth={2.5}>
@@ -393,7 +402,9 @@ function TripCard({ trip }) {
 function EmptyState({ onLog }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 py-16">
-      <span className="text-5xl">✈️</span>
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#E6F7F4' }}>
+        <Plane size={28} color="#1D9E75" strokeWidth={1.5} />
+      </div>
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No trips logged yet</p>
         <p className="text-gray-400 text-sm mt-1 leading-relaxed">Tap "Log a visit" to get started.</p>

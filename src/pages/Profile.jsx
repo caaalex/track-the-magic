@@ -2,23 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARK_EMOJI } from '../lib/constants'
-
-// ── Avatar (same logic as Home) ────────────────────────────────────────────
-function Avatar({ name, size = 60 }) {
-  const parts   = (name || '').trim().split(/\s+/)
-  const initials = parts.length >= 2
-    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    : (name || '').slice(0, 2).toUpperCase()
-  return (
-    <div
-      className="rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-      style={{ width: size, height: size, backgroundColor: '#5B21B6', fontSize: size * 0.3 }}
-    >
-      {initials}
-    </div>
-  )
-}
+import Avatar from '../components/Avatar'
 
 // ── Stat row ──────────────────────────────────────────────────────────────
 function StatRow({ label, value }) {
@@ -157,7 +141,6 @@ export default function Profile() {
   }
 
   const avatarName = displayName || user?.email || ''
-  const mostParkEmoji = stats?.mostVisitedPark ? (PARK_EMOJI[stats.mostVisitedPark] ?? '') : ''
 
   return (
     <div className="flex flex-col bg-gray-50 min-h-full">

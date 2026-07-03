@@ -4,38 +4,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARK_COLORS } from '../lib/constants'
 import Avatar from '../components/Avatar'
-import {
-  Popcorn, Rocket, Mountain, Globe, Trophy,
-  Zap, Star, Flame, Target, Crown, Compass,
-  Map, Shield, Sword,
-} from 'lucide-react'
-
-// ── Emoji → Lucide icon map ────────────────────────────────────────────────
-const EMOJI_ICON_MAP = {
-  '🍿': Popcorn,
-  '🚀': Rocket,
-  '🏔️': Mountain,
-  '⛰️': Mountain,
-  '🌍': Globe,
-  '🌎': Globe,
-  '🌏': Globe,
-  '🏆': Trophy,
-  '⚡': Zap,
-  '⭐': Star,
-  '🌟': Star,
-  '🔥': Flame,
-  '🎯': Target,
-  '👑': Crown,
-  '🧭': Compass,
-  '🗺️': Map,
-  '🛡️': Shield,
-  '⚔️': Sword,
-}
-
-function ChallengeIcon({ icon, color, size = 22 }) {
-  const LucideIcon = EMOJI_ICON_MAP[icon] ?? Trophy
-  return <LucideIcon size={size} color={color} strokeWidth={1.5} />
-}
+import ChallengeIcon from '../lib/ChallengeIcon'
+import { Trophy } from 'lucide-react'
 
 // ── Small progress ring ────────────────────────────────────────────────────
 function MiniRing({ pct, size = 56 }) {

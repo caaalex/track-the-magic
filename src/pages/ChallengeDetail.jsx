@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARK_COLORS, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
+import ChallengeIcon from '../lib/ChallengeIcon'
 
 export default function ChallengeDetail() {
   const { id }   = useParams()
@@ -161,9 +162,9 @@ export default function ChallengeDetail() {
 
           {/* Icon + title */}
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
                  style={{ backgroundColor: colors.bg }}>
-              {challenge.icon || '🏆'}
+              <ChallengeIcon icon={challenge.icon} color={colors.color} size={26} />
             </div>
             <div className="flex-1 min-w-0">
               <h1 className="text-lg font-bold text-gray-900 leading-tight">{challenge.title}</h1>

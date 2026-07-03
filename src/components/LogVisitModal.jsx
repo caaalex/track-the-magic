@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
+import { Search } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
@@ -463,8 +464,10 @@ function Step2Content({
           <p className="text-gray-400 text-sm">Loading…</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center py-10 gap-2 px-6">
-          <span className="text-3xl">🔍</span>
+        <div className="flex flex-col items-center py-10 gap-2.5 px-6">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#F3F4F6' }}>
+            <Search size={22} color="#9CA3AF" strokeWidth={1.5} />
+          </div>
           <p className="text-gray-500 text-sm text-center">No experiences found.</p>
         </div>
       ) : (
