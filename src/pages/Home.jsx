@@ -78,7 +78,7 @@ export default function Home() {
       {loading ? (
         <LoadingSkeleton />
       ) : (
-        <div className="px-5 pb-4">
+        <div className="px-4 pb-4">
 
           {/* ── Hero: experiences completed ── */}
           <div className="pt-4">
@@ -169,7 +169,7 @@ export default function Home() {
 // ── Loading skeleton ──────────────────────────────────────────────────────
 function LoadingSkeleton() {
   return (
-    <div className="px-5 pt-4 pb-4 animate-pulse">
+    <div className="px-4 pt-4 pb-4 animate-pulse">
       <div className="h-3 rounded-full bg-gray-100 w-36" />
       <div className="h-12 rounded-lg bg-gray-100 w-40 mt-3" />
       <div className="h-0.5 bg-gray-100 w-full mt-4" />

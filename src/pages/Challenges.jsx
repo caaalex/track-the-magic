@@ -2,34 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARK_COLORS } from '../lib/constants'
 import Avatar from '../components/Avatar'
 import ChallengeIcon from '../lib/ChallengeIcon'
 import { Trophy } from 'lucide-react'
-
-// ── Small progress ring ────────────────────────────────────────────────────
-function MiniRing({ pct, size = 56 }) {
-  const cx  = size / 2
-  const r   = size / 2 - 6
-  const circ = 2 * Math.PI * r
-  const offset = circ * (1 - pct / 100)
-  return (
-    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-        <circle cx={cx} cy={cx} r={r} fill="none" stroke="#E5E7EB" strokeWidth={5} />
-        <circle cx={cx} cy={cx} r={r} fill="none" stroke="#1D9E75" strokeWidth={5}
-          strokeLinecap="round"
-          strokeDasharray={circ}
-          strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <p className="text-xs font-bold text-gray-800">{pct}%</p>
-      </div>
-    </div>
-  )
-}
 
 export default function Challenges() {
   const { user }  = useAuth()
@@ -90,55 +65,51 @@ export default function Challenges() {
       </div>
 
       {loading ? (
-        <div className="px-4 flex flex-col gap-4 pb-8 animate-pulse">
-          {/* Summary card skeleton */}
-          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-4 h-[88px]">
-            <div className="w-14 h-14 rounded-full bg-gray-100 flex-shrink-0" />
-            <div className="flex-1 flex flex-col gap-2">
-              <div className="h-3 rounded-full bg-gray-100 w-2/3" />
-              <div className="h-2.5 rounded-full bg-gray-100 w-1/2" />
-            </div>
-          </div>
-          {/* Challenge card skeletons */}
-          <div className="flex flex-col gap-2.5">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-3 h-[76px]">
-                <div className="w-11 h-11 rounded-xl bg-gray-100 flex-shrink-0" />
-                <div className="flex-1 flex flex-col gap-2">
-                  <div className="h-3 rounded-full bg-gray-100 w-3/4" />
-                  <div className="h-1.5 rounded-full bg-gray-100 w-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <LoadingSkeleton />
       ) : challenges.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="px-4 flex flex-col gap-4 pb-8">
+        <div className="px-4 pb-8">
 
-          {/* ── Progress summary card ── */}
-          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-4">
-            <MiniRing pct={overallPct} />
-            <div>
-              <p className="text-sm font-bold text-gray-800">
-                <span style={{ color: '#1D9E75' }}>{overallPct}%</span> of challenges done
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                {challenges.length - completedChallenges > 0
-                  ? `${challenges.length - completedChallenges} more to go — keep going!`
-                  : 'All challenges complete! 🎉'}
-              </p>
+          {/* ── Hero ── */}
+          <div className="pt-1">
+            <p className="text-xs text-gray-400">Challenge items completed</p>
+            <p
+              className="text-gray-900 tabular-nums leading-tight"
+              style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
+            >
+              {doneChAll}{' '}
+              <span className="text-base font-normal text-gray-300">/ {totalChAll}</span>
+            </p>
+            <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${overallPct}%`,
+                  backgroundColor: '#1D9E75',
+                  transition: 'width 0.8s cubic-bezier(0.32,0.72,0,1)',
+                }}
+              />
             </div>
+            <p className="text-xs text-gray-400 mt-2">
+              {completedChallenges} of {challenges.length} challenges complete
+            </p>
           </div>
 
           {/* ── In progress ── */}
           {inProgress.length > 0 && (
-            <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">In progress</p>
-              <div className="flex flex-col gap-2.5">
-                {inProgress.map(ch => (
-                  <ChallengeCard key={ch.id} challenge={ch} onTap={() => navigate(`/challenges/${ch.id}`)} />
+            <div className="mt-6 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+                In progress
+              </p>
+              <div>
+                {inProgress.map((ch, i) => (
+                  <ChallengeRow
+                    key={ch.id}
+                    challenge={ch}
+                    last={i === inProgress.length - 1}
+                    onTap={() => navigate(`/challenges/${ch.id}`)}
+                  />
                 ))}
               </div>
             </div>
@@ -146,11 +117,18 @@ export default function Challenges() {
 
           {/* ── Completed ── */}
           {completed.length > 0 && (
-            <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Completed</p>
-              <div className="flex flex-col gap-2.5">
-                {completed.map(ch => (
-                  <ChallengeCard key={ch.id} challenge={ch} onTap={() => navigate(`/challenges/${ch.id}`)} />
+            <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+                Completed
+              </p>
+              <div>
+                {completed.map((ch, i) => (
+                  <ChallengeRow
+                    key={ch.id}
+                    challenge={ch}
+                    last={i === completed.length - 1}
+                    onTap={() => navigate(`/challenges/${ch.id}`)}
+                  />
                 ))}
               </div>
             </div>
@@ -162,71 +140,72 @@ export default function Challenges() {
   )
 }
 
-function ChallengeCard({ challenge, onTap }) {
+function ChallengeRow({ challenge, onTap, last }) {
   const { icon, title, park, total, done, isComplete } = challenge
-  const pct    = total > 0 ? Math.round((done / total) * 100) : 0
-  const colors = park ? (PARK_COLORS[park] ?? { bg: '#FEF3C7', color: '#D97706' })
-                      :                      { bg: '#FEF3C7', color: '#D97706' }
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0
 
   return (
     <button
       onClick={onTap}
-      className="bg-white rounded-2xl card-shadow overflow-hidden text-left w-full active:scale-[0.98] transition-transform"
+      className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
+      style={{
+        borderBottom: last ? 'none' : '1px solid #EDEBE6',
+        transition: 'opacity 0.2s ease',
+      }}
     >
-      {/* Completed banner */}
-      {isComplete && (
-        <div className="w-full py-1.5 flex items-center justify-center gap-1.5"
-             style={{ backgroundColor: '#D1FAE5' }}>
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="#059669" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
-          <p className="text-xs font-bold" style={{ color: '#059669' }}>Completed</p>
-        </div>
-      )}
-
-      <div className="px-4 py-3.5 flex items-center gap-3">
-        {/* Icon */}
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-             style={{ backgroundColor: colors.bg }}>
-          <ChallengeIcon icon={icon} color={colors.color} />
-        </div>
-
-        {/* Title + bar */}
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-gray-800 leading-snug">{title}</p>
-          {park && <p className="text-xs text-gray-400 mt-0.5">{park}</p>}
-          {total > 0 && (
-            <div className="mt-2 h-1.5 rounded-full bg-gray-100 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${pct}%`,
-                  backgroundColor: isComplete ? '#1D9E75' : '#F59E0B',
-                }}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Fraction */}
+      <ChallengeIcon icon={icon} color="#78716C" size={18} />
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] text-gray-900 leading-snug">{title}</p>
+        {park && <p className="text-[11px] text-gray-400 mt-0.5">{park}</p>}
         {total > 0 && (
-          <div className="flex-shrink-0 text-right">
-            <p className="text-sm font-bold" style={{ color: isComplete ? '#1D9E75' : '#F59E0B' }}>
-              {done}/{total}
-            </p>
+          <div className="mt-2 overflow-hidden" style={{ height: 1.5, backgroundColor: '#ECEAE5' }}>
+            <div
+              className="h-full"
+              style={{
+                width: `${pct}%`,
+                backgroundColor: '#1D9E75',
+                transition: 'width 0.5s cubic-bezier(0.32,0.72,0,1)',
+              }}
+            />
           </div>
         )}
       </div>
+      {isComplete ? (
+        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#1D9E75" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+      ) : total > 0 ? (
+        <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">{done}/{total}</span>
+      ) : null}
     </button>
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="px-4 pt-2 pb-8 animate-pulse">
+      <div className="h-3 rounded-full bg-gray-100 w-40" />
+      <div className="h-10 rounded-lg bg-gray-100 w-32 mt-3" />
+      <div className="h-0.5 bg-gray-100 w-full mt-4" />
+      <div className="mt-10 flex flex-col gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="w-5 h-5 rounded-md bg-gray-100 flex-shrink-0" />
+            <div className="flex-1 flex flex-col gap-2">
+              <div className="h-3 rounded-full bg-gray-100 w-2/3" />
+              <div className="h-0.5 bg-gray-100 w-full" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 py-16">
-      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#FEF3C7' }}>
-        <Trophy size={28} color="#D97706" strokeWidth={1.5} />
-      </div>
+    <div className="flex flex-col items-center justify-center flex-1 gap-3 px-6 py-16">
+      <Trophy size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No challenges yet</p>
         <p className="text-gray-400 text-sm mt-1 leading-relaxed">Check back soon!</p>

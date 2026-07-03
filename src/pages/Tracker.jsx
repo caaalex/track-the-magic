@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Ticket, Search, ChevronRight } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
+import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
 
@@ -177,32 +177,29 @@ export default function Tracker() {
         />
       </div>
 
-      {/* Hero card */}
-      <div className="mx-4 rounded-2xl p-4 mb-4"
-           style={{
-             background: 'linear-gradient(135deg, #1D9E75 0%, #16a870 100%)',
-             boxShadow: '0 4px 16px rgba(29,158,117,0.25)',
-           }}>
-        <div className="flex items-center gap-3 mb-3">
+      {/* Hero */}
+      <div className="px-4 pt-1 mb-4">
+        <p className="text-xs text-gray-400">Completed</p>
+        <p
+          className="text-gray-900 tabular-nums leading-tight"
+          style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
+        >
+          {heroCompleted}{' '}
+          <span className="text-base font-normal text-gray-300">/ {heroExperiences.length}</span>
+        </p>
+        <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: 'rgba(255,255,255,0.18)' }}
-          >
-            <ParkIcon park={park?.name} size={22} color="white" />
-          </div>
-          <div>
-            <p className="text-white font-bold text-base leading-tight">{park?.name}</p>
-            <p className="text-white/70 text-xs mt-0.5">
-              {heroCompleted} of {heroExperiences.length} {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
-            </p>
-          </div>
-        </div>
-        <div className="rounded-full h-2 overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.25)' }}>
-          <div
-            className="h-full bg-white"
-            style={{ width: `${heroProgress}%`, transition: 'width 0.5s ease' }}
+            className="h-full rounded-full"
+            style={{
+              width: `${heroProgress}%`,
+              backgroundColor: '#1D9E75',
+              transition: 'width 0.5s cubic-bezier(0.32,0.72,0,1)',
+            }}
           />
         </div>
+        <p className="text-xs text-gray-400 mt-2">
+          {Math.round(heroProgress)}% of {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
+        </p>
       </div>
 
       {/* Category pills */}
@@ -213,10 +210,13 @@ export default function Tracker() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  selectedCategory === cat ? 'text-white' : 'bg-gray-100 text-gray-500'
+                className={`px-3.5 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors ${
+                  selectedCategory === cat ? 'font-semibold' : 'text-gray-500'
                 }`}
-                style={selectedCategory === cat ? { backgroundColor: '#1D9E75' } : {}}
+                style={{
+                  border: `1px solid ${selectedCategory === cat ? '#1D9E75' : '#E7E5E0'}`,
+                  color: selectedCategory === cat ? '#1D9E75' : undefined,
+                }}
               >
                 {cat}
               </button>
@@ -228,7 +228,7 @@ export default function Tracker() {
           <>
             <div
               className="absolute top-0 right-0 h-full w-14 pointer-events-none"
-              style={{ background: 'linear-gradient(to right, transparent, white)' }}
+              style={{ background: 'linear-gradient(to right, rgba(250,250,249,0), #FAFAF9)' }}
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
               <ChevronRight size={18} color="#9CA3AF" strokeWidth={2.5} />
@@ -243,10 +243,13 @@ export default function Tracker() {
           <button
             key={s}
             onClick={() => setSelectedStatus(s)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
-              selectedStatus === s ? 'text-white' : 'bg-gray-100 text-gray-500'
+            className={`px-3.5 py-1.5 rounded-full text-xs transition-colors ${
+              selectedStatus === s ? 'font-semibold' : 'text-gray-500'
             }`}
-            style={selectedStatus === s ? { backgroundColor: '#1D9E75' } : {}}
+            style={{
+              border: `1px solid ${selectedStatus === s ? '#1D9E75' : '#E7E5E0'}`,
+              color: selectedStatus === s ? '#1D9E75' : undefined,
+            }}
           >
             {s}
           </button>
@@ -276,11 +279,9 @@ export default function Tracker() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center py-16 px-6 gap-3">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#F3F4F6' }}>
-            {experiences.length === 0
-              ? <Ticket size={22} color="#9CA3AF" strokeWidth={1.5} />
-              : <Search size={22} color="#9CA3AF" strokeWidth={1.5} />}
-          </div>
+          {experiences.length === 0
+            ? <Ticket size={26} color="#C5C1BB" strokeWidth={1.5} />
+            : <Search size={26} color="#C5C1BB" strokeWidth={1.5} />}
           <p className="text-gray-500 text-sm text-center leading-relaxed">
             {experiences.length === 0
               ? `No experiences added for ${selectedPark} yet.`
@@ -334,15 +335,13 @@ function ExperienceRow({ exp, userExp, onToggle }) {
           if (exp.id === GUARDIANS_EXPERIENCE_ID) navigate(`/tracker/${exp.id}`)
           else onToggle(exp.id)
         }}
-        className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-all active:scale-90 ${
-          completed  ? 'border-transparent' :
-          wishlisted ? 'border-transparent' :
-                       'border-gray-300 bg-white'
+        className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center transition-all active:scale-90 ${
+          completed || wishlisted ? '' : 'bg-white'
         }`}
         style={
           completed  ? { backgroundColor: '#1D9E75' } :
           wishlisted ? { backgroundColor: '#F59E0B' } :
-          {}
+          { border: '1.5px solid #D6D3D1' }
         }
       >
         {completed && (
@@ -373,20 +372,16 @@ function ExperienceRow({ exp, userExp, onToggle }) {
         )}
       </div>
 
-      {/* Status badge */}
+      {/* Status */}
       <div className="flex-shrink-0">
         {completed ? (
-          <span className="text-xs font-bold px-2 py-1 rounded-full bg-green-50 text-green-600">
+          <span className="text-xs font-semibold tabular-nums" style={{ color: '#1D9E75' }}>
             {timesVisited}×
           </span>
         ) : wishlisted ? (
-          <span className="text-xs font-semibold px-2 py-1 rounded-full bg-amber-50 text-amber-500">
-            Favorites
-          </span>
+          <span className="text-xs font-semibold text-amber-500">Favorite</span>
         ) : (
-          <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-400">
-            Not done
-          </span>
+          <span className="text-xs text-gray-300">Not done</span>
         )}
       </div>
     </div>
@@ -398,7 +393,6 @@ function ParkDropdown({ value, onChange }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   const selected = PARKS.find(p => p.name === value) ?? PARKS[0]
-  const colors = PARK_COLORS[selected.name] ?? { bg: '#F5F5F0', color: '#555' }
 
   useEffect(() => {
     const handler = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
@@ -411,13 +405,11 @@ function ParkDropdown({ value, onChange }) {
       {/* Trigger */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-left"
+        className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left"
+        style={{ border: '1px solid #E7E5E0' }}
       >
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-             style={{ backgroundColor: colors.bg }}>
-          <ParkIcon park={selected.name} size={16} color={colors.color} />
-        </div>
-        <span className="flex-1 text-sm font-medium text-gray-800">{selected.name}</span>
+        <ParkIcon park={selected.name} size={18} color="#78716C" />
+        <span className="flex-1 text-sm text-gray-800">{selected.name}</span>
         <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -426,23 +418,19 @@ function ParkDropdown({ value, onChange }) {
 
       {/* Dropdown list */}
       {open && (
-        <div className="absolute z-30 mt-1.5 w-full bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-             style={{ boxShadow: '0 8px 24px rgba(0,0,0,0.10)' }}>
-          {PARKS.map(park => {
-            const pc = PARK_COLORS[park.name] ?? { bg: '#F5F5F0', color: '#555' }
+        <div className="absolute z-30 mt-1.5 w-full bg-white rounded-xl overflow-hidden"
+             style={{ border: '1px solid #E7E5E0', boxShadow: '0 8px 24px rgba(0,0,0,0.06)' }}>
+          {PARKS.map((park, i) => {
             const active = park.name === value
             return (
               <button
                 key={park.name}
                 onClick={() => { onChange(park.name); setOpen(false) }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 text-left active:bg-gray-50 transition-colors"
-                style={{ backgroundColor: active ? '#F9FAFB' : 'transparent' }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left active:bg-gray-50 transition-colors"
+                style={{ borderBottom: i < PARKS.length - 1 ? '1px solid #F1EFEA' : 'none' }}
               >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                     style={{ backgroundColor: pc.bg }}>
-                  <ParkIcon park={park.name} size={16} color={pc.color} />
-                </div>
-                <span className={`flex-1 text-sm ${active ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
+                <ParkIcon park={park.name} size={18} color="#78716C" />
+                <span className={`flex-1 text-sm ${active ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
                   {park.name}
                 </span>
                 {active && (

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, PARK_COLORS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
-import { Search, Plane } from 'lucide-react'
+import { PARKS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/constants'
+import { Search, Plane, ArrowRight, ChevronRight } from 'lucide-react'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
 
@@ -149,13 +149,11 @@ export default function Trips() {
         <div className="flex items-center gap-2.5">
           <button
             onClick={openLogVisit}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-white text-xs font-bold active:scale-95 transition-transform"
-            style={{ backgroundColor: '#1D9E75' }}
+            className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+            style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
             Log a visit
+            <ArrowRight size={14} strokeWidth={2} />
           </button>
           <button onClick={() => navigate('/profile')} className="active:opacity-70">
             <Avatar user={user} />
@@ -164,22 +162,18 @@ export default function Trips() {
       </div>
 
       {loading ? (
-        <div className="animate-pulse">
-          {/* Stat box skeletons */}
-          <div className="px-4 pb-4 grid grid-cols-3 gap-2">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl card-shadow h-[72px]" />
-            ))}
-          </div>
-          {/* Trip card skeletons */}
-          <div className="px-4 flex flex-col gap-3">
-            <div className="h-3 rounded-full bg-gray-100 w-24 mb-1" />
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-3 h-[92px]">
-                <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
+        <div className="px-4 pt-2 animate-pulse">
+          <div className="h-3 rounded-full bg-gray-100 w-24" />
+          <div className="h-10 rounded-lg bg-gray-100 w-20 mt-3" />
+          <div className="h-3 rounded-full bg-gray-100 w-full mt-5" />
+          <div className="h-3 rounded-full bg-gray-100 w-3/4 mt-2" />
+          <div className="mt-10 flex flex-col gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-md bg-gray-100 flex-shrink-0" />
                 <div className="flex-1 flex flex-col gap-2">
                   <div className="h-3 rounded-full bg-gray-100 w-1/2" />
-                  <div className="h-2.5 rounded-full bg-gray-100 w-2/5" />
+                  <div className="h-2.5 rounded-full bg-gray-100 w-1/3" />
                 </div>
               </div>
             ))}
@@ -189,50 +183,54 @@ export default function Trips() {
         <EmptyState onLog={openLogVisit} />
       ) : (
         <>
-          {/* Stat boxes */}
-          <div className="px-4 pb-4 grid grid-cols-3 gap-2">
-            <StatBox label="Total Visits Logged" value={totalVisits} />
-            <StatBox
-              label="Most Visited Park"
-              value={mostVisitedPark ?? '—'}
-            />
-            <StatBox
-              label="Most Visited Attraction"
-              value={topAttr?.experiences?.name ?? '—'}
-            />
+          {/* Stats */}
+          <div className="px-4 pt-1 pb-4">
+            <p className="text-xs text-gray-400">Visits logged</p>
+            <p
+              className="text-gray-900 tabular-nums leading-tight"
+              style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
+            >
+              {totalVisits}
+            </p>
+            <div className="mt-3 pt-3 flex flex-col gap-1.5" style={{ borderTop: '1px solid #EDEBE6' }}>
+              <div className="flex items-baseline justify-between gap-4">
+                <p className="text-xs text-gray-400 flex-shrink-0">Most visited park</p>
+                <p className="text-[13px] text-gray-900 text-right truncate">{mostVisitedPark ?? '—'}</p>
+              </div>
+              <div className="flex items-baseline justify-between gap-4">
+                <p className="text-xs text-gray-400 flex-shrink-0">Most visited attraction</p>
+                <p className="text-[13px] text-gray-900 text-right truncate">{topAttr?.experiences?.name ?? '—'}</p>
+              </div>
+            </div>
           </div>
 
           {/* Visit history header + Filter button */}
-          <div className="px-4 pb-2 flex items-center justify-between">
-            <p className="text-sm font-bold text-gray-800">Visit History</p>
+          <div className="px-4 pt-4 pb-1 mx-0 flex items-center justify-between" style={{ borderTop: '1px solid #E7E5E0' }}>
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">Visit history</p>
             <button
               onClick={openSheet}
-              className="relative flex items-center gap-1 text-xs font-medium text-gray-500 px-2.5 py-1 rounded-lg bg-gray-100 active:bg-gray-200 transition-colors"
+              className="relative flex items-center gap-1 text-xs font-medium active:opacity-60"
+              style={{ color: filtersActive ? '#1D9E75' : '#78716C', transition: 'opacity 0.2s ease' }}
             >
               Filter
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
-              {/* Active indicator dot */}
-              {filtersActive && (
-                <span
-                  className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white"
-                  style={{ backgroundColor: '#1D9E75' }}
-                />
-              )}
             </button>
           </div>
 
           {/* Active filter chips */}
           {filtersActive && (
-            <div className="px-4 pb-2 flex gap-2 flex-wrap">
+            <div className="px-4 pt-1.5 pb-1 flex gap-2 flex-wrap">
               {filterPark !== ALL_PARKS && (
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: '#1D9E75' }}>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full"
+                      style={{ border: '1px solid #1D9E75', color: '#1D9E75' }}>
                   {filterPark}
                 </span>
               )}
               {filterPeriod !== ALL_TIME && (
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: '#1D9E75' }}>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full"
+                      style={{ border: '1px solid #1D9E75', color: '#1D9E75' }}>
                   {filterPeriod}
                 </span>
               )}
@@ -242,9 +240,7 @@ export default function Trips() {
           {/* Month groups */}
           {filteredTrips.length === 0 ? (
             <div className="flex flex-col items-center py-16 gap-3 px-6">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#F3F4F6' }}>
-                <Search size={22} color="#9CA3AF" strokeWidth={1.5} />
-              </div>
+              <Search size={26} color="#C5C1BB" strokeWidth={1.5} />
               <p className="text-gray-700 font-semibold text-base text-center">No trips match your filters</p>
               <button
                 onClick={() => { setFilterPark(ALL_PARKS); setFilterPeriod(ALL_TIME) }}
@@ -255,13 +251,13 @@ export default function Trips() {
               </button>
             </div>
           ) : (
-            <div className="px-4 flex flex-col gap-4 pb-8">
+            <div className="px-4 flex flex-col gap-2 pb-8">
               {monthKeys.map(month => (
-                <div key={month}>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{month}</p>
-                  <div className="flex flex-col gap-3">
-                    {monthGroups[month].map(trip => (
-                      <TripCard key={trip.id} trip={trip} />
+                <div key={month} className="pt-2">
+                  <p className="text-[11px] font-medium text-gray-400">{month}</p>
+                  <div>
+                    {monthGroups[month].map((trip, i) => (
+                      <TripRow key={trip.id} trip={trip} last={i === monthGroups[month].length - 1} />
                     ))}
                   </div>
                 </div>
@@ -299,12 +295,9 @@ export default function Trips() {
                   className="flex items-center gap-3 px-5 py-2.5 active:bg-gray-50 transition-colors"
                 >
                   {option !== ALL_PARKS && (
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                         style={{ backgroundColor: PARK_COLORS[option]?.bg ?? '#F5F5F0' }}>
-                      <ParkIcon park={option} size={16} color={PARK_COLORS[option]?.color ?? '#555'} />
-                    </div>
+                    <ParkIcon park={option} size={18} color="#78716C" />
                   )}
-                  <span className={`flex-1 text-left text-sm ${pendingPark === option ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>
+                  <span className={`flex-1 text-left text-sm ${pendingPark === option ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
                     {option}
                   </span>
                   {pendingPark === option && (
@@ -366,21 +359,8 @@ export default function Trips() {
 
 // ── Sub-components ─────────────────────────────────────────────────────────
 
-function StatBox({ label, value }) {
-  return (
-    <div className="bg-white rounded-2xl px-3 py-3 card-shadow flex flex-col items-center text-center gap-0.5">
-      <p className="text-sm text-gray-400 leading-tight">{label}</p>
-      <p className="text-sm font-bold mt-0.5 break-words w-full leading-tight"
-         style={{ color: '#1D9E75' }}>
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function TripCard({ trip }) {
+function TripRow({ trip, last }) {
   const navigate    = useNavigate()
-  const parkColor   = PARK_COLORS[trip.park] ?? { bg: '#F3F4F6', color: '#374151' }
   const dateDisplay = new Date(trip.visit_date + 'T12:00:00').toLocaleDateString('en-US', {
     weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
   })
@@ -389,30 +369,23 @@ function TripCard({ trip }) {
   return (
     <button
       onClick={() => navigate(`/trips/${trip.id}`)}
-      className="bg-white rounded-2xl card-shadow overflow-hidden w-full text-left active:scale-[0.98] transition-transform"
+      className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
+      style={{
+        borderBottom: last ? 'none' : '1px solid #EDEBE6',
+        transition: 'opacity 0.2s ease',
+      }}
     >
-      <div className="px-4 py-3.5 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-             style={{ backgroundColor: parkColor.bg }}>
-          <ParkIcon park={trip.park} size={20} color={parkColor.color} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-gray-800 truncate">{trip.park}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{dateDisplay}</p>
-        </div>
-        {expCount > 0 && (
-          <div className="flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
-               style={{ backgroundColor: parkColor.bg, color: parkColor.color }}>
-            {expCount} {expCount === 1 ? 'experience' : 'experiences'}
-          </div>
-        )}
+      <ParkIcon park={trip.park} size={18} color="#78716C" />
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] text-gray-900">{trip.park}</p>
+        <p className="text-[11px] text-gray-400 mt-0.5">{dateDisplay}</p>
       </div>
-
-      <div className="px-4 pb-3 flex justify-end">
-        <span className="text-xs font-semibold" style={{ color: '#1D9E75' }}>
-          View details →
+      {expCount > 0 && (
+        <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">
+          {expCount} {expCount === 1 ? 'experience' : 'experiences'}
         </span>
-      </div>
+      )}
+      <ChevronRight size={15} color="#D6D3D1" strokeWidth={2} className="flex-shrink-0" />
     </button>
   )
 }
@@ -420,9 +393,7 @@ function TripCard({ trip }) {
 function EmptyState({ onLog }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 py-16">
-      <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#E6F7F4' }}>
-        <Plane size={28} color="#1D9E75" strokeWidth={1.5} />
-      </div>
+      <Plane size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No trips logged yet</p>
         <p className="text-gray-400 text-sm mt-1 leading-relaxed">Tap "Log a visit" to get started.</p>
