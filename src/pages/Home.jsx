@@ -100,16 +100,17 @@ export default function Home() {
                 }}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2">{pctAll}% of all Disney World</p>
-
-            <button
-              onClick={openLogVisit}
-              className="mt-5 flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
-              style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
-            >
-              Log a visit
-              <ArrowRight size={14} strokeWidth={2} />
-            </button>
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-xs text-gray-400">{pctAll}% of all Disney World</p>
+              <button
+                onClick={openLogVisit}
+                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+                style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
+              >
+                Log a visit
+                <ArrowRight size={14} strokeWidth={2} />
+              </button>
+            </div>
           </div>
 
           {/* ── Ranking row ── */}
