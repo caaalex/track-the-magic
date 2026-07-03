@@ -253,8 +253,17 @@ export default function Tracker() {
 
       {/* List */}
       {loading ? (
-        <div className="flex justify-center py-16">
-          <p className="text-gray-400 text-sm">Loading…</p>
+        <div className="divide-y divide-gray-100 border-t border-gray-100 animate-pulse">
+          {[...Array(7)].map((_, i) => (
+            <div key={i} className="flex items-center px-4 py-3.5 gap-3">
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex-shrink-0" />
+              <div className="flex-1 flex flex-col gap-1.5">
+                <div className="h-3 rounded-full bg-gray-100 w-3/4" />
+                <div className="h-2.5 rounded-full bg-gray-100 w-2/5" />
+              </div>
+              <div className="w-14 h-6 rounded-full bg-gray-100 flex-shrink-0" />
+            </div>
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center py-16 px-6 gap-3">

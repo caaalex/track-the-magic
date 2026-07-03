@@ -90,8 +90,27 @@ export default function Challenges() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <p className="text-gray-400 text-sm">Loading…</p>
+        <div className="px-4 flex flex-col gap-4 pb-8 animate-pulse">
+          {/* Summary card skeleton */}
+          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-4 h-[88px]">
+            <div className="w-14 h-14 rounded-full bg-gray-100 flex-shrink-0" />
+            <div className="flex-1 flex flex-col gap-2">
+              <div className="h-3 rounded-full bg-gray-100 w-2/3" />
+              <div className="h-2.5 rounded-full bg-gray-100 w-1/2" />
+            </div>
+          </div>
+          {/* Challenge card skeletons */}
+          <div className="flex flex-col gap-2.5">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-3 h-[76px]">
+                <div className="w-11 h-11 rounded-xl bg-gray-100 flex-shrink-0" />
+                <div className="flex-1 flex flex-col gap-2">
+                  <div className="h-3 rounded-full bg-gray-100 w-3/4" />
+                  <div className="h-1.5 rounded-full bg-gray-100 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       ) : challenges.length === 0 ? (
         <EmptyState />

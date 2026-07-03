@@ -164,8 +164,26 @@ export default function Trips() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <p className="text-gray-400 text-sm">Loading…</p>
+        <div className="animate-pulse">
+          {/* Stat box skeletons */}
+          <div className="px-4 pb-4 grid grid-cols-3 gap-2">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl card-shadow h-[72px]" />
+            ))}
+          </div>
+          {/* Trip card skeletons */}
+          <div className="px-4 flex flex-col gap-3">
+            <div className="h-3 rounded-full bg-gray-100 w-24 mb-1" />
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl px-4 py-3.5 card-shadow flex items-center gap-3 h-[92px]">
+                <div className="w-10 h-10 rounded-xl bg-gray-100 flex-shrink-0" />
+                <div className="flex-1 flex flex-col gap-2">
+                  <div className="h-3 rounded-full bg-gray-100 w-1/2" />
+                  <div className="h-2.5 rounded-full bg-gray-100 w-2/5" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       ) : trips.length === 0 ? (
         <EmptyState onLog={openLogVisit} />
