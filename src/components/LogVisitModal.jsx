@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti'
 import { Search } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES, PARK_COLORS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
+import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 
 const todayStr = () => new Date().toISOString().split('T')[0]
@@ -339,7 +339,7 @@ function Step1Content({ selectedDate, setSelectedDate, selectedPark, setSelected
       <div>
         <SectionLabel>When did you visit?</SectionLabel>
         <div className="relative mt-2">
-          <div className="bg-white border border-gray-200 rounded-xl px-4 py-3.5 flex items-center justify-between">
+          <div className="rounded-xl px-4 py-3.5 flex items-center justify-between" style={{ border: '1px solid #E7E5E0' }}>
             <div>
               <p className="text-xs text-gray-400 mb-0.5">Visit date</p>
               <p className="text-sm font-semibold text-gray-800">{formatDateDisplay(selectedDate)}</p>
@@ -370,19 +370,16 @@ function Step1Content({ selectedDate, setSelectedDate, selectedPark, setSelected
               <button
                 key={park.name}
                 onClick={() => setSelectedPark(park.name)}
-                className="flex flex-col items-center justify-center py-4 px-2 rounded-2xl border-2 transition-all active:scale-95"
+                className="flex flex-col items-center justify-center py-4 px-2 rounded-2xl transition-all active:scale-95"
                 style={{
-                  borderColor:     active ? '#1D9E75' : '#F3F4F6',
-                  backgroundColor: active ? '#F0FBF7' : '#FAFAFA',
+                  border: `1px solid ${active ? '#1D9E75' : '#E7E5E0'}`,
                 }}
               >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 flex-shrink-0"
-                  style={{ backgroundColor: PARK_COLORS[park.name]?.bg ?? '#F5F5F0' }}
-                >
-                  <ParkIcon park={park.name} size={20} color={PARK_COLORS[park.name]?.color ?? '#555'} />
+                <div className="mb-2 flex-shrink-0">
+                  <ParkIcon park={park.name} size={20} color={active ? '#1D9E75' : '#78716C'} />
                 </div>
-                <span className={`text-xs font-semibold text-center leading-tight ${active ? 'text-green-700' : 'text-gray-600'}`}>
+                <span className={`text-xs text-center leading-tight ${active ? 'font-semibold' : 'text-gray-600'}`}
+                      style={active ? { color: '#1D9E75' } : {}}>
                   {park.name}
                 </span>
               </button>
@@ -410,12 +407,7 @@ function Step2Content({
 
         {/* Context bar */}
         <div className="flex items-center gap-3 bg-gray-50 rounded-xl px-3.5 py-2.5 mb-4">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: PARK_COLORS[parkData?.name]?.bg ?? '#F5F5F0' }}
-          >
-            <ParkIcon park={parkData?.name} size={18} color={PARK_COLORS[parkData?.name]?.color ?? '#555'} />
-          </div>
+          <ParkIcon park={parkData?.name} size={18} color="#78716C" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-gray-800 truncate">{parkData?.name}</p>
             <p className="text-xs text-gray-500">{formatDateDisplay(selectedDate)}</p>
@@ -446,10 +438,13 @@ function Step2Content({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  selectedCategory === cat ? 'text-white' : 'bg-gray-100 text-gray-500'
+                className={`px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors ${
+                  selectedCategory === cat ? 'font-semibold' : 'text-gray-500'
                 }`}
-                style={selectedCategory === cat ? { backgroundColor: '#1D9E75' } : {}}
+                style={{
+                  border: `1px solid ${selectedCategory === cat ? '#1D9E75' : '#E7E5E0'}`,
+                  color: selectedCategory === cat ? '#1D9E75' : undefined,
+                }}
               >
                 {cat}
               </button>
@@ -481,9 +476,10 @@ function Step2Content({
                 className="w-full flex items-center px-4 py-3.5 gap-3 active:bg-gray-50 text-left"
               >
                 {/* Circle */}
-                <span className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-all ${
-                  checked ? 'border-transparent' : 'border-gray-300 bg-white'
-                }`} style={checked ? { backgroundColor: '#1D9E75' } : {}}>
+                <span className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center transition-all"
+                      style={checked
+                        ? { backgroundColor: '#1D9E75' }
+                        : { border: '1.5px solid #D6D3D1', backgroundColor: '#fff' }}>
                   {checked && (
                     <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -532,5 +528,5 @@ function Step2Content({
 // ── Shared sub-components ─────────────────────────────────────────────────────
 
 function SectionLabel({ children }) {
-  return <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{children}</p>
+  return <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">{children}</p>
 }

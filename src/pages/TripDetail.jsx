@@ -3,7 +3,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARK_COLORS } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 
 export default function TripDetail() {
@@ -101,19 +100,26 @@ export default function TripDetail() {
   const dateDisplay = new Date(trip.visit_date + 'T12:00:00').toLocaleDateString('en-US', {
     month: 'long', day: 'numeric', year: 'numeric',
   })
-  const colors = PARK_COLORS[trip.park] ?? { bg: '#F3F4F6', color: '#374151' }
 
   const newCount    = experiences.filter(e =>  e.isNew).length
   const repeatCount = experiences.filter(e => !e.isNew).length
 
   return (
-    <div className="flex flex-col bg-gray-50 min-h-full">
+    <div className="flex flex-col min-h-full">
 
       {/* ── Top bar ── */}
-      <div className="flex items-center px-4 pt-4 pb-3 bg-white border-b border-gray-100 sticky top-0 z-10">
+      <div
+        className="flex items-center px-4 pt-4 pb-3 sticky top-0 z-10"
+        style={{
+          background: 'rgba(250,250,249,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E7E5E0',
+        }}
+      >
         <button
           onClick={() => navigate('/trips')}
-          className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100 transition-colors"
+          className="w-9 h-9 -ml-2 flex items-center justify-center rounded-full active:opacity-60 transition-opacity"
         >
           <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -122,98 +128,92 @@ export default function TripDetail() {
         <p className="ml-1 text-base font-bold text-gray-900">{dateDisplay}</p>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 py-4 pb-8">
+      <div className="px-4 pt-4 pb-8">
 
-        {/* ── Trip summary card ── */}
-        <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: colors.bg }}
-            >
-              <ParkIcon park={trip.park} size={22} color={colors.color} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-gray-800">{trip.park}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{dateDisplay}</p>
-            </div>
-            <div
-              className="flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold"
-              style={{ backgroundColor: colors.bg, color: colors.color }}
-            >
-              {experiences.length} experience{experiences.length !== 1 ? 's' : ''}
-            </div>
+        {/* ── Hero ── */}
+        <div className="flex items-center gap-2">
+          <ParkIcon park={trip.park} size={16} color="#78716C" />
+          <p className="text-xs text-gray-400">{trip.park}</p>
+        </div>
+        <p
+          className="text-gray-900 tabular-nums leading-tight"
+          style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
+        >
+          {experiences.length}{' '}
+          <span className="text-base font-normal text-gray-300">
+            experience{experiences.length !== 1 ? 's' : ''}
+          </span>
+        </p>
+        <div className="mt-3 pt-3 flex flex-col gap-1.5" style={{ borderTop: '1px solid #EDEBE6' }}>
+          <div className="flex items-baseline justify-between">
+            <p className="text-xs text-gray-400">New experiences</p>
+            <p className="text-[13px] text-gray-900 tabular-nums">{newCount}</p>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <p className="text-xs text-gray-400">Repeats</p>
+            <p className="text-[13px] text-gray-900 tabular-nums">{repeatCount}</p>
           </div>
         </div>
 
-        {/* ── Stats row ── */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow text-center">
-            <p className="text-xs text-gray-400 mb-1">New experiences</p>
-            <p className="text-2xl font-bold" style={{ color: '#1D9E75' }}>{newCount}</p>
-          </div>
-          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow text-center">
-            <p className="text-xs text-gray-400 mb-1">Repeats</p>
-            <p className="text-2xl font-bold" style={{ color: '#1D9E75' }}>{repeatCount}</p>
-          </div>
-        </div>
-
-        {/* ── Notes card ── */}
+        {/* ── Notes ── */}
         {trip.notes && (
-          <div className="bg-white rounded-2xl px-4 py-3.5 card-shadow">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Trip notes</p>
+          <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em] mb-1.5">Trip notes</p>
             <p className="text-sm text-gray-600 leading-relaxed">{trip.notes}</p>
           </div>
         )}
 
         {/* ── Experiences logged ── */}
         {experiences.length > 0 && (
-          <>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
+          <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Experiences logged
             </p>
-
-            <div className="bg-white rounded-2xl card-shadow overflow-hidden">
-              {experiences.map(({ experience, isNew }, idx) => (
-                <div key={experience.id}>
-                  {idx > 0 && <div className="h-px bg-gray-100 mx-4" />}
-                  <button
-                    onClick={() => navigate(`/tracker/${experience.id}`, { state: { tripId: trip.id } })}
-                    className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-800 leading-snug">
-                        {experience.name}
+            <div>
+              {experiences.map(({ experience }, idx) => (
+                <button
+                  key={experience.id}
+                  onClick={() => navigate(`/tracker/${experience.id}`, { state: { tripId: trip.id } })}
+                  className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
+                  style={{
+                    borderBottom: idx < experiences.length - 1 ? '1px solid #EDEBE6' : 'none',
+                    transition: 'opacity 0.2s ease',
+                  }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] text-gray-900 leading-snug">
+                      {experience.name}
+                    </p>
+                    {(experience.location || experience.type) && (
+                      <p className="text-[11px] mt-0.5 flex items-center gap-1">
+                        {experience.location && <span className="text-gray-500">{experience.location}</span>}
+                        {experience.location && experience.type && <span className="text-gray-300">|</span>}
+                        {experience.type && <span className="text-gray-400">{experience.type}</span>}
                       </p>
-                      {(experience.location || experience.type) && (
-                        <p className="text-xs mt-0.5 flex items-center gap-1">
-                          {experience.location && <span className="text-gray-500 font-medium">{experience.location}</span>}
-                          {experience.location && experience.type && <span className="text-gray-300">|</span>}
-                          {experience.type && <span className="text-gray-400">{experience.type}</span>}
-                        </p>
-                      )}
-                    </div>
-                    <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
+                    )}
+                  </div>
+                  <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               ))}
             </div>
-          </>
+          </div>
         )}
 
-        {/* ── Add experiences button ── */}
-        <button
-          onClick={() => openLogVisit({ park: trip.park, date: trip.visit_date, tripId: trip.id })}
-          className="w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform mt-2"
-          style={{ backgroundColor: '#1D9E75' }}
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Add experiences to this trip
-        </button>
+        {/* ── Add experiences ── */}
+        <div className="mt-4 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          <button
+            onClick={() => openLogVisit({ park: trip.park, date: trip.visit_date, tripId: trip.id })}
+            className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+            style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
+          >
+            Add experiences to this trip
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+        </div>
 
       </div>
     </div>

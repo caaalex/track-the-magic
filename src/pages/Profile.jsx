@@ -5,17 +5,16 @@ import { supabase } from '../lib/supabaseClient'
 import Avatar from '../components/Avatar'
 
 // ── Stat row ──────────────────────────────────────────────────────────────
-function StatRow({ label, value }) {
+function StatRow({ label, value, last = false }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3.5">
-      <p className="text-sm font-medium text-gray-700">{label}</p>
-      <p className="text-sm font-bold text-gray-900">{value}</p>
+    <div
+      className="flex items-center justify-between py-3.5"
+      style={{ borderBottom: last ? 'none' : '1px solid #EDEBE6' }}
+    >
+      <p className="text-[13px] text-gray-500">{label}</p>
+      <p className="text-[13px] text-gray-900 text-right">{value}</p>
     </div>
   )
-}
-
-function RowDivider() {
-  return <div className="h-px bg-gray-100 mx-4" />
 }
 
 export default function Profile() {
@@ -143,13 +142,21 @@ export default function Profile() {
   const avatarName = displayName || user?.email || ''
 
   return (
-    <div className="flex flex-col bg-gray-50 min-h-full">
+    <div className="flex flex-col min-h-full">
 
       {/* ── Top bar ── */}
-      <div className="flex items-center px-4 pt-4 pb-3 bg-white border-b border-gray-100 sticky top-0 z-10">
+      <div
+        className="flex items-center px-4 pt-4 pb-3 sticky top-0 z-10"
+        style={{
+          background: 'rgba(250,250,249,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E7E5E0',
+        }}
+      >
         <button
           onClick={() => navigate('/')}
-          className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100 transition-colors"
+          className="w-9 h-9 -ml-2 flex items-center justify-center rounded-full active:opacity-60 transition-opacity"
         >
           <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -158,10 +165,10 @@ export default function Profile() {
         <p className="ml-1 text-xl font-bold text-gray-900">Profile</p>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 py-4 pb-8">
+      <div className="px-4 pt-6 pb-8">
 
-        {/* ── Profile card ── */}
-        <div className="bg-white rounded-2xl p-5 card-shadow flex flex-col items-center gap-2">
+        {/* ── Identity ── */}
+        <div className="flex flex-col items-center gap-2">
           <Avatar name={avatarName} size={60} />
           <p className="text-sm font-semibold text-gray-800 mt-1">{user?.email}</p>
           {memberSince && (
@@ -170,71 +177,63 @@ export default function Profile() {
         </div>
 
         {/* ── Your stats ── */}
-        <div className="bg-white rounded-2xl card-shadow overflow-hidden">
-          <p className="px-4 pt-3.5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">
+        <div className="mt-7 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
             Your stats
           </p>
-          <RowDivider />
 
           {loading ? (
             <div className="py-8 flex justify-center">
               <p className="text-gray-400 text-sm">Loading…</p>
             </div>
           ) : (
-            <>
+            <div>
               <StatRow label="Experiences completed" value={stats.expCount} />
-              <RowDivider />
               <StatRow label="Trips logged" value={stats.tripCount} />
-              <RowDivider />
-              <StatRow
-                label="Most visited park"
-                value={stats.mostVisitedPark ?? '—'}
-              />
-              <RowDivider />
-              <StatRow
-                label="Most visited attraction"
-                value={stats.topAttrName ?? '—'}
-              />
-              <RowDivider />
+              <StatRow label="Most visited park" value={stats.mostVisitedPark ?? '—'} />
+              <StatRow label="Most visited attraction" value={stats.topAttrName ?? '—'} />
               <StatRow
                 label="Challenges completed"
                 value={`${stats.completedChallenges} of ${stats.totalChallenges}`}
+                last
               />
-            </>
+            </div>
           )}
         </div>
 
-        {/* ── Account section ── */}
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Account</p>
-
-        <div className="bg-white rounded-2xl card-shadow overflow-hidden">
+        {/* ── Account ── */}
+        <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+            Account
+          </p>
 
           {/* Display name row */}
-          <div className="px-4 py-3.5">
+          <div className="py-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
             {editingName ? (
               <div className="flex flex-col gap-2">
-                <p className="text-sm font-medium text-gray-700">Display name</p>
+                <p className="text-[13px] text-gray-500">Display name</p>
                 <input
                   value={nameInput}
                   onChange={e => setNameInput(e.target.value)}
                   placeholder="Your name"
                   autoFocus
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 outline-none transition-colors"
+                  className="w-full rounded-xl px-3 py-2 text-sm text-gray-700 outline-none transition-colors bg-transparent"
+                  style={{ border: '1px solid #E7E5E0' }}
                   onFocus={e => e.target.style.borderColor = '#1D9E75'}
-                  onBlur={e  => e.target.style.borderColor = '#e5e7eb'}
+                  onBlur={e  => e.target.style.borderColor = '#E7E5E0'}
                 />
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-4 mt-1">
                   <button
                     onClick={cancelEditName}
-                    className="text-xs font-medium text-gray-400 px-3 py-1.5"
+                    className="text-xs font-medium text-gray-400"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={saveDisplayName}
                     disabled={savingName}
-                    className="text-xs font-bold px-4 py-1.5 rounded-lg text-white disabled:opacity-60"
-                    style={{ backgroundColor: '#1D9E75' }}
+                    className="text-xs font-semibold disabled:opacity-60"
+                    style={{ color: '#1D9E75' }}
                   >
                     {savingName ? 'Saving…' : 'Save'}
                   </button>
@@ -242,9 +241,9 @@ export default function Profile() {
               </div>
             ) : (
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-gray-700">Display name</p>
-                <div className="flex items-center gap-2">
-                  <p className="text-sm text-gray-500">{displayName || 'Not set'}</p>
+                <p className="text-[13px] text-gray-500">Display name</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-[13px] text-gray-900">{displayName || 'Not set'}</p>
                   <button
                     onClick={startEditName}
                     className="text-xs font-semibold"
@@ -257,23 +256,23 @@ export default function Profile() {
             )}
           </div>
 
-          <RowDivider />
-
           {/* Email row (read only) */}
-          <div className="flex items-center justify-between px-4 py-3.5">
-            <p className="text-sm font-medium text-gray-700">Email</p>
-            <p className="text-sm text-gray-500 truncate max-w-[180px]">{user?.email}</p>
+          <div className="flex items-center justify-between py-3.5">
+            <p className="text-[13px] text-gray-500">Email</p>
+            <p className="text-[13px] text-gray-900 truncate max-w-[180px]">{user?.email}</p>
           </div>
         </div>
 
         {/* ── Sign out ── */}
-        <button
-          onClick={handleSignOut}
-          className="w-full py-3.5 rounded-xl font-bold text-sm text-white active:opacity-80 transition-opacity mt-2"
-          style={{ backgroundColor: '#EF4444' }}
-        >
-          Sign out
-        </button>
+        <div className="mt-4 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          <button
+            onClick={handleSignOut}
+            className="text-[13px] font-semibold text-red-500 active:opacity-60"
+            style={{ transition: 'opacity 0.2s ease' }}
+          >
+            Sign out
+          </button>
+        </div>
 
       </div>
     </div>

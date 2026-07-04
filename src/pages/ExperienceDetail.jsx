@@ -295,13 +295,21 @@ export default function ExperienceDetail() {
   const lastVisited  = userExp?.last_visited_date
 
   return (
-    <div className="flex flex-col bg-gray-50 min-h-full">
+    <div className="flex flex-col min-h-full">
 
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-3 pt-3 pb-2 bg-white border-b border-gray-100 sticky top-0 z-10">
+      <div
+        className="flex items-center justify-between px-3 pt-3 pb-2 sticky top-0 z-10"
+        style={{
+          background: 'rgba(250,250,249,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid #E7E5E0',
+        }}
+      >
         <button
           onClick={() => navigate(-1)}
-          className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100 transition-colors"
+          className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-60 transition-opacity"
         >
           <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -317,11 +325,11 @@ export default function ExperienceDetail() {
         </button>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 py-4 pb-8">
+      <div className="px-4 pt-4 pb-8">
 
-        {/* ── Info card ───────────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-4 card-shadow">
-          <div className="flex items-start justify-between gap-3 mb-3">
+        {/* ── Info ────────────────────────────────────────────────────── */}
+        <div>
+          <div className="flex items-start justify-between gap-3 mb-2">
             <h1 className="text-xl font-bold text-gray-900 leading-tight flex-1">{exp.name}</h1>
             <button onClick={toggleWishlist} className="mt-0.5 flex-shrink-0 active:scale-110 transition-transform">
               <svg className="w-6 h-6" fill={wishlisted ? '#F59E0B' : 'none'} viewBox="0 0 24 24"
@@ -332,47 +340,43 @@ export default function ExperienceDetail() {
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 mb-2">
-            {exp.park     && <Pill color="blue">{exp.park}</Pill>}
-            {exp.location && <Pill color="gray">{exp.location}</Pill>}
-            {exp.category && <Pill color="purple">{exp.category}</Pill>}
-            {exp.type     && <Pill color="green">{exp.type}</Pill>}
-          </div>
+          <p className="text-[13px] flex items-center gap-1 flex-wrap">
+            {exp.park && <span className="text-gray-500">{exp.park}</span>}
+            {exp.park && exp.location && <span className="text-gray-300">|</span>}
+            {exp.location && <span className="text-gray-500">{exp.location}</span>}
+            {(exp.park || exp.location) && exp.type && <span className="text-gray-300">|</span>}
+            {exp.type && <span className="text-gray-400">{exp.type}</span>}
+          </p>
 
           {(exp.opening_year || exp.duration) && (
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              {exp.opening_year && <Pill color="gray">Opened {exp.opening_year}</Pill>}
-              {exp.duration     && <Pill color="gray">{exp.duration}</Pill>}
-            </div>
+            <p className="text-xs text-gray-400 mt-1.5">
+              {[exp.opening_year && `Opened ${exp.opening_year}`, exp.duration].filter(Boolean).join(' · ')}
+            </p>
           )}
 
           {exp.description && (
-            <>
-              <div className="border-t border-gray-100 my-3" />
+            <div className="mt-4 pt-3" style={{ borderTop: '1px solid #EDEBE6' }}>
               <p className="text-sm text-gray-500 leading-relaxed">{exp.description}</p>
-            </>
+            </div>
           )}
         </div>
 
         {/* ── Your experience ─────────────────────────────────────────── */}
-        <SectionLabel>Your experience</SectionLabel>
-
-        <div className="bg-white rounded-2xl card-shadow overflow-hidden">
+        <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          <SectionLabel>Your experience</SectionLabel>
 
           {/* Status */}
           <Row label="Status">
             <button
               onClick={toggleStatus}
-              className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors active:opacity-75 ${
-                completed ? 'text-white' : 'bg-gray-100 text-gray-500 active:bg-gray-200'
-              }`}
-              style={completed ? { backgroundColor: '#1D9E75' } : {}}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full transition-colors active:opacity-75"
+              style={completed
+                ? { border: '1px solid #1D9E75', color: '#1D9E75' }
+                : { border: '1px solid #E7E5E0', color: '#78716C' }}
             >
               {completed ? 'Done ✓' : 'Mark as done'}
             </button>
           </Row>
-
-          <RowDivider />
 
           {/* Times visited */}
           <Row label="Times visited">
@@ -390,36 +394,30 @@ export default function ExperienceDetail() {
             <SongsSection songs={songs} />
           )}
 
-          <RowDivider />
-
           {/* Your rating */}
           <Row label="Your rating">
             <StarRating value={rating} onChange={setRating} interactive />
           </Row>
 
-          <RowDivider />
-
           {/* Community avg */}
-          <Row label="Community avg">
+          <Row label="Community avg" last>
             <CommunityRating data={community} />
           </Row>
 
           {lastVisited && (
-            <p className="text-xs text-gray-400 text-center py-3 border-t border-gray-100">
+            <p className="text-xs text-gray-400 py-3" style={{ borderTop: '1px solid #EDEBE6' }}>
               Last visited {formatDate(lastVisited)}
             </p>
           )}
         </div>
 
         {/* ── Your notes ──────────────────────────────────────────────── */}
-        <SectionLabel>Your notes</SectionLabel>
-
-        <div className="bg-white rounded-2xl p-4 card-shadow">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-semibold text-gray-700">Private notes</p>
+        <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          <div className="flex items-center justify-between mb-2">
+            <SectionLabel>Your notes</SectionLabel>
             {!editingNotes && (
               <button onClick={() => setEditingNotes(true)}
-                      className="text-sm font-semibold"
+                      className="text-xs font-semibold"
                       style={{ color: '#1D9E75' }}>
                 Edit
               </button>
@@ -434,22 +432,23 @@ export default function ExperienceDetail() {
                 placeholder="Add your personal notes about this experience…"
                 rows={4}
                 autoFocus
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 outline-none resize-none transition-colors"
+                className="w-full rounded-xl px-3 py-2.5 text-sm text-gray-700 outline-none resize-none transition-colors bg-transparent"
+                style={{ border: '1px solid #E7E5E0' }}
                 onFocus={e => e.target.style.borderColor = '#1D9E75'}
-                onBlur={e  => e.target.style.borderColor = '#e5e7eb'}
+                onBlur={e  => e.target.style.borderColor = '#E7E5E0'}
               />
-              <div className="flex justify-end gap-2 mt-1">
+              <div className="flex justify-end gap-4 mt-1">
                 <button
                   onClick={() => { setEditingNotes(false); setNotesInput(userExp?.personal_notes ?? '') }}
-                  className="text-xs font-medium text-gray-400 px-3 py-1.5"
+                  className="text-xs font-medium text-gray-400"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveNotes}
                   disabled={savingNotes}
-                  className="text-xs font-bold px-4 py-1.5 rounded-lg text-white disabled:opacity-60 transition-opacity"
-                  style={{ backgroundColor: '#1D9E75' }}
+                  className="text-xs font-semibold disabled:opacity-60 transition-opacity"
+                  style={{ color: '#1D9E75' }}
                 >
                   {savingNotes ? 'Saving…' : 'Save'}
                 </button>
@@ -492,7 +491,7 @@ function buildSongsFromLogs(items, rideLogs) {
 
 function SongsSection({ songs }) {
   return (
-    <div className="border-t border-gray-100 mx-0 px-4 pt-3 pb-3.5">
+    <div className="pt-3 pb-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2.5">Songs</p>
       <div className="flex flex-col gap-2.5">
         {songs.map(song => {
@@ -594,34 +593,18 @@ function SongPickerSheet({ open, songs, onSelect, onClose }) {
 // ── Shared sub-components ─────────────────────────────────────────────────────
 
 function SectionLabel({ children }) {
-  return <p className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">{children}</p>
+  return <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">{children}</p>
 }
 
-function Row({ label, children }) {
+function Row({ label, children, last = false }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3.5">
-      <p className="text-sm font-medium text-gray-700">{label}</p>
+    <div
+      className="flex items-center justify-between py-3.5"
+      style={{ borderBottom: last ? 'none' : '1px solid #EDEBE6' }}
+    >
+      <p className="text-[13px] text-gray-500">{label}</p>
       {children}
     </div>
-  )
-}
-
-function RowDivider() {
-  return <div className="h-px bg-gray-100 mx-4" />
-}
-
-const PILL_STYLES = {
-  blue:   'bg-blue-50 text-blue-600',
-  purple: 'bg-purple-50 text-purple-600',
-  green:  'bg-green-50 text-green-700',
-  gray:   'bg-gray-100 text-gray-500',
-}
-
-function Pill({ color, children }) {
-  return (
-    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${PILL_STYLES[color]}`}>
-      {children}
-    </span>
   )
 }
 
