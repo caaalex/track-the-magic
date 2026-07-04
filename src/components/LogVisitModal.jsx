@@ -7,7 +7,12 @@ import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 
-const todayStr = () => new Date().toISOString().split('T')[0]
+// Local (not UTC) YYYY-MM-DD, so "today" matches the user's timezone.
+const todayStr = () => {
+  const d = new Date()
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+  return local.toISOString().split('T')[0]
+}
 
 const formatDateDisplay = (dateStr) => {
   if (!dateStr) return ''
@@ -360,7 +365,13 @@ function Step1Content({ selectedDate, setSelectedDate, selectedPark, setSelected
             type="date"
             value={selectedDate}
             max={todayStr()}
-            onChange={e => e.target.value && setSelectedDate(e.target.value)}
+            onChange={e => {
+              const v = e.target.value
+              if (!v) return
+              // Hard guarantee: never accept a future date, even if the
+              // native picker allows the tap.
+              setSelectedDate(v > todayStr() ? todayStr() : v)
+            }}
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             style={{ WebkitAppearance: 'none', appearance: 'none' }}
             aria-label="Visit date"
