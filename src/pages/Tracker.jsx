@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Ticket, Search, ChevronRight } from 'lucide-react'
+import { Ticket, Search, ChevronRight, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
@@ -20,6 +20,7 @@ export default function Tracker() {
   })
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedStatus, setSelectedStatus]   = useState('All')
+  const [searchQuery, setSearchQuery]         = useState('')
   const [experiences, setExperiences]         = useState([])
   const [userExps, setUserExps]               = useState({}) // keyed by experience_id
   const [loading, setLoading]                 = useState(false)
@@ -150,8 +151,10 @@ export default function Tracker() {
   const heroCompleted    = heroExperiences.filter(e => userExps[e.id]?.completed).length
   const heroProgress     = heroExperiences.length > 0 ? (heroCompleted / heroExperiences.length) * 100 : 0
 
+  const query = searchQuery.trim().toLowerCase()
   const filtered = experiences.filter(exp => {
     const ue = userExps[exp.id]
+    if (query && !exp.name.toLowerCase().includes(query)) return false
     if (selectedCategory !== 'All' && exp.category !== selectedCategory) return false
     if (selectedStatus === 'Done'     && !ue?.completed)  return false
     if (selectedStatus === 'Not done' && ue?.completed)   return false
@@ -173,7 +176,7 @@ export default function Tracker() {
         </div>
         <ParkDropdown
           value={selectedPark}
-          onChange={name => { setSelectedPark(name); setSelectedCategory('All'); setSelectedStatus('All') }}
+          onChange={name => { setSelectedPark(name); setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
         />
       </div>
 
@@ -200,6 +203,33 @@ export default function Tracker() {
         <p className="text-xs text-gray-400 mt-2">
           {Math.round(heroProgress)}% of {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
         </p>
+      </div>
+
+      {/* Search */}
+      <div className="px-4 mb-3">
+        <div className="relative">
+          <Search size={16} color="#9CA3AF" strokeWidth={2}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Search experiences…"
+            className="w-full rounded-xl pl-9 pr-9 py-2.5 text-sm outline-none bg-transparent text-gray-800 placeholder-gray-400"
+            style={{ border: '1px solid #E7E5E0', transition: 'border-color 0.2s ease' }}
+            onFocus={e => (e.target.style.borderColor = '#1D9E75')}
+            onBlur={e  => (e.target.style.borderColor = '#E7E5E0')}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full active:opacity-60"
+              aria-label="Clear search"
+            >
+              <X size={15} color="#9CA3AF" strokeWidth={2} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Category pills */}
@@ -285,11 +315,13 @@ export default function Tracker() {
           <p className="text-gray-500 text-sm text-center leading-relaxed">
             {experiences.length === 0
               ? `No experiences added for ${selectedPark} yet.`
-              : 'No experiences match your filters.'}
+              : query
+                ? `No experiences match “${searchQuery.trim()}”.`
+                : 'No experiences match your filters.'}
           </p>
           {experiences.length > 0 && (
             <button
-              onClick={() => { setSelectedCategory('All'); setSelectedStatus('All') }}
+              onClick={() => { setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
               className="text-xs font-semibold mt-1"
               style={{ color: '#1D9E75' }}
             >
