@@ -215,8 +215,8 @@ export default function Tracker() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search experiences…"
-            className="w-full rounded-xl pl-9 pr-9 py-2.5 outline-none bg-transparent text-gray-800 placeholder-gray-400"
-            style={{ fontSize: 16, border: '1px solid #E7E5E0', transition: 'border-color 0.2s ease' }}
+            className="w-full rounded-xl pl-9 pr-9 py-2.5 text-sm outline-none bg-transparent text-gray-800 placeholder-gray-400"
+            style={{ border: '1px solid #E7E5E0', transition: 'border-color 0.2s ease' }}
             onFocus={e => (e.target.style.borderColor = '#1D9E75')}
             onBlur={e  => (e.target.style.borderColor = '#E7E5E0')}
           />
