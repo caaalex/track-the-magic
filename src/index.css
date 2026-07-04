@@ -11,6 +11,9 @@ body {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Tint native controls (date picker highlight/checkmark, checkboxes,
+     etc.) to the brand green instead of the default iOS blue. */
+  accent-color: #1D9E75;
 }
 
 /* Unified card elevation — soft, borderless (matches Home) */
