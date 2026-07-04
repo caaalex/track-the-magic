@@ -198,7 +198,7 @@ export default function Trips() {
                 <p className="text-[13px] text-gray-900 text-right truncate">{mostVisitedPark ?? '—'}</p>
               </div>
               <div className="flex items-baseline justify-between gap-4">
-                <p className="text-xs text-gray-400 flex-shrink-0">Most visited attraction</p>
+                <p className="text-xs text-gray-400 flex-shrink-0">Most visited experience</p>
                 <p className="text-[13px] text-gray-900 text-right truncate">{topAttr?.experiences?.name ?? '—'}</p>
               </div>
             </div>
@@ -393,21 +393,19 @@ function TripRow({ trip, last }) {
 
 function EmptyState({ onLog }) {
   return (
-    <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 py-16">
+    <div className="flex flex-col items-center justify-center flex-1 gap-3 px-6 py-16">
       <Plane size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No trips logged yet</p>
-        <p className="text-gray-400 text-sm mt-1 leading-relaxed">Tap "Log a visit" to get started.</p>
+        <p className="text-gray-400 text-sm mt-1 leading-relaxed">Log a park visit to start building your Disney history.</p>
       </div>
       <button
         onClick={onLog}
-        className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-sm active:scale-95 transition-transform"
-        style={{ backgroundColor: '#1D9E75' }}
+        className="flex items-center gap-1.5 text-[13px] font-semibold mt-1 active:opacity-60"
+        style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
       >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-        Log your first visit
+        Log a visit
+        <ArrowRight size={14} strokeWidth={2} />
       </button>
     </div>
   )

@@ -191,7 +191,7 @@ export default function Profile() {
               <StatRow label="Experiences completed" value={stats.expCount} />
               <StatRow label="Trips logged" value={stats.tripCount} />
               <StatRow label="Most visited park" value={stats.mostVisitedPark ?? '—'} />
-              <StatRow label="Most visited attraction" value={stats.topAttrName ?? '—'} />
+              <StatRow label="Most visited experience" value={stats.topAttrName ?? '—'} />
               <StatRow
                 label="Challenges completed"
                 value={`${stats.completedChallenges} of ${stats.totalChallenges}`}

@@ -15,6 +15,22 @@ export default function TripDetail() {
   const [trip,        setTrip]        = useState(null)
   const [experiences, setExperiences] = useState([]) // { experience, isNew }
   const [loading,     setLoading]     = useState(true)
+  const [deleting,    setDeleting]    = useState(false)
+
+  const handleDelete = async () => {
+    if (!window.confirm('Delete this trip? This removes the visit from your history. Your tracked experiences stay marked as done.')) return
+    setDeleting(true)
+    // Detach any Guardians ride logs so the trip delete never hits a FK block
+    await supabase.from('ride_logs').update({ trip_id: null }).eq('trip_id', id).eq('user_id', user.id)
+    const { error } = await supabase.from('trips').delete().eq('id', id)
+    if (error) {
+      console.error('Delete trip error:', error)
+      setDeleting(false)
+      window.alert('Could not delete the trip. Please try again.')
+      return
+    }
+    navigate('/trips')
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -201,8 +217,8 @@ export default function TripDetail() {
           </div>
         )}
 
-        {/* ── Add experiences ── */}
-        <div className="mt-4 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+        {/* ── Actions ── */}
+        <div className="mt-4 pt-4 flex items-center justify-between" style={{ borderTop: '1px solid #E7E5E0' }}>
           <button
             onClick={() => openLogVisit({ park: trip.park, date: trip.visit_date, tripId: trip.id })}
             className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
@@ -212,6 +228,14 @@ export default function TripDetail() {
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="text-[13px] font-semibold text-red-500 active:opacity-60 disabled:opacity-50"
+            style={{ transition: 'opacity 0.2s ease' }}
+          >
+            {deleting ? 'Deleting…' : 'Delete trip'}
           </button>
         </div>
 
