@@ -36,3 +36,40 @@ export const CATEGORIES = [
   'Characters',
   'Events & Tours',
 ]
+
+// ── Resorts ────────────────────────────────────────────────────────────────
+// When the "Resorts" park is selected, the Tracker shows this list of resorts
+// first; tapping one drills into its experiences (grouped by the `location`
+// column, which holds these exact names). Order: Deluxe → Moderate → Value →
+// DVC → other on-property.
+export const RESORTS = [
+  // Deluxe
+  'Grand Floridian',
+  'Polynesian',
+  'Contemporary',
+  'Wilderness Lodge',
+  'Animal Kingdom Lodge',
+  'Beach Club',
+  'Yacht Club',
+  'BoardWalk Inn',
+  'Riviera',
+  // Moderate
+  'Caribbean Beach',
+  'Coronado Springs',
+  'Port Orleans French Quarter',
+  'Port Orleans Riverside',
+  'Fort Wilderness',
+  // Value
+  'Pop Century',
+  'Art of Animation',
+  'All-Star Movies',
+  'All-Star Music',
+  'All-Star Sports',
+  // DVC
+  'Old Key West',
+  'Saratoga Springs',
+  // Other on-property
+  'Swan',
+  'Dolphin',
+  'Swan Reserve',
+]

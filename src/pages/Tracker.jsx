@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Ticket, Search, ChevronRight, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
-import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
+import { PARKS, CATEGORIES, RESORTS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
 
@@ -21,6 +21,7 @@ export default function Tracker() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedStatus, setSelectedStatus]   = useState('All')
   const [searchQuery, setSearchQuery]         = useState('')
+  const [selectedResort, setSelectedResort]   = useState(null) // Resorts second level
   const [experiences, setExperiences]         = useState([])
   const [userExps, setUserExps]               = useState({}) // keyed by experience_id
   const [loading, setLoading]                 = useState(false)
@@ -144,15 +145,30 @@ export default function Tracker() {
   // ── Derived values ─────────────────────────────────────────────────────────
   const park = PARKS.find(p => p.name === selectedPark)
 
+  const isResorts       = selectedPark === 'Resorts'
+  const showResortList  = isResorts && !selectedResort
+
+  // Per-resort progress for the resort-selection list
+  const resortStats = RESORTS.map(name => {
+    const exps = experiences.filter(e => e.location === name)
+    const done = exps.filter(e => userExps[e.id]?.completed).length
+    return { name, total: exps.length, done }
+  })
+
+  // Experiences in scope for the current view — a single resort when drilled in
+  const viewExps = selectedResort
+    ? experiences.filter(e => e.location === selectedResort)
+    : experiences
+
   // Hero card follows category filter only (not status filter)
   const heroExperiences  = selectedCategory === 'All'
-    ? experiences
-    : experiences.filter(e => e.category === selectedCategory)
+    ? viewExps
+    : viewExps.filter(e => e.category === selectedCategory)
   const heroCompleted    = heroExperiences.filter(e => userExps[e.id]?.completed).length
   const heroProgress     = heroExperiences.length > 0 ? (heroCompleted / heroExperiences.length) * 100 : 0
 
   const query = searchQuery.trim().toLowerCase()
-  const filtered = experiences.filter(exp => {
+  const filtered = viewExps.filter(exp => {
     const ue = userExps[exp.id]
     if (query && !exp.name.toLowerCase().includes(query)) return false
     if (selectedCategory !== 'All' && exp.category !== selectedCategory) return false
@@ -176,13 +192,24 @@ export default function Tracker() {
         </div>
         <ParkDropdown
           value={selectedPark}
-          onChange={name => { setSelectedPark(name); setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
+          onChange={name => { setSelectedPark(name); setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery(''); setSelectedResort(null) }}
         />
+
+        {/* Resort detail: back to resort list */}
+        {selectedResort && (
+          <button
+            onClick={() => { setSelectedResort(null); setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
+            className="mt-3 flex items-center gap-1 text-[13px] font-medium text-gray-500 active:opacity-60"
+          >
+            <ChevronRight size={15} strokeWidth={2} className="rotate-180" />
+            All resorts
+          </button>
+        )}
       </div>
 
       {/* Hero */}
       <div className="px-4 pt-1 mb-4">
-        <p className="text-xs text-gray-400">Completed</p>
+        <p className="text-xs text-gray-400">{selectedResort ?? (isResorts ? 'All resorts' : 'Completed')}</p>
         <p
           className="text-gray-900 tabular-nums leading-tight"
           style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
@@ -205,6 +232,53 @@ export default function Tracker() {
         </p>
       </div>
 
+      {showResortList ? (
+        loading ? (
+          <div className="divide-y divide-gray-100 border-t border-gray-100 animate-pulse">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex items-center px-4 py-3.5 gap-3">
+                <div className="flex-1 h-3 rounded-full bg-gray-100 w-1/2" />
+                <div className="w-10 h-3 rounded-full bg-gray-100 flex-shrink-0" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-100 border-t border-gray-100">
+            {resortStats.map(resort => (
+              <button
+                key={resort.name}
+                onClick={() => { setSelectedResort(resort.name); setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
+                className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] text-gray-900">{resort.name}</p>
+                  {resort.total > 0 ? (
+                    <div className="mt-2 overflow-hidden" style={{ height: 1.5, backgroundColor: '#ECEAE5' }}>
+                      <div
+                        className="h-full"
+                        style={{
+                          width: `${(resort.done / resort.total) * 100}%`,
+                          backgroundColor: '#1D9E75',
+                          transition: 'width 0.5s cubic-bezier(0.32,0.72,0,1)',
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-gray-300 mt-0.5">No experiences yet</p>
+                  )}
+                </div>
+                {resort.total > 0 && (
+                  <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">
+                    {resort.done}/{resort.total}
+                  </span>
+                )}
+                <ChevronRight size={15} color="#D6D3D1" strokeWidth={2} className="flex-shrink-0" />
+              </button>
+            ))}
+          </div>
+        )
+      ) : (
+      <>
       {/* Search */}
       <div className="px-4 mb-3">
         <div className="relative">
@@ -309,17 +383,17 @@ export default function Tracker() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center py-16 px-6 gap-3">
-          {experiences.length === 0
+          {viewExps.length === 0
             ? <Ticket size={26} color="#C5C1BB" strokeWidth={1.5} />
             : <Search size={26} color="#C5C1BB" strokeWidth={1.5} />}
           <p className="text-gray-500 text-sm text-center leading-relaxed">
-            {experiences.length === 0
-              ? `No experiences added for ${selectedPark} yet.`
+            {viewExps.length === 0
+              ? `No experiences added for ${selectedResort ?? selectedPark} yet.`
               : query
                 ? `No experiences match “${searchQuery.trim()}”.`
                 : 'No experiences match your filters.'}
           </p>
-          {experiences.length > 0 && (
+          {viewExps.length > 0 && (
             <button
               onClick={() => { setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
               className="text-xs font-semibold mt-1"
@@ -337,9 +411,12 @@ export default function Tracker() {
               exp={exp}
               userExp={userExps[exp.id]}
               onToggle={toggleComplete}
+              hideLocation={!!selectedResort}
             />
           ))}
         </div>
+      )}
+      </>
       )}
     </div>
   )
@@ -347,7 +424,7 @@ export default function Tracker() {
 
 // ── Experience Row ───────────────────────────────────────────────────────────
 
-function ExperienceRow({ exp, userExp, onToggle }) {
+function ExperienceRow({ exp, userExp, onToggle, hideLocation = false }) {
   const navigate     = useNavigate()
   const completed    = userExp?.completed ?? false
   const wishlisted   = (userExp?.wishlist ?? false) && !completed
@@ -395,10 +472,10 @@ function ExperienceRow({ exp, userExp, onToggle }) {
         }`}>
           {exp.name}
         </p>
-        {(exp.location || exp.type) && (
+        {((!hideLocation && exp.location) || exp.type) && (
           <p className="text-[11px] mt-0.5 flex items-center gap-1">
-            {exp.location && <span className="text-gray-500">{exp.location}</span>}
-            {exp.location && exp.type && <span className="text-gray-300">|</span>}
+            {!hideLocation && exp.location && <span className="text-gray-500">{exp.location}</span>}
+            {!hideLocation && exp.location && exp.type && <span className="text-gray-300">|</span>}
             {exp.type && <span className="text-gray-400">{exp.type}</span>}
           </p>
         )}
