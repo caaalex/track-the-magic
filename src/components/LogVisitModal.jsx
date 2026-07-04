@@ -506,12 +506,12 @@ function Step2Content({
 
                 {/* Name + location | type */}
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-semibold leading-snug truncate ${checked ? 'text-gray-400 line-through' : 'text-gray-800'}`}>
+                  <p className={`text-[13px] leading-snug truncate ${checked ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
                     {exp.name}
                   </p>
                   {(exp.location || exp.type) && (
-                    <p className="text-xs mt-0.5 flex items-center gap-1">
-                      {exp.location && <span className="text-gray-500 font-medium">{exp.location}</span>}
+                    <p className="text-[11px] mt-0.5 flex items-center gap-1">
+                      {exp.location && <span className="text-gray-500">{exp.location}</span>}
                       {exp.location && exp.type && <span className="text-gray-300">|</span>}
                       {exp.type && <span className="text-gray-400">{exp.type}</span>}
                     </p>
