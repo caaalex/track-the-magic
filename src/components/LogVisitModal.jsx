@@ -339,20 +339,10 @@ function Step1Content({ selectedDate, setSelectedDate, selectedPark, setSelected
       <div>
         <SectionLabel>When did you visit?</SectionLabel>
         <div className="relative mt-2">
-          <button
-            type="button"
-            onClick={() => {
-              const el = dateInputRef.current
-              if (!el) return
-              if (typeof el.showPicker === 'function') {
-                try { el.showPicker() } catch { el.focus(); el.click() }
-              } else {
-                el.focus()
-                el.click()
-              }
-            }}
-            className="w-full rounded-xl px-4 py-3.5 flex items-center justify-between text-left active:opacity-60"
-            style={{ border: '1px solid #E7E5E0', transition: 'opacity 0.2s ease' }}
+          {/* Visual field (non-interactive; the real input sits on top) */}
+          <div
+            className="w-full rounded-xl px-4 py-3.5 flex items-center justify-between pointer-events-none"
+            style={{ border: '1px solid #E7E5E0' }}
           >
             <div>
               <p className="text-xs text-gray-400 mb-0.5">Visit date</p>
@@ -362,16 +352,18 @@ function Step1Content({ selectedDate, setSelectedDate, selectedPark, setSelected
               <path strokeLinecap="round" strokeLinejoin="round"
                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
             </svg>
-          </button>
+          </div>
+          {/* Real date input, invisible, covering the whole field so a direct
+              tap opens the native picker (required for iOS Safari) */}
           <input
             ref={dateInputRef}
             type="date"
             value={selectedDate}
             max={todayStr()}
             onChange={e => e.target.value && setSelectedDate(e.target.value)}
-            className="absolute opacity-0 pointer-events-none"
-            style={{ bottom: 0, left: 0, width: 1, height: 1 }}
-            tabIndex={-1}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            style={{ WebkitAppearance: 'none', appearance: 'none' }}
+            aria-label="Visit date"
           />
         </div>
       </div>
