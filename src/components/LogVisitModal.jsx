@@ -425,7 +425,7 @@ function Step2Content({
         <div className="flex items-center gap-3 bg-gray-50 rounded-xl px-3.5 py-2.5 mb-4">
           <ParkIcon park={parkData?.name} size={18} color="#78716C" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-gray-800 truncate">{parkData?.name}</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{parkData?.name}</p>
             <p className="text-xs text-gray-500">{formatDateDisplay(selectedDate)}</p>
           </div>
         </div>
@@ -475,10 +475,8 @@ function Step2Content({
           <p className="text-gray-400 text-sm">Loading…</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center py-10 gap-2.5 px-6">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#F3F4F6' }}>
-            <Search size={22} color="#9CA3AF" strokeWidth={1.5} />
-          </div>
+        <div className="flex flex-col items-center py-10 gap-3 px-6">
+          <Search size={26} color="#C5C1BB" strokeWidth={1.5} />
           <p className="text-gray-500 text-sm text-center">No experiences found.</p>
         </div>
       ) : (

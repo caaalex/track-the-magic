@@ -299,7 +299,7 @@ export default function ExperienceDetail() {
 
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <div
-        className="flex items-center justify-between px-3 pt-3 pb-2 sticky top-0 z-10"
+        className="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-10"
         style={{
           background: 'rgba(250,250,249,0.92)',
           backdropFilter: 'blur(12px)',
@@ -309,7 +309,7 @@ export default function ExperienceDetail() {
       >
         <button
           onClick={() => navigate(-1)}
-          className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-60 transition-opacity"
+          className="w-9 h-9 -ml-2 flex items-center justify-center rounded-full active:opacity-60 transition-opacity"
         >
           <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -317,7 +317,7 @@ export default function ExperienceDetail() {
         </button>
         <button
           onClick={handleShare}
-          className="w-9 h-9 flex items-center justify-center rounded-full active:bg-gray-100 transition-colors"
+          className="w-9 h-9 -mr-2 flex items-center justify-center rounded-full active:opacity-60 transition-opacity"
         >
           <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -492,7 +492,7 @@ function buildSongsFromLogs(items, rideLogs) {
 function SongsSection({ songs }) {
   return (
     <div className="pt-3 pb-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2.5">Songs</p>
+      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em] mb-2.5">Songs</p>
       <div className="flex flex-col gap-2.5">
         {songs.map(song => {
           const heard = song.count > 0
@@ -517,10 +517,7 @@ function SongsSection({ songs }) {
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
               {song.count > 0 && (
-                <span
-                  className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: '#D1FAE5', color: '#059669' }}
-                >
+                <span className="flex-shrink-0 text-xs font-semibold tabular-nums" style={{ color: '#1D9E75' }}>
                   ×{song.count}
                 </span>
               )}
@@ -575,10 +572,7 @@ function SongPickerSheet({ open, songs, onSelect, onClose }) {
                 <p className="text-xs text-gray-400">{song.subtitle}</p>
               </div>
               {song.count > 0 && (
-                <span
-                  className="flex-shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: '#D1FAE5', color: '#059669' }}
-                >
+                <span className="flex-shrink-0 text-xs font-semibold tabular-nums" style={{ color: '#1D9E75' }}>
                   ×{song.count}
                 </span>
               )}

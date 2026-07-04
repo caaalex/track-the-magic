@@ -284,7 +284,7 @@ export default function Trips() {
             </div>
 
             {/* Park filter */}
-            <p className="px-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">
+            <p className="px-5 pb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Filter by park
             </p>
             <div className="flex flex-col">
@@ -309,10 +309,10 @@ export default function Trips() {
               ))}
             </div>
 
-            <div className="h-px bg-gray-100 mx-5 my-3" />
+            <div className="mx-5 my-3" style={{ borderTop: '1px solid #EDEBE6' }} />
 
             {/* Time period filter */}
-            <p className="px-5 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">
+            <p className="px-5 pb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Filter by time period
             </p>
             <div className="flex flex-col">
@@ -322,7 +322,7 @@ export default function Trips() {
                   onClick={() => setPendingPeriod(option)}
                   className="flex items-center justify-between px-5 py-3 active:bg-gray-50 transition-colors"
                 >
-                  <span className={`text-sm ${pendingPeriod === option ? 'font-bold text-gray-900' : 'font-medium text-gray-600'}`}>
+                  <span className={`text-sm ${pendingPeriod === option ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
                     {option}
                   </span>
                   {pendingPeriod === option && (
@@ -338,13 +338,14 @@ export default function Trips() {
             <div className="flex gap-3 px-5 mt-5">
               <button
                 onClick={resetSheet}
-                className="flex-1 py-3 rounded-xl text-sm font-bold bg-gray-100 text-gray-600 active:bg-gray-200 transition-colors"
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-gray-600 active:opacity-60 transition-opacity"
+                style={{ border: '1px solid #E7E5E0' }}
               >
                 Reset
               </button>
               <button
                 onClick={applySheet}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-white active:opacity-90 transition-opacity"
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-white active:opacity-90 transition-opacity"
                 style={{ backgroundColor: '#1D9E75' }}
               >
                 Apply

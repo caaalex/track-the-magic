@@ -3,27 +3,16 @@
 
 import { Map, CalendarDays } from 'lucide-react'
 
-function OnboardingCard({ icon: Icon, iconBg, iconColor, title, description }) {
+function OnboardingRow({ icon: Icon, title, description, last }) {
   return (
     <div
-      className="rounded-2xl p-4 text-left"
-      style={{
-        background: '#ffffff',
-        border: '1.5px solid #F0F0EE',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-      }}
+      className="flex items-start gap-3.5 py-4"
+      style={{ borderBottom: last ? 'none' : '1px solid #EDEBE6' }}
     >
-      <div className="flex items-start gap-3.5">
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-          style={{ backgroundColor: iconBg }}
-        >
-          <Icon size={18} color={iconColor} strokeWidth={1.5} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-stone-800 mb-1">{title}</p>
-          <p className="text-[13px] text-stone-400 leading-snug">{description}</p>
-        </div>
+      <Icon size={18} color="#78716C" strokeWidth={1.5} className="mt-0.5 flex-shrink-0" />
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-gray-900 mb-1">{title}</p>
+        <p className="text-[13px] text-gray-400 leading-snug">{description}</p>
       </div>
     </div>
   )
@@ -62,28 +51,25 @@ export default function Onboarding({ onDismiss }) {
         </div>
 
         {/* ── Headline ── */}
-        <h1 className="text-[26px] font-bold text-stone-900 text-center leading-tight mb-2.5 tracking-[-0.025em]">
-          Welcome to<br />Track the Magic!
+        <h1 className="text-[26px] font-bold text-gray-900 text-center leading-tight mb-2.5 tracking-[-0.025em]">
+          Welcome to<br />Track the Magic
         </h1>
-        <p className="text-stone-400 text-[13px] text-center leading-relaxed mb-9 max-w-[230px]">
+        <p className="text-gray-400 text-[13px] text-center leading-relaxed mb-8 max-w-[230px]">
           Two ways to track every Disney experience you've had
         </p>
 
-        {/* ── Cards ── */}
-        <div className="flex flex-col gap-3 w-full">
-          <OnboardingCard
+        {/* ── Rows ── */}
+        <div className="w-full">
+          <OnboardingRow
             icon={Map}
-            iconBg="#E6F4FF"
-            iconColor="#4A90D9"
             title="Use the Tracker"
             description="Browse any destination and check off experiences one by one."
           />
-          <OnboardingCard
+          <OnboardingRow
             icon={CalendarDays}
-            iconBg="#EEF6FF"
-            iconColor="#4A90D9"
             title="Log a visit"
             description="Add everything you did in one park visit all at once. Both methods update your progress automatically."
+            last
           />
         </div>
 
@@ -93,14 +79,13 @@ export default function Onboarding({ onDismiss }) {
       <div className="px-6 pb-12">
         <button
           onClick={onDismiss}
-          className="w-full py-3.5 rounded-xl text-white font-bold text-sm active:scale-[0.98]"
+          className="w-full py-3.5 rounded-xl text-white font-semibold text-sm active:scale-[0.98]"
           style={{
             backgroundColor: '#1D9E75',
-            boxShadow: '0 2px 12px rgba(29,158,117,0.30)',
             transition: 'transform 0.25s cubic-bezier(0.32,0.72,0,1)',
           }}
         >
-          Let's go!
+          Let's go
         </button>
       </div>
 
