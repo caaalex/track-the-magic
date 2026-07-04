@@ -146,19 +146,9 @@ export default function Trips() {
       {/* ── Header ── */}
       <div className="px-4 pt-5 pb-3 flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">My trips</h2>
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={openLogVisit}
-            className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
-            style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
-          >
-            Log a visit
-            <ArrowRight size={14} strokeWidth={2} />
-          </button>
-          <button onClick={() => navigate('/profile')} className="active:opacity-70">
-            <Avatar user={user} />
-          </button>
-        </div>
+        <button onClick={() => navigate('/profile')} className="active:opacity-70">
+          <Avatar user={user} />
+        </button>
       </div>
 
       {loading ? (
@@ -185,7 +175,17 @@ export default function Trips() {
         <>
           {/* Stats */}
           <div className="px-4 pt-1 pb-4">
-            <p className="text-xs text-gray-400">Visits logged</p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-gray-400">Visits logged</p>
+              <button
+                onClick={openLogVisit}
+                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+                style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
+              >
+                Log a visit
+                <ArrowRight size={14} strokeWidth={2} />
+              </button>
+            </div>
             <p
               className="text-gray-900 tabular-nums leading-tight"
               style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
@@ -397,7 +397,7 @@ function EmptyState({ onLog }) {
       <Plane size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No trips logged yet</p>
-        <p className="text-gray-400 text-sm mt-1 leading-relaxed">Log a visit to start building your Disney history.</p>
+        <p className="text-gray-400 text-[13px] mt-1 leading-relaxed">Log a visit to start building your Disney history.</p>
       </div>
       <button
         onClick={onLog}

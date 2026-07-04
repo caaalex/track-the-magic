@@ -208,7 +208,7 @@ function EmptyState() {
       <Trophy size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No challenges yet</p>
-        <p className="text-gray-400 text-sm mt-1 leading-relaxed">Check back soon!</p>
+        <p className="text-gray-400 text-[13px] mt-1 leading-relaxed">Check back soon!</p>
       </div>
     </div>
   )
