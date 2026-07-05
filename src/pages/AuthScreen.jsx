@@ -124,10 +124,10 @@ function ConfirmationScreen({ email, onGoToSignIn }) {
 }
 
 // ── Main auth screen ───────────────────────────────────────────────────────
-export default function AuthScreen() {
+export default function AuthScreen({ initialMode = 'signup', onBack }) {
   const { signIn, signUp } = useAuth()
 
-  const [mode,              setMode]              = useState('signup')
+  const [mode,              setMode]              = useState(initialMode)
   const [email,             setEmail]             = useState('')
   const [password,          setPassword]          = useState('')
   const [error,             setError]             = useState('')
@@ -190,6 +190,19 @@ export default function AuthScreen() {
       style={{ maxWidth: 375, margin: '0 auto' }}
     >
       <div className="flex-1 flex flex-col px-6 pt-14 pb-10">
+
+        {/* ── Back to landing ── */}
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="self-start -mt-6 mb-4 flex items-center gap-1 text-[13px] font-medium text-stone-400 active:opacity-60"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        )}
 
         {/* ── Hero ── */}
         <div className="flex flex-col items-center text-center mb-10">

@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import Landing from './pages/Landing'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
 import Tracker from './pages/Tracker'
@@ -14,10 +16,31 @@ import { LogVisitProvider } from './contexts/LogVisitContext'
 
 function AuthGate() {
   const { user, loading } = useAuth()
+  const [authMode, setAuthMode] = useState(null) // null → landing; 'signup'/'signin' → auth form
+
+  // Shareable marketing page, viewable even while logged in
+  if (window.location.pathname === '/welcome') {
+    return (
+      <Landing
+        onGetStarted={() => { window.location.href = '/' }}
+        onSignIn={() => { window.location.href = '/' }}
+      />
+    )
+  }
 
   if (loading) return <LoadingScreen />
 
-  if (!user) return <AuthScreen />
+  if (!user) {
+    if (!authMode) {
+      return (
+        <Landing
+          onGetStarted={() => setAuthMode('signup')}
+          onSignIn={() => setAuthMode('signin')}
+        />
+      )
+    }
+    return <AuthScreen initialMode={authMode} onBack={() => setAuthMode(null)} />
+  }
 
   return (
     <BrowserRouter>
