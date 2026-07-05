@@ -257,9 +257,24 @@ export default function Profile() {
           </div>
 
           {/* Email row (read only) */}
-          <div className="flex items-center justify-between py-3.5">
+          <div className="flex items-center justify-between py-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
             <p className="text-[13px] text-gray-500">Email</p>
             <p className="text-[13px] text-gray-900 truncate max-w-[180px]">{user?.email}</p>
+          </div>
+
+          {/* Replay onboarding */}
+          <div className="flex items-center justify-between py-3.5">
+            <p className="text-[13px] text-gray-500">Welcome screen</p>
+            <button
+              onClick={() => {
+                localStorage.removeItem('ttm_onboarded')
+                navigate('/')
+              }}
+              className="text-xs font-semibold active:opacity-60"
+              style={{ color: '#1D9E75' }}
+            >
+              Replay
+            </button>
           </div>
         </div>
 
