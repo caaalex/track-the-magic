@@ -186,7 +186,7 @@ export default function Landing({ onGetStarted, onSignIn }) {
               How much of the magic have you <em className="not-italic" style={{ color: GREEN }}>actually</em> done?
             </h1>
             <p className="text-gray-500 text-[15px] leading-relaxed mt-5 max-w-md">
-              Hundreds of experiences across all Disney World destinations, from rides
+              Hundreds of experiences across all Disney World destinations, from attractions
               and restaurants to hidden gems. Track every one, relive every trip, and
               find out exactly how much magic you have left.
             </p>
@@ -231,14 +231,14 @@ export default function Landing({ onGetStarted, onSignIn }) {
             </Feature>
             <Feature icon={CalendarDays} title="Log trips like a travel journal">
               One tap logs a park day with everything you did. Your Disney history builds
-              itself: every trip, every first ride, every repeat.
+              itself: every trip, every first attraction, every repeat.
             </Feature>
             <Feature icon={Trophy} title="Challenges only true fans finish">
-              Ride every mountain in one day. Eat around World Showcase. Hear every song on
+              Conquer every mountain in one day. Eat around World Showcase. Hear every song on
               Cosmic Rewind. The bragging rights are real.
             </Feature>
             <Feature icon={Hotel} title="Even the resorts count">
-              All 24 resorts with their pools, lounges, beaches, and monorail rides. Resort
+              All 24 resorts with their pools, lounges, beaches, and the monorail. Resort
               days are Disney days too.
             </Feature>
           </div>
