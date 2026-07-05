@@ -186,12 +186,12 @@ export default function Landing({ onGetStarted, onSignIn }) {
               How much of the magic have you <em className="not-italic" style={{ color: GREEN }}>actually</em> done?
             </h1>
             <p className="text-gray-500 text-[15px] leading-relaxed mt-5 max-w-md">
-              348 rides, restaurants, shows, and hidden gems across all 9 Disney World
-              destinations. Track every one, relive every trip, and find out exactly
-              how much magic you have left.
+              Hundreds of experiences across all Disney World destinations, from rides
+              and restaurants to hidden gems. Track every one, relive every trip, and
+              find out exactly how much magic you have left.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
-              <CtaButton onClick={onGetStarted}>Start tracking — free</CtaButton>
+              <CtaButton onClick={onGetStarted}>Start tracking free</CtaButton>
               <p className="text-xs text-gray-400">
                 Free during early access · $20/year at launch
               </p>
@@ -203,11 +203,16 @@ export default function Landing({ onGetStarted, onSignIn }) {
         </header>
 
         {/* ── Stats strip ── */}
-        <section className="py-10 grid grid-cols-2 md:grid-cols-4 gap-8" style={{ borderTop: HAIRLINE, borderBottom: HAIRLINE }}>
-          <Stat value="348" label="experiences to collect" />
-          <Stat value="9" label="destinations covered" />
-          <Stat value="24" label="resorts included" />
-          <Stat value="100%" label="made by fans" />
+        <section className="py-10" style={{ borderTop: HAIRLINE, borderBottom: HAIRLINE }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <Stat value="300+" label="experiences to collect" />
+            <Stat value="9" label="destinations covered" />
+            <Stat value="24" label="resorts included" />
+            <Stat value="100%" label="made by fans" />
+          </div>
+          <p className="text-xs text-gray-400 text-center mt-8">
+            Updated frequently as Disney World evolves.
+          </p>
         </section>
 
         {/* ── Features ── */}
@@ -221,13 +226,12 @@ export default function Landing({ onGetStarted, onSignIn }) {
           </p>
           <div className="grid sm:grid-cols-2 gap-4 mt-10">
             <Feature icon={Sparkles} title="Check off all of Disney World">
-              Every ride, snack stand, stage show, and nighttime spectacular — from Space
-              Mountain to the Dole Whip window you always walk past. If it's in the World,
-              it's on your list.
+              Every attraction, dining experience, snack stand, stage show, and nighttime
+              spectacular. If it's in Disney World, it's on your list.
             </Feature>
             <Feature icon={CalendarDays} title="Log trips like a travel journal">
               One tap logs a park day with everything you did. Your Disney history builds
-              itself — every trip, every first ride, every repeat.
+              itself: every trip, every first ride, every repeat.
             </Feature>
             <Feature icon={Trophy} title="Challenges only true fans finish">
               Ride every mountain in one day. Eat around World Showcase. Hear every song on
@@ -246,11 +250,11 @@ export default function Landing({ onGetStarted, onSignIn }) {
             Where do you rank?
           </p>
           <p className="text-gray-900 tabular-nums leading-none mt-4" style={{ fontSize: 'clamp(64px, 10vw, 96px)', fontWeight: 300, letterSpacing: '-0.03em' }}>
-            Top 1<span className="text-gray-300">%</span>
+            Top 33<span className="text-gray-300">%</span>
           </p>
           <p className="text-gray-500 text-[15px] leading-relaxed mt-5 max-w-sm mx-auto">
-            See how your progress stacks up against every other tracker. Forty visits or
-            your very first — there's always something you haven't done yet.
+            See how your progress stacks up against every other tracker. Whether it's
+            your fortieth visit or your first, there's always something you haven't done yet.
           </p>
         </section>
 
@@ -268,10 +272,10 @@ export default function Landing({ onGetStarted, onSignIn }) {
             </div>
             <p className="text-[13px] text-gray-500 leading-relaxed mt-3">
               Free while we build. When pricing launches at $20/year, founding
-              members hear about it first — and keep every bit of their progress.
+              members hear about it first, and keep every bit of their progress.
             </p>
             <div className="mt-6 flex flex-col gap-2.5 text-left mx-auto" style={{ maxWidth: 280 }}>
-              {['All 348 experiences, all 9 destinations', 'Unlimited trips and history', 'Every challenge and ranking'].map(line => (
+              {['Every experience, every destination', 'Unlimited trips and history', 'Every challenge and ranking', 'Updated frequently with new experiences'].map(line => (
                 <div key={line} className="flex items-center gap-2.5">
                   <Check size={14} color={GREEN} strokeWidth={2.5} className="flex-shrink-0" />
                   <p className="text-[13px] text-gray-600">{line}</p>
@@ -291,11 +295,11 @@ export default function Landing({ onGetStarted, onSignIn }) {
           </h2>
           <div style={{ borderBottom: HAIRLINE }}>
             <Faq q="Is it really free?">
-              Yes — completely free during early access. We plan to charge $20/year once the
+              Yes, completely free during early access. We plan to charge $20/year once the
               app is fully grown, and early members will hear from us well before anything changes.
             </Faq>
             <Faq q="Does it work on my phone?">
-              Track the Magic is a web app — it works on iPhone, Android, and any computer.
+              Track the Magic is a web app that works on iPhone, Android, and any computer.
               Add it to your home screen and it feels like a native app.
             </Faq>
             <Faq q="Do I need to do anything special at the parks?">
@@ -303,7 +307,7 @@ export default function Landing({ onGetStarted, onSignIn }) {
               night. Your progress updates everywhere, instantly.
             </Faq>
             <Faq q="Is this an official Disney app?">
-              No — Track the Magic is an independent, fan-made project. It is not affiliated
+              No. Track the Magic is an independent, fan-made project. It is not affiliated
               with, endorsed by, or sponsored by The Walt Disney Company.
             </Faq>
           </div>
@@ -315,10 +319,10 @@ export default function Landing({ onGetStarted, onSignIn }) {
             The magic doesn't count itself.
           </h2>
           <p className="text-gray-500 text-[15px] mt-3">
-            Start your list today — your next trip will thank you.
+            Start your list today. Your next trip will thank you.
           </p>
           <div className="mt-8">
-            <CtaButton onClick={onGetStarted}>Start tracking — free</CtaButton>
+            <CtaButton onClick={onGetStarted}>Start tracking free</CtaButton>
           </div>
         </section>
 
@@ -329,7 +333,7 @@ export default function Landing({ onGetStarted, onSignIn }) {
             <span className="text-[13px] font-semibold text-gray-700">Track the Magic</span>
           </div>
           <p className="text-[11px] text-gray-400 text-center md:text-right leading-relaxed" style={{ maxWidth: 420 }}>
-            © 2026 Track the Magic. A fan-made project — not affiliated with, endorsed by,
+            © 2026 Track the Magic. A fan-made project, not affiliated with, endorsed by,
             or sponsored by The Walt Disney Company.
           </p>
         </footer>

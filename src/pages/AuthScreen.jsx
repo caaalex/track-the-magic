@@ -203,14 +203,14 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
     >
       {/* ── Heading ── */}
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: GREEN }}>
-        {isSignup ? 'Early access — free' : 'Welcome back'}
+        {isSignup ? 'Free early access' : 'Welcome back'}
       </p>
       <h1 className="text-gray-900 font-bold mt-3 leading-tight" style={{ fontSize: 'clamp(28px, 4.5vw, 36px)', letterSpacing: '-0.025em' }}>
         {isSignup ? 'Start your list.' : 'Pick up where you left off.'}
       </h1>
       <p className="text-gray-500 text-[13px] leading-relaxed mt-3">
         {isSignup
-          ? '348 experiences are waiting to be checked off. Free during early access — $20/year at launch.'
+          ? 'Hundreds of experiences are waiting to be checked off. Free during early access, $20/year at launch.'
           : 'Sign in to keep tracking the magic.'}
       </p>
 
@@ -259,14 +259,14 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
           className="font-semibold active:opacity-60"
           style={{ color: GREEN }}
         >
-          {isSignup ? 'Sign in' : 'Create one — free'}
+          {isSignup ? 'Sign in' : 'Create one free'}
         </button>
       </p>
 
       {/* ── Reassurance ── */}
       <p className="text-[11px] text-gray-400 leading-relaxed mt-10 pt-5" style={{ borderTop: HAIRLINE }}>
-        348 experiences · 9 destinations · 24 resorts. A fan-made project — not
-        affiliated with The Walt Disney Company.
+        Hundreds of experiences · 9 destinations · 24 resorts. A fan-made project,
+        not affiliated with The Walt Disney Company.
       </p>
     </Shell>
   )
