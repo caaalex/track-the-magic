@@ -1,7 +1,9 @@
 // Shown once after a new user's first login.
 // Dismissed state is persisted in localStorage so it never appears again.
 
-import { Map, CalendarDays } from 'lucide-react'
+import { Map, CalendarDays, Trophy, Plane } from 'lucide-react'
+
+const GREEN = '#1D9E75'
 
 function OnboardingRow({ icon: Icon, title, description, last }) {
   return (
@@ -9,8 +11,13 @@ function OnboardingRow({ icon: Icon, title, description, last }) {
       className="flex items-start gap-3.5 py-4"
       style={{ borderBottom: last ? 'none' : '1px solid #EDEBE6' }}
     >
-      <Icon size={18} color="#78716C" strokeWidth={1.5} className="mt-0.5 flex-shrink-0" />
-      <div className="flex-1 min-w-0">
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ backgroundColor: '#EAF5F0' }}
+      >
+        <Icon size={17} color={GREEN} strokeWidth={1.5} />
+      </div>
+      <div className="flex-1 min-w-0 pt-0.5">
         <p className="text-[13px] font-semibold text-gray-900 mb-1">{title}</p>
         <p className="text-[13px] text-gray-400 leading-snug">{description}</p>
       </div>
@@ -21,7 +28,7 @@ function OnboardingRow({ icon: Icon, title, description, last }) {
 export default function Onboarding({ onDismiss }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col overflow-y-auto"
+      className="fixed inset-0 z-50 flex flex-col"
       style={{
         maxWidth: 375,
         left: 0, right: 0,
@@ -29,17 +36,17 @@ export default function Onboarding({ onDismiss }) {
         background: '#FAFAF9',
       }}
     >
-      <div className="flex-1 flex flex-col items-center px-6 pt-16 pb-6">
+      <div className="flex-1 flex flex-col justify-center px-6 overflow-y-auto no-scrollbar">
 
         {/* ── Logo mark ── */}
         <div
-          className="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center mb-6"
+          className="w-[64px] h-[64px] rounded-[16px] flex items-center justify-center mb-5"
           style={{
             background: 'linear-gradient(145deg, #1D9E75 0%, #13855f 100%)',
             boxShadow: '0 8px 24px rgba(29,158,117,0.30)',
           }}
         >
-          <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
             <path
               d="M18 3 C18 3 19.5 12.5 24.5 17.5 C19.5 17.5 19.5 17.5 24.5 17.5 C19.5 22.5 18 33 18 33 C18 33 16.5 22.5 11.5 17.5 C16.5 17.5 16.5 17.5 11.5 17.5 C16.5 12.5 18 3 18 3Z"
               fill="white"
@@ -51,11 +58,12 @@ export default function Onboarding({ onDismiss }) {
         </div>
 
         {/* ── Headline ── */}
-        <h1 className="text-[26px] font-bold text-gray-900 text-center leading-tight mb-2.5 tracking-[-0.025em]">
-          Welcome to<br />Track the Magic
+        <h1 className="text-[24px] font-bold text-gray-900 leading-tight mb-2 tracking-[-0.025em]">
+          Welcome to Track the Magic
         </h1>
-        <p className="text-gray-400 text-[13px] text-center leading-relaxed mb-8 max-w-[230px]">
-          Two ways to track every Disney experience you've had
+        <p className="text-gray-400 text-[13px] leading-relaxed mb-7 max-w-[280px]">
+          Hundreds of experiences across every Disney World destination and
+          resort, all in one place.
         </p>
 
         {/* ── Rows ── */}
@@ -63,12 +71,22 @@ export default function Onboarding({ onDismiss }) {
           <OnboardingRow
             icon={Map}
             title="Use the Tracker"
-            description="Browse any destination and check off experiences one by one."
+            description="Browse any destination and check off attractions, dining, and more, one by one."
           />
           <OnboardingRow
             icon={CalendarDays}
             title="Log a visit"
-            description="Add everything you did in one park visit all at once. Both methods update your progress automatically."
+            description="Add everything you did in a single visit at once. Both ways update your progress automatically."
+          />
+          <OnboardingRow
+            icon={Trophy}
+            title="Take on challenges"
+            description="Complete checklists only true Disney fans can finish, and see where you rank."
+          />
+          <OnboardingRow
+            icon={Plane}
+            title="Build your history"
+            description="Every trip you log becomes part of your own Disney World journal."
             last
           />
         </div>
@@ -76,12 +94,13 @@ export default function Onboarding({ onDismiss }) {
       </div>
 
       {/* ── CTA ── */}
-      <div className="px-6 pb-12">
+      <div className="px-6 pt-4 pb-10 flex-shrink-0" style={{ borderTop: '1px solid #E7E5E0' }}>
         <button
           onClick={onDismiss}
           className="w-full py-3.5 rounded-xl text-white font-semibold text-sm active:scale-[0.98]"
           style={{
-            backgroundColor: '#1D9E75',
+            backgroundColor: GREEN,
+            boxShadow: '0 2px 14px rgba(29,158,117,0.3)',
             transition: 'transform 0.25s cubic-bezier(0.32,0.72,0,1)',
           }}
         >
