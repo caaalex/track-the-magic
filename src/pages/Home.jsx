@@ -82,24 +82,24 @@ export default function Home() {
 
           {/* ── Hero: experiences completed ── */}
           <div className="pt-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-400">Experiences completed</p>
+            <p className="text-xs text-gray-400">Experiences completed</p>
+            <div className="flex items-end justify-between">
+              <p
+                className="text-gray-900 tabular-nums leading-tight"
+                style={{ fontSize: 48, fontWeight: 300, letterSpacing: '-0.02em' }}
+              >
+                {completedAll}{' '}
+                <span className="text-base font-normal text-gray-300">/ {totalAll}</span>
+              </p>
               <button
                 onClick={openLogVisit}
-                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60 mb-2"
                 style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
               >
                 Log a visit
                 <ArrowRight size={14} strokeWidth={2} />
               </button>
             </div>
-            <p
-              className="text-gray-900 tabular-nums leading-tight"
-              style={{ fontSize: 48, fontWeight: 300, letterSpacing: '-0.02em' }}
-            >
-              {completedAll}{' '}
-              <span className="text-base font-normal text-gray-300">/ {totalAll}</span>
-            </p>
             <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
               <div
                 className="h-full rounded-full"
