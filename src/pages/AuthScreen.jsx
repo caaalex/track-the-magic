@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { Mail, ArrowRight } from 'lucide-react'
+import { Mail, ArrowRight, Info } from 'lucide-react'
 
 const GREEN = '#1D9E75'
 const HAIRLINE = '1px solid #E7E5E0'
@@ -112,6 +112,16 @@ function ConfirmationScreen({ email, onGoToSignIn, onBack }) {
           <span className="font-semibold text-gray-800">{email}</span>.{' '}
           Click it to activate your account, then come back to sign in.
         </p>
+        <div
+          className="mt-5 flex items-start gap-2.5 rounded-xl px-3.5 py-3 max-w-[320px] text-left"
+          style={{ backgroundColor: '#F1F5F2', border: HAIRLINE }}
+        >
+          <Info size={15} strokeWidth={1.8} className="flex-shrink-0 mt-px" style={{ color: GREEN }} />
+          <p className="text-gray-500 text-[12px] leading-relaxed">
+            Don&apos;t see it? Check your spam or junk folder. If it landed there,
+            mark it &ldquo;Not spam&rdquo; so future emails reach your inbox.
+          </p>
+        </div>
         <button
           onClick={onGoToSignIn}
           className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm px-7 py-3.5 text-white whitespace-nowrap active:scale-[0.98]"
