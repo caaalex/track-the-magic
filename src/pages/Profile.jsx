@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Share2 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
+import { PARKS } from '../lib/constants'
 import Avatar from '../components/Avatar'
+import ShareProgressModal from '../components/ShareCard'
 
 // ── Stat row ──────────────────────────────────────────────────────────────
 function StatRow({ label, value, last = false }) {
@@ -21,8 +24,9 @@ export default function Profile() {
   const { user, signOut } = useAuth()
   const navigate          = useNavigate()
 
-  const [stats,   setStats]   = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [stats,     setStats]     = useState(null)
+  const [loading,   setLoading]   = useState(true)
+  const [showShare, setShowShare] = useState(false)
 
   // Display name edit state
   const [displayName,    setDisplayName]    = useState(user?.user_metadata?.full_name ?? '')
@@ -35,17 +39,19 @@ export default function Profile() {
       setLoading(true)
 
       const [
-        { count: expCount },
+        { data: completedRows },
         { count: tripCount },
         { data: trips },
         { data: topAttr },
         { data: challenges },
         { data: allItems },
         { data: userItems },
+        { data: allExps },
+        { data: lb },
       ] = await Promise.all([
         supabase
           .from('user_experiences')
-          .select('*', { count: 'exact', head: true })
+          .select('experience_id')
           .eq('user_id', user.id)
           .eq('completed', true),
         supabase
@@ -76,7 +82,24 @@ export default function Profile() {
           .select('challenge_item_id')
           .eq('user_id', user.id)
           .eq('completed', true),
+        supabase
+          .from('experiences')
+          .select('id, park')
+          .eq('is_active', true),
+        supabase.rpc('get_home_stats', { p_user_id: user.id }),
       ])
+
+      // Overall + per-park progress (for the shareable card)
+      const completedIds = new Set((completedRows || []).map(r => r.experience_id))
+      const expCount     = completedIds.size
+      const totalAll     = (allExps || []).length
+      const pctAll       = totalAll > 0 ? Math.round((expCount / totalAll) * 100) : 0
+      const parkStats    = PARKS.map(park => {
+        const pe = (allExps || []).filter(e => e.park === park.name)
+        const pc = pe.filter(e => completedIds.has(e.id)).length
+        return { ...park, pct: pe.length > 0 ? Math.round((pc / pe.length) * 100) : 0 }
+      })
+      const percentile = lb?.[0]?.percentile ?? 1
 
       // Most visited park
       const parkCounts = {}
@@ -99,12 +122,16 @@ export default function Profile() {
       }).length
 
       setStats({
-        expCount:            expCount ?? 0,
+        expCount:            expCount,
         tripCount:           tripCount ?? 0,
         mostVisitedPark,
         topAttrName:         topAttr?.experiences?.name ?? null,
         completedChallenges,
         totalChallenges:     (challenges || []).length,
+        pctAll,
+        totalAll,
+        parkStats,
+        percentile,
       })
 
       setLoading(false)
@@ -165,6 +192,17 @@ export default function Profile() {
         <p className="ml-1 text-xl font-bold text-gray-900">Profile</p>
       </div>
 
+      {showShare && stats && (
+        <ShareProgressModal
+          onClose={() => setShowShare(false)}
+          pct={stats.pctAll}
+          completed={stats.expCount}
+          total={stats.totalAll}
+          percentile={stats.percentile}
+          parkStats={stats.parkStats}
+        />
+      )}
+
       <div className="px-4 pt-6 pb-8">
 
         {/* ── Identity ── */}
@@ -175,6 +213,17 @@ export default function Profile() {
             <p className="text-xs text-gray-400">Member since {memberSince}</p>
           )}
         </div>
+
+        {/* ── Share ── */}
+        <button
+          onClick={() => setShowShare(true)}
+          disabled={loading}
+          className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-semibold active:scale-[0.98] disabled:opacity-50"
+          style={{ color: '#1D9E75', border: '1px solid #1D9E75', transition: 'transform 0.2s ease' }}
+        >
+          <Share2 size={15} strokeWidth={2} />
+          Share your progress
+        </button>
 
         {/* ── Your stats ── */}
         <div className="mt-7 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
