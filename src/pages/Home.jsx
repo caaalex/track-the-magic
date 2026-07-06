@@ -82,7 +82,17 @@ export default function Home() {
 
           {/* ── Hero: experiences completed ── */}
           <div className="pt-4">
-            <p className="text-xs text-gray-400">Experiences completed</p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-gray-400">Experiences completed</p>
+              <button
+                onClick={openLogVisit}
+                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+                style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
+              >
+                Log a visit
+                <ArrowRight size={14} strokeWidth={2} />
+              </button>
+            </div>
             <p
               className="text-gray-900 tabular-nums leading-tight"
               style={{ fontSize: 48, fontWeight: 300, letterSpacing: '-0.02em' }}
@@ -100,17 +110,7 @@ export default function Home() {
                 }}
               />
             </div>
-            <div className="mt-2 flex items-center justify-between">
-              <p className="text-xs text-gray-400">{pctAll}% of all Disney World</p>
-              <button
-                onClick={openLogVisit}
-                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
-                style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
-              >
-                Log a visit
-                <ArrowRight size={14} strokeWidth={2} />
-              </button>
-            </div>
+            <p className="mt-2 text-xs text-gray-400">{pctAll}% of all Disney World</p>
           </div>
 
           {/* ── Ranking row ── */}
