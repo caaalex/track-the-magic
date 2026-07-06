@@ -5,8 +5,8 @@
       <stop offset="1" stop-color="#13855f"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#g)"/>
-  <g transform="translate(256 256) scale(9.6) translate(-18 -18)">
+  <rect width="512" height="512" fill="url(#g)"/>
+  <g transform="translate(256 256) scale(8.6) translate(-18 -18)">
     <path d="M18 3 C18 3 19.5 12.5 24.5 17.5 C19.5 17.5 19.5 17.5 24.5 17.5 C19.5 22.5 18 33 18 33 C18 33 16.5 22.5 11.5 17.5 C16.5 17.5 16.5 17.5 11.5 17.5 C16.5 12.5 18 3 18 3Z" fill="#ffffff" fill-opacity="0.97"/>
     <circle cx="27" cy="9" r="2.2" fill="#ffffff" fill-opacity="0.55"/>
     <circle cx="9" cy="27" r="1.5" fill="#ffffff" fill-opacity="0.38"/>

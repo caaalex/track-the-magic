@@ -1,0 +1,30 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1D9E75"/>
+      <stop offset="1" stop-color="#13855f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#FAFAF9"/>
+
+  <!-- logo mark -->
+  <g transform="translate(96 96)">
+    <rect width="96" height="96" rx="24" fill="url(#g)"/>
+    <g transform="translate(48 48) scale(1.9) translate(-18 -18)">
+      <path d="M18 3 C18 3 19.5 12.5 24.5 17.5 C19.5 17.5 19.5 17.5 24.5 17.5 C19.5 22.5 18 33 18 33 C18 33 16.5 22.5 11.5 17.5 C16.5 17.5 16.5 17.5 11.5 17.5 C16.5 12.5 18 3 18 3Z" fill="#ffffff" fill-opacity="0.97"/>
+      <circle cx="27" cy="9" r="2.2" fill="#ffffff" fill-opacity="0.55"/>
+      <circle cx="9" cy="27" r="1.5" fill="#ffffff" fill-opacity="0.38"/>
+    </g>
+  </g>
+  <text x="212" y="162" font-family="Plus Jakarta Sans, sans-serif" font-size="34" font-weight="700" fill="#1c1917" letter-spacing="-0.5">Track the Magic</text>
+
+  <!-- headline -->
+  <text x="96" y="320" font-family="Plus Jakarta Sans, sans-serif" font-size="68" font-weight="700" fill="#1c1917" letter-spacing="-2">How much of the magic</text>
+  <text x="96" y="404" font-family="Plus Jakarta Sans, sans-serif" font-size="68" font-weight="700" letter-spacing="-2" xml:space="preserve"><tspan fill="#1c1917">have you </tspan><tspan fill="#1D9E75">actually</tspan><tspan fill="#1c1917"> done?</tspan></text>
+
+  <!-- subline -->
+  <text x="96" y="474" font-family="Plus Jakarta Sans, sans-serif" font-size="28" font-weight="400" fill="#78716c">Track every attraction, meal, show, and resort across all of Disney World.</text>
+
+  <!-- footer stat chips -->
+  <text x="96" y="560" font-family="Plus Jakarta Sans, sans-serif" font-size="22" font-weight="600" fill="#a8a29e">Hundreds of experiences  ·  9 destinations  ·  24 resorts</text>
+</svg>
