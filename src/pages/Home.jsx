@@ -5,9 +5,10 @@ import { useLogVisit } from '../contexts/LogVisitContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
-import { Trophy, ArrowRight } from 'lucide-react'
+import { Trophy, ArrowRight, Share2 } from 'lucide-react'
 import Avatar from '../components/Avatar'
 import Onboarding from './Onboarding'
+import ShareProgressModal from '../components/ShareCard'
 
 const ONBOARDING_KEY = 'ttm_onboarded'
 
@@ -22,6 +23,7 @@ export default function Home() {
   const [completedIds,   setCompletedIds]   = useState(new Set())
   const [leaderboard,    setLeaderboard]    = useState(null)
   const [loading,        setLoading]        = useState(true)
+  const [showShare,      setShowShare]      = useState(false)
 
   const dismissOnboarding = () => {
     localStorage.setItem(ONBOARDING_KEY, '1')
@@ -66,14 +68,35 @@ export default function Home() {
         <h1 className="text-xl font-bold text-gray-900">
           Track the Magic
         </h1>
-        <button
-          onClick={() => navigate('/profile')}
-          className="active:opacity-70"
-          style={{ transition: 'opacity 0.2s cubic-bezier(0.32,0.72,0,1)' }}
-        >
-          <Avatar user={user} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setShowShare(true)}
+            className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-60"
+            style={{ transition: 'opacity 0.2s ease' }}
+            aria-label="Share your progress"
+          >
+            <Share2 size={19} color="#78716C" strokeWidth={1.75} />
+          </button>
+          <button
+            onClick={() => navigate('/profile')}
+            className="active:opacity-70"
+            style={{ transition: 'opacity 0.2s cubic-bezier(0.32,0.72,0,1)' }}
+          >
+            <Avatar user={user} />
+          </button>
+        </div>
       </div>
+
+      {showShare && (
+        <ShareProgressModal
+          onClose={() => setShowShare(false)}
+          pct={pctAll}
+          completed={completedAll}
+          total={totalAll}
+          percentile={leaderboard?.percentile ?? 1}
+          parkStats={parkStats}
+        />
+      )}
 
       {loading ? (
         <LoadingSkeleton />
