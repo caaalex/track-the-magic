@@ -227,7 +227,7 @@ export default function Profile() {
 
         {/* ── Your stats ── */}
         <div className="mt-7 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+          <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
             Your stats
           </p>
 
@@ -252,7 +252,7 @@ export default function Profile() {
 
         {/* ── Account ── */}
         <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+          <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
             Account
           </p>
 

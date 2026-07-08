@@ -175,7 +175,7 @@ export default function Trips() {
         <>
           {/* Stats */}
           <div className="px-4 pt-1 pb-4">
-            <p className="text-xs text-gray-400">Visits logged</p>
+            <p className="text-sm text-gray-400">Visits logged</p>
             <div className="flex items-end justify-between">
               <p
                 className="text-gray-900 tabular-nums leading-tight"
@@ -185,7 +185,7 @@ export default function Trips() {
               </p>
               <button
                 onClick={openLogVisit}
-                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60 mb-2"
+                className="flex items-center gap-1.5 text-[14px] font-semibold active:opacity-60 mb-2"
                 style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
               >
                 Log a visit
@@ -206,7 +206,7 @@ export default function Trips() {
 
           {/* Visit history header + Filter button */}
           <div className="px-4 pt-4 pb-1 mx-0 flex items-center justify-between" style={{ borderTop: '1px solid #E7E5E0' }}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">Visit history</p>
+            <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">Visit history</p>
             <button
               onClick={openSheet}
               className="relative flex items-center gap-1 text-xs font-medium active:opacity-60"
@@ -284,7 +284,7 @@ export default function Trips() {
             </div>
 
             {/* Park filter */}
-            <p className="px-5 pb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+            <p className="px-5 pb-2 text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Filter by park
             </p>
             <div className="flex flex-col">
@@ -312,7 +312,7 @@ export default function Trips() {
             <div className="mx-5 my-3" style={{ borderTop: '1px solid #EDEBE6' }} />
 
             {/* Time period filter */}
-            <p className="px-5 pb-2 text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+            <p className="px-5 pb-2 text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Filter by time period
             </p>
             <div className="flex flex-col">
@@ -378,7 +378,7 @@ function TripRow({ trip, last }) {
     >
       <ParkIcon park={trip.park} size={18} color="#78716C" />
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] text-gray-900">{trip.park}</p>
+        <p className="text-[14px] text-gray-900">{trip.park}</p>
         <p className="text-[11px] text-gray-400 mt-0.5">{dateDisplay}</p>
       </div>
       {expCount > 0 && (

@@ -492,7 +492,7 @@ function buildSongsFromLogs(items, rideLogs) {
 function SongsSection({ songs }) {
   return (
     <div className="pt-3 pb-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
-      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em] mb-2.5">Songs</p>
+      <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em] mb-2.5">Songs</p>
       <div className="flex flex-col gap-2.5">
         {songs.map(song => {
           const heard = song.count > 0
@@ -587,7 +587,7 @@ function SongPickerSheet({ open, songs, onSelect, onClose }) {
 // ── Shared sub-components ─────────────────────────────────────────────────────
 
 function SectionLabel({ children }) {
-  return <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">{children}</p>
+  return <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">{children}</p>
 }
 
 function Row({ label, children, last = false }) {

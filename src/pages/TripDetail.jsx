@@ -174,7 +174,7 @@ export default function TripDetail() {
         {/* ── Notes ── */}
         {trip.notes && (
           <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em] mb-1.5">Trip notes</p>
+            <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em] mb-1.5">Trip notes</p>
             <p className="text-sm text-gray-600 leading-relaxed">{trip.notes}</p>
           </div>
         )}
@@ -182,7 +182,7 @@ export default function TripDetail() {
         {/* ── Experiences logged ── */}
         {experiences.length > 0 && (
           <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+            <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Experiences logged
             </p>
             <div>

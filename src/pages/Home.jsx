@@ -105,7 +105,7 @@ export default function Home() {
 
           {/* ── Hero: experiences completed ── */}
           <div className="pt-1">
-            <p className="text-xs text-gray-400">Experiences completed</p>
+            <p className="text-sm text-gray-400">Experiences completed</p>
             <div className="flex items-end justify-between">
               <p
                 className="text-gray-900 tabular-nums leading-tight"
@@ -116,7 +116,7 @@ export default function Home() {
               </p>
               <button
                 onClick={openLogVisit}
-                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60 mb-2"
+                className="flex items-center gap-1.5 text-[14px] font-semibold active:opacity-60 mb-2"
                 style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
               >
                 Log a visit
@@ -133,23 +133,23 @@ export default function Home() {
                 }}
               />
             </div>
-            <p className="mt-2 text-xs text-gray-400">{pctAll}% of all Disney World</p>
+            <p className="mt-2 text-sm text-gray-400">{pctAll}% of all Disney World</p>
           </div>
 
           {/* ── Ranking row ── */}
           <div className="mt-6 pt-4 flex items-center gap-3" style={{ borderTop: '1px solid #E7E5E0' }}>
             <Trophy size={16} color="#A8A29E" strokeWidth={1.5} />
-            <p className="flex-1 text-[13px] text-gray-500">
+            <p className="flex-1 text-[14px] text-gray-500">
               Top {leaderboard?.percentile ?? 1}% of all users
             </p>
-            <p className="text-[13px] font-semibold text-gray-900 tabular-nums">
+            <p className="text-[14px] font-semibold text-gray-900 tabular-nums">
               {leaderboard?.percentile ?? 1}%
             </p>
           </div>
 
           {/* ── Parks ── */}
           <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+            <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               Parks
             </p>
             <div>
@@ -165,7 +165,7 @@ export default function Home() {
                 >
                   <ParkIcon park={park.name} size={18} color="#78716C" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] text-gray-900">{park.name}</p>
+                    <p className="text-[14px] text-gray-900">{park.name}</p>
                     <div className="mt-2 overflow-hidden" style={{ height: 1.5, backgroundColor: '#ECEAE5' }}>
                       <div
                         className="h-full"

@@ -26,7 +26,7 @@ export default function BottomNav() {
             key={to}
             to={to}
             end={to === '/'}
-            className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 text-[10px] font-medium"
+            className="flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 text-[12px] font-medium"
             style={({ isActive }) => ({
               color: isActive ? '#1D9E75' : '#C5C1BB',
               transition: 'color 0.25s cubic-bezier(0.32,0.72,0,1)',

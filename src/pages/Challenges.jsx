@@ -71,7 +71,7 @@ export default function Challenges() {
 
           {/* ── Hero ── */}
           <div className="pt-1">
-            <p className="text-xs text-gray-400">Challenges completed</p>
+            <p className="text-sm text-gray-400">Challenges completed</p>
             <p
               className="text-gray-900 tabular-nums leading-tight"
               style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
@@ -89,13 +89,13 @@ export default function Challenges() {
                 }}
               />
             </div>
-            <p className="mt-2 text-xs text-gray-400">{challengesPct}% of all challenges</p>
+            <p className="mt-2 text-sm text-gray-400">{challengesPct}% of all challenges</p>
           </div>
 
           {/* ── In progress ── */}
           {inProgress.length > 0 && (
             <div className="mt-6 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+              <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
                 In progress
               </p>
               <div>
@@ -114,7 +114,7 @@ export default function Challenges() {
           {/* ── Completed ── */}
           {completed.length > 0 && (
             <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+              <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
                 Completed
               </p>
               <div>
@@ -151,7 +151,7 @@ function ChallengeRow({ challenge, onTap, last }) {
     >
       <ChallengeIcon icon={icon} color="#78716C" size={18} />
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] text-gray-900 leading-snug">{title}</p>
+        <p className="text-[14px] text-gray-900 leading-snug">{title}</p>
         {park && <p className="text-[11px] text-gray-400 mt-0.5">{park}</p>}
         {total > 0 && (
           <div className="mt-2 overflow-hidden" style={{ height: 1.5, backgroundColor: '#ECEAE5' }}>

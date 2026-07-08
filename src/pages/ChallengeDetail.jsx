@@ -186,7 +186,7 @@ export default function ChallengeDetail() {
         {/* ── Checklist ── */}
         {items.length > 0 && (
           <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
+            <p className="text-[12px] font-semibold text-gray-400 uppercase tracking-[0.12em]">
               {checklistLabel}
             </p>
 

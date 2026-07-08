@@ -209,7 +209,7 @@ export default function Tracker() {
 
       {/* Hero */}
       <div className="px-4 pt-1 mb-4">
-        <p className="text-xs text-gray-400">{selectedResort ?? (isResorts ? 'All resorts' : 'Completed')}</p>
+        <p className="text-sm text-gray-400">{selectedResort ?? (isResorts ? 'All resorts' : 'Completed')}</p>
         <p
           className="text-gray-900 tabular-nums leading-tight"
           style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
@@ -227,7 +227,7 @@ export default function Tracker() {
             }}
           />
         </div>
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-sm text-gray-400 mt-2">
           {Math.round(heroProgress)}% of {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
         </p>
       </div>
@@ -251,7 +251,7 @@ export default function Tracker() {
                 className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-gray-50"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] text-gray-900">{resort.name}</p>
+                  <p className="text-[14px] text-gray-900">{resort.name}</p>
                   {resort.total > 0 ? (
                     <div className="mt-2 overflow-hidden" style={{ height: 1.5, backgroundColor: '#ECEAE5' }}>
                       <div
@@ -467,7 +467,7 @@ function ExperienceRow({ exp, userExp, onToggle, hideLocation = false }) {
 
       {/* Name + location · type */}
       <div className="flex-1 min-w-0 py-0.5">
-        <p className={`text-[13px] leading-snug line-clamp-2 ${
+        <p className={`text-[14px] leading-snug line-clamp-2 ${
           completed ? 'text-gray-400 line-through' : 'text-gray-900'
         }`}>
           {exp.name}
