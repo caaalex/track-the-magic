@@ -50,8 +50,8 @@ export default function Challenges() {
   // Overall stats
   const totalChAll = challenges.reduce((s, c) => s + c.total, 0)
   const doneChAll  = challenges.reduce((s, c) => s + c.done,  0)
-  const overallPct = totalChAll > 0 ? Math.round((doneChAll / totalChAll) * 100) : 0
   const completedChallenges = completed.length
+  const challengesPct = challenges.length > 0 ? Math.round((completedChallenges / challenges.length) * 100) : 0
 
   return (
     <div className="flex flex-col min-h-full">
@@ -73,26 +73,26 @@ export default function Challenges() {
 
           {/* ── Hero ── */}
           <div className="pt-1">
-            <p className="text-xs text-gray-400">Challenge items completed</p>
+            <p className="text-xs text-gray-400">Challenges completed</p>
             <p
               className="text-gray-900 tabular-nums leading-tight"
               style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
             >
-              {doneChAll}{' '}
-              <span className="text-base font-normal text-gray-300">/ {totalChAll}</span>
+              {completedChallenges}{' '}
+              <span className="text-base font-normal text-gray-300">/ {challenges.length}</span>
             </p>
             <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
               <div
                 className="h-full rounded-full"
                 style={{
-                  width: `${overallPct}%`,
+                  width: `${challengesPct}%`,
                   backgroundColor: '#1D9E75',
                   transition: 'width 0.8s cubic-bezier(0.32,0.72,0,1)',
                 }}
               />
             </div>
             <p className="text-xs text-gray-400 mt-2">
-              {completedChallenges} of {challenges.length} challenges complete
+              {doneChAll} of {totalChAll} items complete
             </p>
           </div>
 
