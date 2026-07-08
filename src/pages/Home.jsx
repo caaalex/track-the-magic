@@ -104,12 +104,12 @@ export default function Home() {
         <div className="px-4 pb-4">
 
           {/* ── Hero: experiences completed ── */}
-          <div className="pt-4">
+          <div className="pt-1">
             <p className="text-xs text-gray-400">Experiences completed</p>
             <div className="flex items-end justify-between">
               <p
                 className="text-gray-900 tabular-nums leading-tight"
-                style={{ fontSize: 48, fontWeight: 300, letterSpacing: '-0.02em' }}
+                style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
               >
                 {completedAll}{' '}
                 <span className="text-base font-normal text-gray-300">/ {totalAll}</span>
