@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabaseClient'
 import Avatar from '../components/Avatar'
 import ChallengeIcon from '../lib/ChallengeIcon'
 import { Trophy } from 'lucide-react'
+import { useReveal } from '../lib/useReveal'
 
 export default function Challenges() {
   const { user }  = useAuth()
@@ -50,6 +51,7 @@ export default function Challenges() {
   // Overall stats
   const completedChallenges = completed.length
   const challengesPct = challenges.length > 0 ? Math.round((completedChallenges / challenges.length) * 100) : 0
+  const reveal = useReveal(!loading)
 
   return (
     <div className="flex flex-col min-h-full">
@@ -76,20 +78,19 @@ export default function Challenges() {
               className="text-gray-900 tabular-nums leading-tight"
               style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
             >
-              {completedChallenges}{' '}
+              {Math.round(completedChallenges * reveal)}{' '}
               <span className="text-base font-normal text-gray-300">/ {challenges.length}</span>
             </p>
             <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
               <div
                 className="h-full rounded-full"
                 style={{
-                  width: `${challengesPct}%`,
+                  width: `${challengesPct * reveal}%`,
                   backgroundColor: '#1D9E75',
-                  transition: 'width 0.8s cubic-bezier(0.32,0.72,0,1)',
                 }}
               />
             </div>
-            <p className="mt-2 text-sm text-gray-400">{challengesPct}% of all challenges</p>
+            <p className="mt-2 text-sm text-gray-400">{Math.round(challengesPct * reveal)}% of all challenges</p>
           </div>
 
           {/* ── In progress ── */}
@@ -139,6 +140,7 @@ export default function Challenges() {
 function ChallengeRow({ challenge, onTap, last }) {
   const { icon, title, park, total, done, isComplete } = challenge
   const pct = total > 0 ? Math.round((done / total) * 100) : 0
+  const t = useReveal()
 
   return (
     <button
@@ -158,20 +160,19 @@ function ChallengeRow({ challenge, onTap, last }) {
             <div
               className="h-full"
               style={{
-                width: `${pct}%`,
+                width: `${pct * t}%`,
                 backgroundColor: '#1D9E75',
-                transition: 'width 0.5s cubic-bezier(0.32,0.72,0,1)',
               }}
             />
           </div>
         )}
       </div>
-      {isComplete ? (
+      {isComplete && t >= 1 ? (
         <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#1D9E75" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
       ) : total > 0 ? (
-        <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">{done}/{total}</span>
+        <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">{Math.round(done * t)}/{total}</span>
       ) : null}
     </button>
   )

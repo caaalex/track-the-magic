@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { GUARDIANS_CHALLENGE_ID } from '../lib/constants'
 import ChallengeIcon from '../lib/ChallengeIcon'
+import { useReveal } from '../lib/useReveal'
 
 export default function ChallengeDetail() {
   const { id }   = useParams()
@@ -108,6 +109,8 @@ export default function ChallengeDetail() {
     }
   }
 
+  const reveal = useReveal(!loading)
+
   if (loading) return (
     <div className="flex items-center justify-center flex-1 py-20">
       <p className="text-gray-400 text-sm">Loading…</p>
@@ -159,21 +162,20 @@ export default function ChallengeDetail() {
           className="text-gray-900 tabular-nums leading-tight"
           style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
         >
-          {doneCount}{' '}
+          {Math.round(doneCount * reveal)}{' '}
           <span className="text-base font-normal text-gray-300">/ {totalCount}</span>
         </p>
         <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
           <div
             className="h-full rounded-full"
             style={{
-              width: `${pct}%`,
+              width: `${pct * reveal}%`,
               backgroundColor: '#1D9E75',
-              transition: 'width 0.5s cubic-bezier(0.32,0.72,0,1)',
             }}
           />
         </div>
-        <p className="text-xs mt-2" style={{ color: isComplete ? '#1D9E75' : '#A8A29E' }}>
-          {isComplete ? 'Challenge complete' : `${pct}% done`}
+        <p className="text-xs mt-2" style={{ color: (reveal >= 1 && isComplete) ? '#1D9E75' : '#A8A29E' }}>
+          {reveal >= 1 && isComplete ? 'Challenge complete' : `${Math.round(pct * reveal)}% done`}
         </p>
 
         {/* ── Description ── */}

@@ -9,6 +9,7 @@ import { Trophy, ArrowRight, Share2 } from 'lucide-react'
 import Avatar from '../components/Avatar'
 import Onboarding from './Onboarding'
 import ShareProgressModal from '../components/ShareCard'
+import { useReveal } from '../lib/useReveal'
 
 const ONBOARDING_KEY = 'ttm_onboarded'
 
@@ -24,6 +25,7 @@ export default function Home() {
   const [leaderboard,    setLeaderboard]    = useState(null)
   const [loading,        setLoading]        = useState(true)
   const [showShare,      setShowShare]      = useState(false)
+  const reveal = useReveal(!loading)
 
   const dismissOnboarding = () => {
     localStorage.setItem(ONBOARDING_KEY, '1')
@@ -111,7 +113,7 @@ export default function Home() {
                 className="text-gray-900 tabular-nums leading-tight"
                 style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
               >
-                {completedAll}{' '}
+                {Math.round(completedAll * reveal)}{' '}
                 <span className="text-base font-normal text-gray-300">/ {totalAll}</span>
               </p>
               <button
@@ -127,13 +129,12 @@ export default function Home() {
               <div
                 className="h-full rounded-full"
                 style={{
-                  width: `${pctAll}%`,
+                  width: `${pctAll * reveal}%`,
                   backgroundColor: '#1D9E75',
-                  transition: 'width 0.8s cubic-bezier(0.32,0.72,0,1)',
                 }}
               />
             </div>
-            <p className="mt-2 text-sm text-gray-400">{pctAll}% of all Disney World</p>
+            <p className="mt-2 text-sm text-gray-400">{Math.round(pctAll * reveal)}% of all Disney World</p>
           </div>
 
           {/* ── Ranking row ── */}
@@ -170,14 +171,13 @@ export default function Home() {
                       <div
                         className="h-full"
                         style={{
-                          width: `${park.pct}%`,
+                          width: `${park.pct * reveal}%`,
                           backgroundColor: '#1D9E75',
-                          transition: 'width 0.8s cubic-bezier(0.32,0.72,0,1)',
                         }}
                       />
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400 tabular-nums flex-shrink-0">{park.pct}%</p>
+                  <p className="text-xs text-gray-400 tabular-nums flex-shrink-0">{Math.round(park.pct * reveal)}%</p>
                 </button>
               ))}
             </div>
