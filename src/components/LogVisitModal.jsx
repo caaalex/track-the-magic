@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
-import { Search } from 'lucide-react'
+import { Search, ChevronRight } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
@@ -420,6 +420,14 @@ function Step2Content({
   tripNotes, setTripNotes,
   addingToExisting,
 }) {
+  const pillsRef = useRef(null)
+  const [pillsAtEnd, setPillsAtEnd] = useState(false)
+  const handlePillsScroll = () => {
+    const el = pillsRef.current
+    if (!el) return
+    setPillsAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4)
+  }
+
   return (
     <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col">
       <div className="px-4 pt-4 flex-shrink-0">
@@ -451,24 +459,38 @@ function Step2Content({
         </div>
 
         {/* Category pills */}
-        <div className="overflow-x-auto no-scrollbar mb-3">
-          <div className="flex gap-2 w-max pb-0.5">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors ${
-                  selectedCategory === cat ? 'font-semibold' : 'text-gray-500'
-                }`}
-                style={{
-                  border: `1px solid ${selectedCategory === cat ? '#1D9E75' : '#E7E5E0'}`,
-                  color: selectedCategory === cat ? '#1D9E75' : undefined,
-                }}
-              >
-                {cat}
-              </button>
-            ))}
+        <div className="relative mb-3">
+          <div ref={pillsRef} onScroll={handlePillsScroll} className="overflow-x-auto no-scrollbar">
+            <div className="flex gap-2 w-max pb-0.5 pr-10">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors ${
+                    selectedCategory === cat ? 'font-semibold' : 'text-gray-500'
+                  }`}
+                  style={{
+                    border: `1px solid ${selectedCategory === cat ? '#1D9E75' : '#E7E5E0'}`,
+                    color: selectedCategory === cat ? '#1D9E75' : undefined,
+                  }}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
+          {/* Fade + chevron — hidden once scrolled to end */}
+          {!pillsAtEnd && (
+            <>
+              <div
+                className="absolute top-0 right-0 h-full w-14 pointer-events-none"
+                style={{ background: 'linear-gradient(to right, rgba(255,255,255,0), #FFFFFF)' }}
+              />
+              <div className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none">
+                <ChevronRight size={18} color="#9CA3AF" strokeWidth={2.5} />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
