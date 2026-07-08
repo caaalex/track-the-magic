@@ -48,8 +48,6 @@ export default function Challenges() {
   const completed  = challenges.filter(c =>  c.isComplete)
 
   // Overall stats
-  const totalChAll = challenges.reduce((s, c) => s + c.total, 0)
-  const doneChAll  = challenges.reduce((s, c) => s + c.done,  0)
   const completedChallenges = completed.length
   const challengesPct = challenges.length > 0 ? Math.round((completedChallenges / challenges.length) * 100) : 0
 
@@ -91,9 +89,6 @@ export default function Challenges() {
                 }}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2">
-              {doneChAll} of {totalChAll} items complete
-            </p>
           </div>
 
           {/* ── In progress ── */}
