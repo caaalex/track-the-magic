@@ -7,6 +7,9 @@ import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 
+// Celebration confetti — brand green + gold. Festive but on-brand (not rainbow).
+const CONFETTI_COLORS = ['#1D9E75', '#5DCAA5', '#0F6E56', '#F5C542', '#FBEB9E']
+
 // Local (not UTC) YYYY-MM-DD, so "today" matches the user's timezone.
 const todayStr = () => {
   const d = new Date()
@@ -189,11 +192,11 @@ export default function LogVisitModal({
         particleCount: 160,
         spread: 100,
         origin: { y: 0.55 },
-        colors: ['#1D9E75', '#FFD700', '#FF6B6B', '#4FC3F7', '#CE93D8'],
+        colors: CONFETTI_COLORS,
       })
       setTimeout(() => {
-        confetti({ particleCount: 60, spread: 60, origin: { x: 0.1, y: 0.6 }, colors: ['#FFD700', '#1D9E75'] })
-        confetti({ particleCount: 60, spread: 60, origin: { x: 0.9, y: 0.6 }, colors: ['#FF6B6B', '#4FC3F7'] })
+        confetti({ particleCount: 60, spread: 60, origin: { x: 0.1, y: 0.6 }, colors: ['#1D9E75', '#F5C542', '#5DCAA5'] })
+        confetti({ particleCount: 60, spread: 60, origin: { x: 0.9, y: 0.6 }, colors: ['#0F6E56', '#FBEB9E', '#F5C542'] })
       }, 250)
 
       // If Guardians was selected, go straight to its song picker
