@@ -89,6 +89,7 @@ export default function Challenges() {
                 }}
               />
             </div>
+            <p className="mt-2 text-xs text-gray-400">{challengesPct}% of all challenges</p>
           </div>
 
           {/* ── In progress ── */}
