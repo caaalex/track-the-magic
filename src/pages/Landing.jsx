@@ -1,7 +1,7 @@
 // Public marketing landing page — shown to logged-out visitors.
 // Responsive: single column on mobile, two-column hero on desktop.
 
-import { Sparkles, CalendarDays, Trophy, Hotel, ArrowRight, Check } from 'lucide-react'
+import { Sparkles, CalendarDays, Trophy, Hotel, ArrowRight, Check, Share2 } from 'lucide-react'
 
 const GREEN = '#1D9E75'
 const HAIRLINE = '1px solid #E7E5E0'
@@ -54,27 +54,30 @@ function PhoneMock() {
         <div className="px-5 pt-6 pb-5">
           <div className="flex items-center justify-between mb-5">
             <span className="text-[15px] font-bold text-gray-900">Track the Magic</span>
-            <span
-              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
-              style={{ background: 'linear-gradient(135deg, #1D9E75, #16a870)' }}
-            >
-              CA
-            </span>
+            <div className="flex items-center gap-2">
+              <Share2 size={14} color="#78716C" strokeWidth={1.75} />
+              <span
+                className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
+                style={{ background: 'linear-gradient(135deg, #1D9E75, #16a870)' }}
+              >
+                CA
+              </span>
+            </div>
           </div>
 
           <p className="text-[11px] text-gray-400">Experiences completed</p>
-          <p className="text-gray-900 tabular-nums leading-tight" style={{ fontSize: 42, fontWeight: 300, letterSpacing: '-0.02em' }}>
-            212 <span className="text-sm font-normal text-gray-300">/ 348</span>
-          </p>
-          <div className="mt-2.5 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
-            <div className="h-full rounded-full" style={{ width: '61%', backgroundColor: GREEN }} />
-          </div>
-          <div className="flex items-center justify-between mt-2">
-            <p className="text-[11px] text-gray-400">61% of all Disney World</p>
-            <span className="text-[11px] font-semibold flex items-center gap-1" style={{ color: GREEN }}>
+          <div className="flex items-end justify-between">
+            <p className="text-gray-900 tabular-nums leading-tight" style={{ fontSize: 35, fontWeight: 300, letterSpacing: '-0.02em' }}>
+              212 <span className="text-[13px] font-normal text-gray-300">/ 348</span>
+            </p>
+            <span className="text-[11px] font-semibold flex items-center gap-1 mb-1.5" style={{ color: GREEN }}>
               Log a visit <ArrowRight size={11} strokeWidth={2} />
             </span>
           </div>
+          <div className="mt-2.5 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
+            <div className="h-full rounded-full" style={{ width: '61%', backgroundColor: GREEN }} />
+          </div>
+          <p className="text-[11px] text-gray-400 mt-2">61% of all Disney World</p>
 
           <div className="mt-4 pt-3 flex items-center gap-2.5" style={{ borderTop: HAIRLINE }}>
             <Trophy size={13} color="#A8A29E" strokeWidth={1.5} />
