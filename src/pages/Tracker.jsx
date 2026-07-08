@@ -314,7 +314,7 @@ export default function Tracker() {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs whitespace-nowrap transition-colors ${
+                className={`px-3.5 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors ${
                   selectedCategory === cat ? 'font-semibold' : 'text-gray-500'
                 }`}
                 style={{
@@ -347,7 +347,7 @@ export default function Tracker() {
           <button
             key={s}
             onClick={() => setSelectedStatus(s)}
-            className={`px-3.5 py-1.5 rounded-full text-xs transition-colors ${
+            className={`px-3.5 py-1.5 rounded-full text-sm transition-colors ${
               selectedStatus === s ? 'font-semibold' : 'text-gray-500'
             }`}
             style={{
@@ -473,7 +473,7 @@ function ExperienceRow({ exp, userExp, onToggle, hideLocation = false }) {
           {exp.name}
         </p>
         {((!hideLocation && exp.location) || exp.type) && (
-          <p className="text-[11px] mt-0.5 flex items-center gap-1">
+          <p className="text-[12px] mt-0.5 flex items-center gap-1">
             {!hideLocation && exp.location && <span className="text-gray-500">{exp.location}</span>}
             {!hideLocation && exp.location && exp.type && <span className="text-gray-300">|</span>}
             {exp.type && <span className="text-gray-400">{exp.type}</span>}

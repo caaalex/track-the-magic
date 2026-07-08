@@ -201,7 +201,7 @@ export default function TripDetail() {
                       {experience.name}
                     </p>
                     {(experience.location || experience.type) && (
-                      <p className="text-[11px] mt-0.5 flex items-center gap-1">
+                      <p className="text-[12px] mt-0.5 flex items-center gap-1">
                         {experience.location && <span className="text-gray-500">{experience.location}</span>}
                         {experience.location && experience.type && <span className="text-gray-300">|</span>}
                         {experience.type && <span className="text-gray-400">{experience.type}</span>}
