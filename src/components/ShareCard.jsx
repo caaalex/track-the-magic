@@ -223,7 +223,7 @@ export default function ShareProgressModal({ onClose, pct, completed, total, per
       style={{ backgroundColor: 'rgba(28,25,23,0.55)', backdropFilter: 'blur(2px)' }}
       onClick={onClose}
     >
-      <div className="w-full max-w-[360px]" onClick={e => e.stopPropagation()}>
+      <div className="w-full mx-auto" style={{ maxWidth: W }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-3">
           <p className="text-white font-semibold text-[15px]">Share your progress</p>
           <button onClick={onClose} className="text-white/70 active:opacity-60 p-1" aria-label="Close">
