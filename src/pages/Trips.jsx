@@ -175,23 +175,23 @@ export default function Trips() {
         <>
           {/* Stats */}
           <div className="px-4 pt-1 pb-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-400">Visits logged</p>
+            <p className="text-xs text-gray-400">Visits logged</p>
+            <div className="flex items-end justify-between">
+              <p
+                className="text-gray-900 tabular-nums leading-tight"
+                style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
+              >
+                {totalVisits}
+              </p>
               <button
                 onClick={openLogVisit}
-                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+                className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60 mb-2"
                 style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
               >
                 Log a visit
                 <ArrowRight size={14} strokeWidth={2} />
               </button>
             </div>
-            <p
-              className="text-gray-900 tabular-nums leading-tight"
-              style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
-            >
-              {totalVisits}
-            </p>
             <div className="mt-3 pt-3 flex flex-col gap-1.5" style={{ borderTop: '1px solid #EDEBE6' }}>
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-xs text-gray-400 flex-shrink-0">Most visited park</p>
