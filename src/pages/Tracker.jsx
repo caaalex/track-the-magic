@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, RESORTS, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
+import { useReveal } from '../lib/useReveal'
 
 const STATUS_FILTERS = ['All', 'Done', 'Not done', 'Favorites']
 
@@ -166,6 +167,8 @@ export default function Tracker() {
     : viewExps.filter(e => e.category === selectedCategory)
   const heroCompleted    = heroExperiences.filter(e => userExps[e.id]?.completed).length
   const heroProgress     = heroExperiences.length > 0 ? (heroCompleted / heroExperiences.length) * 100 : 0
+  // Re-run the count-up + bar fill whenever the hero context changes.
+  const reveal = useReveal(true, 850, `${selectedPark}|${selectedResort}|${selectedCategory}|${selectedStatus}|${heroCompleted}|${heroExperiences.length}`)
 
   const query = searchQuery.trim().toLowerCase()
   const filtered = viewExps.filter(exp => {
@@ -214,21 +217,20 @@ export default function Tracker() {
           className="text-gray-900 tabular-nums leading-tight"
           style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
         >
-          {heroCompleted}{' '}
+          {Math.round(heroCompleted * reveal)}{' '}
           <span className="text-base font-normal text-gray-300">/ {heroExperiences.length}</span>
         </p>
         <div className="mt-3 rounded-full overflow-hidden" style={{ height: 2, backgroundColor: '#ECEAE5' }}>
           <div
             className="h-full rounded-full"
             style={{
-              width: `${heroProgress}%`,
+              width: `${heroProgress * reveal}%`,
               backgroundColor: '#1D9E75',
-              transition: 'width 0.5s cubic-bezier(0.32,0.72,0,1)',
             }}
           />
         </div>
         <p className="text-sm text-gray-400 mt-2">
-          {Math.round(heroProgress)}% of {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
+          {Math.round(heroProgress * reveal)}% of {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : 'experiences'} done
         </p>
       </div>
 
