@@ -127,11 +127,11 @@ export default function Trips() {
   const totalVisits     = trips.length
   const reveal          = useReveal(!loading)
 
-  // Specific past years the user has trips in (descending, excluding the current year)
-  const currentYear = new Date().getFullYear()
-  const pastYears   = [...new Set(
-    trips.map(t => new Date(t.visit_date + 'T12:00:00').getFullYear())
-  )].filter(y => y !== currentYear).sort((a, b) => b - a)
+  // Year wheel options: from the current year back to when Disney World opened (1971)
+  const currentYear   = new Date().getFullYear()
+  const yearOptions    = []
+  for (let y = currentYear; y >= 1971; y--) yearOptions.push(y)
+  const pendingIsYear  = /^\d{4}$/.test(pendingPeriod)
 
   // Filtered trips for the history list
   const filteredTrips = applyFilters(trips, filterPark, filterPeriod)
@@ -322,36 +322,42 @@ export default function Trips() {
               ))}
             </div>
 
-            {/* Specific past years — horizontal chip selector */}
-            {pastYears.length > 0 && (
-              <>
-                <div className="mx-5 mt-2 mb-1" style={{ borderTop: '1px solid #EDEBE6' }} />
-                <p className="px-5 pt-1 pb-2 text-[11px] font-medium text-gray-400">By year</p>
-                <div
-                  className="flex gap-2 px-5 pb-1 overflow-x-auto"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                >
-                  {pastYears.map(year => {
-                    const val = String(year)
-                    const selected = pendingPeriod === val
-                    return (
-                      <button
-                        key={val}
-                        onClick={() => setPendingPeriod(selected ? ALL_TIME : val)}
-                        className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold active:opacity-60 transition-colors"
-                        style={{
-                          border: `1px solid ${selected ? '#1D9E75' : '#E7E5E0'}`,
-                          color: selected ? '#1D9E75' : '#78716C',
-                          backgroundColor: selected ? 'rgba(29,158,117,0.08)' : 'transparent',
-                        }}
-                      >
-                        {val}
-                      </button>
-                    )
-                  })}
+            {/* Specific year — native rotating wheel picker */}
+            <div className="mx-5 mt-2 mb-2" style={{ borderTop: '1px solid #EDEBE6' }} />
+            <div className="px-5 pb-1">
+              <div
+                className="relative rounded-xl"
+                style={{ border: `1px solid ${pendingIsYear ? '#1D9E75' : '#E7E5E0'}` }}
+              >
+                <div className="flex items-center justify-between px-4 py-3 pointer-events-none">
+                  <span className={`text-sm ${pendingIsYear ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
+                    {pendingIsYear ? pendingPeriod : 'Filter by a specific year'}
+                  </span>
+                  {pendingIsYear ? (
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="#1D9E75" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
                 </div>
-              </>
-            )}
+                {/* Invisible native select overlay — iOS renders it as a rotating wheel */}
+                <select
+                  value={pendingIsYear ? pendingPeriod : ''}
+                  onChange={e => setPendingPeriod(e.target.value === '' ? ALL_TIME : e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  style={{ WebkitAppearance: 'none', appearance: 'none' }}
+                  aria-label="Filter by a specific year"
+                >
+                  <option value="">Any year</option>
+                  {yearOptions.map(y => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
             {/* Action buttons */}
             <div className="flex gap-3 px-5 mt-5">
