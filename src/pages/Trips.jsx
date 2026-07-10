@@ -13,7 +13,7 @@ import { useReveal } from '../lib/useReveal'
 const ALL_PARKS  = 'All parks'
 const ALL_TIME   = 'All time'
 const PARK_OPTIONS   = [ALL_PARKS, ...PARKS.map(p => p.name)]
-const PERIOD_OPTIONS = [ALL_TIME, 'This month', 'This year']
+const BASE_PERIODS   = [ALL_TIME, 'This month', 'This year']
 
 function groupByMonth(trips) {
   return trips.reduce((acc, trip) => {
@@ -35,6 +35,7 @@ function applyFilters(trips, park, period) {
       if (period === 'This month' &&
           (d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear())) return false
       if (period === 'This year' && d.getFullYear() !== now.getFullYear()) return false
+      if (/^\d{4}$/.test(period) && d.getFullYear() !== Number(period)) return false
     }
     return true
   })
@@ -136,6 +137,13 @@ export default function Trips() {
   const reveal          = useReveal(!loading)
   const parkCounts      = trips.reduce((acc, t) => { acc[t.park] = (acc[t.park] || 0) + 1; return acc }, {})
   const mostVisitedPark = Object.entries(parkCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
+
+  // Specific past years the user has trips in (descending, excluding the current year)
+  const currentYear = new Date().getFullYear()
+  const pastYears   = [...new Set(
+    trips.map(t => new Date(t.visit_date + 'T12:00:00').getFullYear())
+  )].filter(y => y !== currentYear).sort((a, b) => b - a)
+  const PERIOD_OPTIONS = [...BASE_PERIODS, ...pastYears.map(String)]
 
   // Filtered trips for the history list
   const filteredTrips = applyFilters(trips, filterPark, filterPeriod)
