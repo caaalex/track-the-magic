@@ -197,11 +197,11 @@ export default function Trips() {
             <div className="mt-3 pt-3 flex flex-col gap-1.5" style={{ borderTop: '1px solid #EDEBE6' }}>
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-xs text-gray-400 flex-shrink-0">Most visited park</p>
-                <p className="text-[13px] text-gray-900 text-right truncate">{mostVisitedPark ?? '—'}</p>
+                <p className="text-[12px] text-gray-900 text-right truncate">{mostVisitedPark ?? '—'}</p>
               </div>
               <div className="flex items-baseline justify-between gap-4">
                 <p className="text-xs text-gray-400 flex-shrink-0">Most visited experience</p>
-                <p className="text-[13px] text-gray-900 text-right truncate">{topAttr?.experiences?.name ?? '—'}</p>
+                <p className="text-[12px] text-gray-900 text-right truncate">{topAttr?.experiences?.name ?? '—'}</p>
               </div>
             </div>
           </div>
@@ -256,7 +256,7 @@ export default function Trips() {
             <div className="px-4 flex flex-col gap-2 pb-8">
               {monthKeys.map(month => (
                 <div key={month} className="pt-2">
-                  <p className="text-[11px] font-medium text-gray-400">{month}</p>
+                  <p className="text-[12px] font-medium text-gray-400">{month}</p>
                   <div>
                     {monthGroups[month].map((trip, i) => (
                       <TripRow key={trip.id} trip={trip} last={i === monthGroups[month].length - 1} />
@@ -381,10 +381,10 @@ function TripRow({ trip, last }) {
       <ParkIcon park={trip.park} size={18} color="#78716C" />
       <div className="flex-1 min-w-0">
         <p className="text-[14px] text-gray-900">{trip.park}</p>
-        <p className="text-[11px] text-gray-400 mt-0.5">{dateDisplay}</p>
+        <p className="text-[12px] text-gray-400 mt-0.5">{dateDisplay}</p>
       </div>
       {expCount > 0 && (
-        <span className="text-xs text-gray-400 tabular-nums flex-shrink-0">
+        <span className="text-[14px] text-gray-400 tabular-nums flex-shrink-0">
           {expCount} {expCount === 1 ? 'experience' : 'experiences'}
         </span>
       )}
@@ -399,7 +399,7 @@ function EmptyState({ onLog }) {
       <Plane size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No trips logged yet</p>
-        <p className="text-gray-400 text-[13px] mt-1 leading-relaxed">Log a visit to start building your Disney history.</p>
+        <p className="text-gray-400 text-[12px] mt-1 leading-relaxed">Log a visit to start building your Disney history.</p>
       </div>
       <button
         onClick={onLog}
