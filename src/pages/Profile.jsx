@@ -99,7 +99,7 @@ export default function Profile() {
         const pc = pe.filter(e => completedIds.has(e.id)).length
         return { ...park, pct: pe.length > 0 ? Math.round((pc / pe.length) * 100) : 0 }
       })
-      const percentile = lb?.[0]?.percentile ?? 1
+      const percentile = lb?.[0]?.percentile ?? null // null = not ranked yet
 
       // Most visited park
       const parkCounts = {}

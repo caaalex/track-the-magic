@@ -51,6 +51,7 @@ export default function Home() {
   const totalAll     = allExps.length
   const completedAll = completedIds.size
   const pctAll       = totalAll > 0 ? Math.round((completedAll / totalAll) * 100) : 0
+  const percentile   = leaderboard?.percentile ?? null // null = not ranked yet
 
   const parkStats = PARKS.map(park => {
     const parkExps      = allExps.filter(e => e.park === park.name)
@@ -95,7 +96,7 @@ export default function Home() {
           pct={pctAll}
           completed={completedAll}
           total={totalAll}
-          percentile={leaderboard?.percentile ?? 1}
+          percentile={percentile}
           parkStats={parkStats}
         />
       )}
@@ -140,12 +141,16 @@ export default function Home() {
           {/* ── Ranking row ── */}
           <div className="mt-6 pt-4 flex items-center gap-3" style={{ borderTop: '1px solid #E7E5E0' }}>
             <Trophy size={16} color="#A8A29E" strokeWidth={1.5} />
-            <p className="flex-1 text-[14px] text-gray-500">
-              Top {leaderboard?.percentile ?? 1}% of all users
-            </p>
-            <p className="text-[14px] font-semibold text-gray-900 tabular-nums">
-              {leaderboard?.percentile ?? 1}%
-            </p>
+            {percentile != null ? (
+              <>
+                <p className="flex-1 text-[14px] text-gray-500">Top {percentile}% of trackers</p>
+                <p className="text-[14px] font-semibold text-gray-900 tabular-nums">{percentile}%</p>
+              </>
+            ) : (
+              <p className="flex-1 text-[14px] text-gray-500">
+                {completedAll === 0 ? 'Log a visit to see your rank' : 'Your rank unlocks as more fans join'}
+              </p>
+            )}
           </div>
 
           {/* ── Parks ── */}
