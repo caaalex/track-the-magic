@@ -3,9 +3,9 @@ import { House, CircleCheck, Trophy, Plane } from 'lucide-react'
 
 const tabs = [
   { to: '/',           label: 'Home',       icon: House },
+  { to: '/trips',      label: 'Trips',      icon: Plane },
   { to: '/tracker',    label: 'Tracker',    icon: CircleCheck },
   { to: '/challenges', label: 'Challenges', icon: Trophy },
-  { to: '/trips',      label: 'Trips',      icon: Plane },
 ]
 
 export default function BottomNav() {
