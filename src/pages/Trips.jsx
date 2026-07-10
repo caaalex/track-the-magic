@@ -13,7 +13,7 @@ import { useReveal } from '../lib/useReveal'
 const ALL_PARKS  = 'All parks'
 const ALL_TIME   = 'All time'
 const PARK_OPTIONS   = [ALL_PARKS, ...PARKS.map(p => p.name)]
-const BASE_PERIODS   = [ALL_TIME, 'This month', 'This year']
+const BASE_PERIODS   = [ALL_TIME]
 
 function groupByMonth(trips) {
   return trips.reduce((acc, trip) => {
@@ -27,15 +27,11 @@ function groupByMonth(trips) {
 }
 
 function applyFilters(trips, park, period) {
-  const now = new Date()
   return trips.filter(trip => {
     if (park !== ALL_PARKS && trip.park !== park) return false
-    if (period !== ALL_TIME) {
+    if (/^\d{4}$/.test(period)) {
       const d = new Date(trip.visit_date + 'T12:00:00')
-      if (period === 'This month' &&
-          (d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear())) return false
-      if (period === 'This year' && d.getFullYear() !== now.getFullYear()) return false
-      if (/^\d{4}$/.test(period) && d.getFullYear() !== Number(period)) return false
+      if (d.getFullYear() !== Number(period)) return false
     }
     return true
   })
