@@ -326,9 +326,12 @@ export default function Trips() {
               Filter by time period
             </p>
             <div className="flex flex-col">
-              {PERIOD_OPTIONS.map(option => (
+              {PERIOD_OPTIONS.map((option, i) => (
+                <div key={option} className="contents">
+                {i === BASE_PERIODS.length && (
+                  <div className="mx-5 my-1.5" style={{ borderTop: '1px solid #EDEBE6' }} />
+                )}
                 <button
-                  key={option}
                   onClick={() => setPendingPeriod(option)}
                   className="flex items-center justify-between px-5 py-3 active:bg-gray-50 transition-colors"
                 >
@@ -341,6 +344,7 @@ export default function Trips() {
                     </svg>
                   )}
                 </button>
+                </div>
               ))}
             </div>
 
