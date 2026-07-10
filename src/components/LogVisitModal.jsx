@@ -519,7 +519,7 @@ function Step2Content({
 
                 {/* Name + location | type */}
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[13px] leading-snug truncate ${checked ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                  <p className={`text-[14px] leading-snug truncate ${checked ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
                     {exp.name}
                   </p>
                   {(exp.location || exp.type) && (

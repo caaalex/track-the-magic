@@ -14,8 +14,8 @@ function StatRow({ label, value, last = false }) {
       className="flex items-center justify-between py-3.5"
       style={{ borderBottom: last ? 'none' : '1px solid #EDEBE6' }}
     >
-      <p className="text-[13px] text-gray-500">{label}</p>
-      <p className="text-[13px] text-gray-900 text-right">{value}</p>
+      <p className="text-[14px] text-gray-500">{label}</p>
+      <p className="text-[14px] text-gray-900 text-right">{value}</p>
     </div>
   )
 }
@@ -218,7 +218,7 @@ export default function Profile() {
         <button
           onClick={() => setShowShare(true)}
           disabled={loading}
-          className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-semibold active:scale-[0.98] disabled:opacity-50"
+          className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl py-3 text-[14px] font-semibold active:scale-[0.98] disabled:opacity-50"
           style={{ color: '#1D9E75', border: '1px solid #1D9E75', transition: 'transform 0.2s ease' }}
         >
           <Share2 size={15} strokeWidth={2} />
@@ -260,7 +260,7 @@ export default function Profile() {
           <div className="py-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
             {editingName ? (
               <div className="flex flex-col gap-2">
-                <p className="text-[13px] text-gray-500">Display name</p>
+                <p className="text-[14px] text-gray-500">Display name</p>
                 <input
                   value={nameInput}
                   onChange={e => setNameInput(e.target.value)}
@@ -290,9 +290,9 @@ export default function Profile() {
               </div>
             ) : (
               <div className="flex items-center justify-between">
-                <p className="text-[13px] text-gray-500">Display name</p>
+                <p className="text-[14px] text-gray-500">Display name</p>
                 <div className="flex items-center gap-3">
-                  <p className="text-[13px] text-gray-900">{displayName || 'Not set'}</p>
+                  <p className="text-[14px] text-gray-900">{displayName || 'Not set'}</p>
                   <button
                     onClick={startEditName}
                     className="text-xs font-semibold"
@@ -307,13 +307,13 @@ export default function Profile() {
 
           {/* Email row (read only) */}
           <div className="flex items-center justify-between py-3.5" style={{ borderBottom: '1px solid #EDEBE6' }}>
-            <p className="text-[13px] text-gray-500">Email</p>
-            <p className="text-[13px] text-gray-900 truncate max-w-[180px]">{user?.email}</p>
+            <p className="text-[14px] text-gray-500">Email</p>
+            <p className="text-[14px] text-gray-900 truncate max-w-[180px]">{user?.email}</p>
           </div>
 
           {/* Replay onboarding */}
           <div className="flex items-center justify-between py-3.5">
-            <p className="text-[13px] text-gray-500">Welcome screen</p>
+            <p className="text-[14px] text-gray-500">Welcome screen</p>
             <button
               onClick={() => {
                 localStorage.removeItem('ttm_onboarded')
@@ -331,7 +331,7 @@ export default function Profile() {
         <div className="mt-4 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
           <button
             onClick={handleSignOut}
-            className="text-[13px] font-semibold text-red-500 active:opacity-60"
+            className="text-[14px] font-semibold text-red-500 active:opacity-60"
             style={{ transition: 'opacity 0.2s ease' }}
           >
             Sign out

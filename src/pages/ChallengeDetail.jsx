@@ -164,7 +164,7 @@ export default function ChallengeDetail() {
         {/* ── Hero ── */}
         <div className="flex items-center gap-2">
           <ChallengeIcon icon={challenge.icon} color="#78716C" size={16} />
-          <p className="text-xs text-gray-400">{challenge.park ?? 'All parks'}</p>
+          <p className="text-sm text-gray-400">{challenge.park ?? 'All parks'}</p>
         </div>
         <p
           className="text-gray-900 tabular-nums leading-tight"
@@ -182,7 +182,7 @@ export default function ChallengeDetail() {
             }}
           />
         </div>
-        <p className="text-xs mt-2" style={{ color: (reveal >= 1 && isComplete) ? '#1D9E75' : '#A8A29E' }}>
+        <p className="text-sm mt-2" style={{ color: (reveal >= 1 && isComplete) ? '#1D9E75' : '#A8A29E' }}>
           {reveal >= 1 && isComplete ? 'Challenge complete' : `${Math.round(pct * reveal)}% done`}
         </p>
 
@@ -238,13 +238,13 @@ export default function ChallengeDetail() {
 
                     {/* Title + subtitle */}
                     <div className="flex-1 min-w-0">
-                      <p className={`text-[13px] leading-tight transition-colors ${
+                      <p className={`text-[14px] leading-tight transition-colors ${
                         done ? 'line-through text-gray-400' : 'text-gray-900'
                       }`}>
                         {item.title}
                       </p>
                       {item.subtitle && (
-                        <p className={`text-[11px] mt-0.5 ${done ? 'text-gray-300' : 'text-gray-400'}`}>
+                        <p className={`text-[12px] mt-0.5 ${done ? 'text-gray-300' : 'text-gray-400'}`}>
                           {item.subtitle}
                         </p>
                       )}

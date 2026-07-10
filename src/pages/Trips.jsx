@@ -422,7 +422,7 @@ function EmptyState({ onLog }) {
       </div>
       <button
         onClick={onLog}
-        className="flex items-center gap-1.5 text-[13px] font-semibold mt-1 active:opacity-60"
+        className="flex items-center gap-1.5 text-[14px] font-semibold mt-1 active:opacity-60"
         style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
       >
         Log a visit

@@ -149,7 +149,7 @@ export default function TripDetail() {
         {/* ── Hero ── */}
         <div className="flex items-center gap-2">
           <ParkIcon park={trip.park} size={16} color="#78716C" />
-          <p className="text-xs text-gray-400">{trip.park}</p>
+          <p className="text-sm text-gray-400">{trip.park}</p>
         </div>
         <p
           className="text-gray-900 tabular-nums leading-tight"
@@ -163,11 +163,11 @@ export default function TripDetail() {
         <div className="mt-3 pt-3 flex flex-col gap-1.5" style={{ borderTop: '1px solid #EDEBE6' }}>
           <div className="flex items-baseline justify-between">
             <p className="text-xs text-gray-400">New experiences</p>
-            <p className="text-[13px] text-gray-900 tabular-nums">{newCount}</p>
+            <p className="text-[14px] text-gray-900 tabular-nums">{newCount}</p>
           </div>
           <div className="flex items-baseline justify-between">
             <p className="text-xs text-gray-400">Repeats</p>
-            <p className="text-[13px] text-gray-900 tabular-nums">{repeatCount}</p>
+            <p className="text-[14px] text-gray-900 tabular-nums">{repeatCount}</p>
           </div>
         </div>
 
@@ -197,7 +197,7 @@ export default function TripDetail() {
                   }}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] text-gray-900 leading-snug">
+                    <p className="text-[14px] text-gray-900 leading-snug">
                       {experience.name}
                     </p>
                     {(experience.location || experience.type) && (
@@ -221,7 +221,7 @@ export default function TripDetail() {
         <div className="mt-4 pt-4 flex items-center justify-between" style={{ borderTop: '1px solid #E7E5E0' }}>
           <button
             onClick={() => openLogVisit({ park: trip.park, date: trip.visit_date, tripId: trip.id })}
-            className="flex items-center gap-1.5 text-[13px] font-semibold active:opacity-60"
+            className="flex items-center gap-1.5 text-[14px] font-semibold active:opacity-60"
             style={{ color: '#1D9E75', transition: 'opacity 0.2s ease' }}
           >
             Add experiences to this trip
@@ -232,7 +232,7 @@ export default function TripDetail() {
           <button
             onClick={handleDelete}
             disabled={deleting}
-            className="text-[13px] font-semibold text-red-500 active:opacity-60 disabled:opacity-50"
+            className="text-[14px] font-semibold text-red-500 active:opacity-60 disabled:opacity-50"
             style={{ transition: 'opacity 0.2s ease' }}
           >
             {deleting ? 'Deleting…' : 'Delete trip'}

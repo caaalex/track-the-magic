@@ -154,7 +154,7 @@ function ChallengeRow({ challenge, onTap, last }) {
       <ChallengeIcon icon={icon} color="#78716C" size={18} />
       <div className="flex-1 min-w-0">
         <p className="text-[14px] text-gray-900 leading-snug">{title}</p>
-        {park && <p className="text-[11px] text-gray-400 mt-0.5">{park}</p>}
+        {park && <p className="text-[12px] text-gray-400 mt-0.5">{park}</p>}
         {total > 0 && (
           <div className="mt-2 overflow-hidden" style={{ height: 1.5, backgroundColor: '#ECEAE5' }}>
             <div
@@ -205,7 +205,7 @@ function EmptyState() {
       <Trophy size={26} color="#C5C1BB" strokeWidth={1.5} />
       <div className="text-center">
         <p className="text-gray-700 font-semibold text-base">No challenges yet</p>
-        <p className="text-gray-400 text-[13px] mt-1 leading-relaxed">Check back soon!</p>
+        <p className="text-gray-400 text-[12px] mt-1 leading-relaxed">Check back soon!</p>
       </div>
     </div>
   )

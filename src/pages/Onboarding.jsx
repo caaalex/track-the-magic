@@ -18,8 +18,8 @@ function OnboardingRow({ icon: Icon, title, description, last }) {
         <Icon size={17} color={GREEN} strokeWidth={1.5} />
       </div>
       <div className="flex-1 min-w-0 pt-0.5">
-        <p className="text-[13px] font-semibold text-gray-900 mb-1">{title}</p>
-        <p className="text-[13px] text-gray-400 leading-snug">{description}</p>
+        <p className="text-[14px] font-semibold text-gray-900 mb-1">{title}</p>
+        <p className="text-[14px] text-gray-400 leading-snug">{description}</p>
       </div>
     </div>
   )
@@ -61,7 +61,7 @@ export default function Onboarding({ onDismiss }) {
         <h1 className="text-[24px] font-bold text-gray-900 leading-tight mb-2 tracking-[-0.025em]">
           Welcome to Track the Magic
         </h1>
-        <p className="text-gray-400 text-[13px] leading-relaxed mb-7 max-w-[280px]">
+        <p className="text-gray-400 text-[14px] leading-relaxed mb-7 max-w-[280px]">
           Hundreds of experiences across every Disney World destination and
           resort, all in one place.
         </p>

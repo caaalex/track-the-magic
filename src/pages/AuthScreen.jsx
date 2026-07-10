@@ -107,7 +107,7 @@ function ConfirmationScreen({ email, onGoToSignIn, onBack }) {
         <h1 className="text-gray-900 font-bold mt-6 leading-tight" style={{ fontSize: 'clamp(24px, 4vw, 30px)', letterSpacing: '-0.02em' }}>
           Check your email
         </h1>
-        <p className="text-gray-500 text-[13px] leading-relaxed mt-3 max-w-[300px]">
+        <p className="text-gray-500 text-[14px] leading-relaxed mt-3 max-w-[300px]">
           We sent a confirmation link to{' '}
           <span className="font-semibold text-gray-800">{email}</span>.{' '}
           Click it to activate your account, then come back to sign in.
@@ -205,20 +205,20 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
       navAction={
         <button
           onClick={() => switchMode(isSignup ? 'signin' : 'signup')}
-          className="text-[13px] font-semibold text-gray-500 active:opacity-60"
+          className="text-[14px] font-semibold text-gray-500 active:opacity-60"
         >
           {isSignup ? 'Sign in' : 'Create account'}
         </button>
       }
     >
       {/* ── Heading ── */}
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: GREEN }}>
+      <p className="text-[12px] font-semibold uppercase tracking-[0.14em]" style={{ color: GREEN }}>
         {isSignup ? 'Free early access' : 'Welcome back'}
       </p>
       <h1 className="text-gray-900 font-bold mt-3 leading-tight" style={{ fontSize: 'clamp(28px, 4.5vw, 36px)', letterSpacing: '-0.025em' }}>
         {isSignup ? 'Start your list.' : 'Pick up where you left off.'}
       </h1>
-      <p className="text-gray-500 text-[13px] leading-relaxed mt-3">
+      <p className="text-gray-500 text-[14px] leading-relaxed mt-3">
         {isSignup
           ? 'Hundreds of experiences are waiting to be checked off. Free during early access, $20/year at launch.'
           : 'Sign in to keep tracking the magic.'}
@@ -262,7 +262,7 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
       </form>
 
       {/* ── Mode switch ── */}
-      <p className="text-[13px] text-gray-400 mt-6">
+      <p className="text-[14px] text-gray-400 mt-6">
         {isSignup ? 'Already tracking?' : "Don't have an account?"}{' '}
         <button
           onClick={() => switchMode(isSignup ? 'signin' : 'signup')}
@@ -274,7 +274,7 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
       </p>
 
       {/* ── Reassurance ── */}
-      <p className="text-[11px] text-gray-400 leading-relaxed mt-10 pt-5" style={{ borderTop: HAIRLINE }}>
+      <p className="text-[12px] text-gray-400 leading-relaxed mt-10 pt-5" style={{ borderTop: HAIRLINE }}>
         Hundreds of experiences · 9 destinations · 24 resorts. A fan-made project,
         not affiliated with The Walt Disney Company.
       </p>

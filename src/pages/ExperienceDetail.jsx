@@ -340,7 +340,7 @@ export default function ExperienceDetail() {
             </button>
           </div>
 
-          <p className="text-[13px] flex items-center gap-1 flex-wrap">
+          <p className="text-[14px] flex items-center gap-1 flex-wrap">
             {exp.park && <span className="text-gray-500">{exp.park}</span>}
             {exp.park && exp.location && <span className="text-gray-300">|</span>}
             {exp.location && <span className="text-gray-500">{exp.location}</span>}
@@ -596,7 +596,7 @@ function Row({ label, children, last = false }) {
       className="flex items-center justify-between py-3.5"
       style={{ borderBottom: last ? 'none' : '1px solid #EDEBE6' }}
     >
-      <p className="text-[13px] text-gray-500">{label}</p>
+      <p className="text-[14px] text-gray-500">{label}</p>
       {children}
     </div>
   )

@@ -202,7 +202,7 @@ export default function Tracker() {
         {selectedResort && (
           <button
             onClick={() => { setSelectedResort(null); setSelectedCategory('All'); setSelectedStatus('All'); setSearchQuery('') }}
-            className="mt-3 flex items-center gap-1 text-[13px] font-medium text-gray-500 active:opacity-60"
+            className="mt-3 flex items-center gap-1 text-[14px] font-medium text-gray-500 active:opacity-60"
           >
             <ChevronRight size={15} strokeWidth={2} className="rotate-180" />
             All resorts
@@ -266,7 +266,7 @@ export default function Tracker() {
                       />
                     </div>
                   ) : (
-                    <p className="text-[11px] text-gray-300 mt-0.5">No experiences yet</p>
+                    <p className="text-[12px] text-gray-300 mt-0.5">No experiences yet</p>
                   )}
                 </div>
                 {resort.total > 0 && (
