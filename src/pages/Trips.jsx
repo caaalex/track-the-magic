@@ -47,7 +47,6 @@ export default function Trips() {
   const navigate         = useNavigate()
   const [trips, setTrips]           = useState([])
   const [ueMap, setUeMap]           = useState({})
-  const [topAttr, setTopAttr]       = useState(null)
   const [songsByTrip, setSongsByTrip] = useState({}) // tripId → [songTitle, ...]
   const [loading, setLoading]       = useState(true)
 
@@ -80,7 +79,7 @@ export default function Trips() {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      const [{ data: tripsData }, { data: uesData }, { data: topData }, { data: rideLogs }, { data: songItems }] = await Promise.all([
+      const [{ data: tripsData }, { data: uesData }, { data: rideLogs }, { data: songItems }] = await Promise.all([
         supabase
           .from('trips')
           .select('id, park, visit_date, notes, created_at, trip_experiences(experience_id, experiences(id, name, category))')
@@ -91,13 +90,6 @@ export default function Trips() {
           .from('user_experiences')
           .select('experience_id, times_visited')
           .eq('user_id', user.id),
-        supabase
-          .from('user_experiences')
-          .select('experience_id, times_visited, experiences(name)')
-          .eq('user_id', user.id)
-          .order('times_visited', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
         supabase
           .from('ride_logs')
           .select('trip_id, challenge_item_id')
@@ -114,7 +106,6 @@ export default function Trips() {
       const map = {}
       ;(uesData || []).forEach(ue => { map[ue.experience_id] = ue.times_visited })
       setUeMap(map)
-      setTopAttr(topData || null)
 
       // Build songsByTrip map
       const songTitleById = {}
@@ -135,8 +126,6 @@ export default function Trips() {
   // Stats always reflect ALL trips (not filtered)
   const totalVisits     = trips.length
   const reveal          = useReveal(!loading)
-  const parkCounts      = trips.reduce((acc, t) => { acc[t.park] = (acc[t.park] || 0) + 1; return acc }, {})
-  const mostVisitedPark = Object.entries(parkCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
 
   // Specific past years the user has trips in (descending, excluding the current year)
   const currentYear = new Date().getFullYear()
@@ -201,16 +190,6 @@ export default function Trips() {
                 Log a visit
                 <ArrowRight size={14} strokeWidth={2} />
               </button>
-            </div>
-            <div className="mt-3 pt-3 flex flex-col gap-1.5" style={{ borderTop: '1px solid #EDEBE6' }}>
-              <div className="flex items-baseline justify-between gap-4">
-                <p className="text-xs text-gray-400 flex-shrink-0">Most visited park</p>
-                <p className="text-[12px] text-gray-900 text-right truncate">{mostVisitedPark ?? '—'}</p>
-              </div>
-              <div className="flex items-baseline justify-between gap-4">
-                <p className="text-xs text-gray-400 flex-shrink-0">Most visited experience</p>
-                <p className="text-[12px] text-gray-900 text-right truncate">{topAttr?.experiences?.name ?? '—'}</p>
-              </div>
             </div>
           </div>
 
