@@ -7,6 +7,7 @@ import { PARKS, GUARDIANS_EXPERIENCE_ID, GUARDIANS_CHALLENGE_ID } from '../lib/c
 import { Search, Plane, ArrowRight, ChevronRight } from 'lucide-react'
 import ParkIcon from '../lib/ParkIcon'
 import Avatar from '../components/Avatar'
+import { useReveal } from '../lib/useReveal'
 
 // ── Filter constants ───────────────────────────────────────────────────────
 const ALL_PARKS  = 'All parks'
@@ -132,6 +133,7 @@ export default function Trips() {
 
   // Stats always reflect ALL trips (not filtered)
   const totalVisits     = trips.length
+  const reveal          = useReveal(!loading)
   const parkCounts      = trips.reduce((acc, t) => { acc[t.park] = (acc[t.park] || 0) + 1; return acc }, {})
   const mostVisitedPark = Object.entries(parkCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null
 
@@ -181,7 +183,7 @@ export default function Trips() {
                 className="text-gray-900 tabular-nums leading-tight"
                 style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.02em' }}
               >
-                {totalVisits}
+                {Math.round(totalVisits * reveal)}
               </p>
               <button
                 onClick={openLogVisit}
