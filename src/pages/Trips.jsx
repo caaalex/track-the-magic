@@ -272,7 +272,7 @@ export default function Trips() {
       {/* ── Filter bottom sheet ── */}
       {sheetOpen && (
         <div
-          className="fixed inset-0 z-40 flex items-end justify-center"
+          className="fixed inset-0 z-50 flex items-end justify-center"
           style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
           onClick={() => setSheetOpen(false)}
         >
