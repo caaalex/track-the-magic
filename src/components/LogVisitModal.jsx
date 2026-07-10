@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import confetti from 'canvas-confetti'
 import { Search, ChevronRight } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { PARKS, CATEGORIES, GUARDIANS_EXPERIENCE_ID } from '../lib/constants'
 import ParkIcon from '../lib/ParkIcon'
-
-// Celebration confetti — brand green + gold. Festive but on-brand (not rainbow).
-const CONFETTI_COLORS = ['#1D9E75', '#5DCAA5', '#0F6E56', '#F5C542', '#FBEB9E']
+import { celebrate } from '../lib/celebrate'
 
 // Local (not UTC) YYYY-MM-DD, so "today" matches the user's timezone.
 const todayStr = () => {
@@ -188,16 +185,7 @@ export default function LogVisitModal({
       }
 
       // Confetti 🎉
-      confetti({
-        particleCount: 160,
-        spread: 100,
-        origin: { y: 0.55 },
-        colors: CONFETTI_COLORS,
-      })
-      setTimeout(() => {
-        confetti({ particleCount: 60, spread: 60, origin: { x: 0.1, y: 0.6 }, colors: ['#1D9E75', '#F5C542', '#5DCAA5'] })
-        confetti({ particleCount: 60, spread: 60, origin: { x: 0.9, y: 0.6 }, colors: ['#0F6E56', '#FBEB9E', '#F5C542'] })
-      }, 250)
+      celebrate()
 
       // If Guardians was selected, go straight to its song picker
       const guardiansPicked = checkedIds.includes(GUARDIANS_EXPERIENCE_ID)

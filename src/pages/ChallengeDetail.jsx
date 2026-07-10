@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabaseClient'
 import { GUARDIANS_CHALLENGE_ID } from '../lib/constants'
 import ChallengeIcon from '../lib/ChallengeIcon'
 import { useReveal } from '../lib/useReveal'
+import { celebrate } from '../lib/celebrate'
 
 export default function ChallengeDetail() {
   const { id }   = useParams()
@@ -57,6 +58,10 @@ export default function ChallengeDetail() {
     const current  = userItemMap[itemId]?.completed ?? false
     const next     = !current
 
+    // Would checking this item complete the whole challenge?
+    const doneBefore = items.filter(i => userItemMap[i.id]?.completed).length
+    const justCompleted = next && items.length > 0 && doneBefore + 1 === items.length
+
     // Optimistic update
     setUserItemMap(prev => ({ ...prev, [itemId]: { ...(prev[itemId] ?? {}), completed: next } }))
 
@@ -72,6 +77,9 @@ export default function ChallengeDetail() {
       console.error('Save error:', error)
       return
     }
+
+    // 🎉 Celebrate when the final item completes the challenge
+    if (justCompleted) celebrate()
 
     // ── Sync linked experience if any ──────────────────────────────────────
     const expId = items.find(i => i.id === itemId)?.experience_id
