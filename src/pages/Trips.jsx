@@ -132,7 +132,6 @@ export default function Trips() {
   const pastYears   = [...new Set(
     trips.map(t => new Date(t.visit_date + 'T12:00:00').getFullYear())
   )].filter(y => y !== currentYear).sort((a, b) => b - a)
-  const PERIOD_OPTIONS = [...BASE_PERIODS, ...pastYears.map(String)]
 
   // Filtered trips for the history list
   const filteredTrips = applyFilters(trips, filterPark, filterPeriod)
@@ -305,12 +304,9 @@ export default function Trips() {
               Filter by time period
             </p>
             <div className="flex flex-col">
-              {PERIOD_OPTIONS.map((option, i) => (
-                <div key={option} className="contents">
-                {i === BASE_PERIODS.length && (
-                  <div className="mx-5 my-1.5" style={{ borderTop: '1px solid #EDEBE6' }} />
-                )}
+              {BASE_PERIODS.map(option => (
                 <button
+                  key={option}
                   onClick={() => setPendingPeriod(option)}
                   className="flex items-center justify-between px-5 py-3 active:bg-gray-50 transition-colors"
                 >
@@ -323,9 +319,39 @@ export default function Trips() {
                     </svg>
                   )}
                 </button>
-                </div>
               ))}
             </div>
+
+            {/* Specific past years — horizontal chip selector */}
+            {pastYears.length > 0 && (
+              <>
+                <div className="mx-5 mt-2 mb-1" style={{ borderTop: '1px solid #EDEBE6' }} />
+                <p className="px-5 pt-1 pb-2 text-[11px] font-medium text-gray-400">By year</p>
+                <div
+                  className="flex gap-2 px-5 pb-1 overflow-x-auto"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {pastYears.map(year => {
+                    const val = String(year)
+                    const selected = pendingPeriod === val
+                    return (
+                      <button
+                        key={val}
+                        onClick={() => setPendingPeriod(selected ? ALL_TIME : val)}
+                        className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold active:opacity-60 transition-colors"
+                        style={{
+                          border: `1px solid ${selected ? '#1D9E75' : '#E7E5E0'}`,
+                          color: selected ? '#1D9E75' : '#78716C',
+                          backgroundColor: selected ? 'rgba(29,158,117,0.08)' : 'transparent',
+                        }}
+                      >
+                        {val}
+                      </button>
+                    )
+                  })}
+                </div>
+              </>
+            )}
 
             {/* Action buttons */}
             <div className="flex gap-3 px-5 mt-5">
