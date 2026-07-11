@@ -166,6 +166,23 @@ export default function Profile() {
     await signOut()
   }
 
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deleting,         setDeleting]         = useState(false)
+  const [deleteError,      setDeleteError]      = useState('')
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true)
+    setDeleteError('')
+    const { error } = await supabase.functions.invoke('delete-account', { method: 'POST' })
+    if (error) {
+      setDeleting(false)
+      setDeleteError('Could not delete your account. Please try again or contact support.')
+      return
+    }
+    // Data is gone — sign out and return to the landing screen.
+    await signOut()
+  }
+
   const avatarName = displayName || user?.email || ''
 
   return (
@@ -336,6 +353,48 @@ export default function Profile() {
           >
             Sign out
           </button>
+        </div>
+
+        {/* ── Delete account ── */}
+        <div className="mt-5 pt-4" style={{ borderTop: '1px solid #E7E5E0' }}>
+          {!confirmingDelete ? (
+            <button
+              onClick={() => { setConfirmingDelete(true); setDeleteError('') }}
+              className="text-[14px] font-semibold text-gray-400 active:opacity-60"
+              style={{ transition: 'opacity 0.2s ease' }}
+            >
+              Delete account
+            </button>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-[13px] text-gray-500 leading-relaxed">
+                This permanently deletes your account and all your trips, ratings, notes, and
+                progress. This can&apos;t be undone.
+              </p>
+              {deleteError && (
+                <p className="text-red-600 text-[12px] leading-snug rounded-xl px-3.5 py-2.5"
+                   style={{ border: '1px solid #FECACA', background: '#FEF2F2' }}>
+                  {deleteError}
+                </p>
+              )}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={deleting}
+                  className="text-[14px] font-semibold text-red-500 active:opacity-60 disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting…' : 'Yes, delete everything'}
+                </button>
+                <button
+                  onClick={() => setConfirmingDelete(false)}
+                  disabled={deleting}
+                  className="text-[14px] font-semibold text-gray-400 active:opacity-60"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── Legal ── */}
