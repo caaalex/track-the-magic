@@ -149,12 +149,14 @@ export default function Tracker() {
   const isResorts       = selectedPark === 'Resorts'
   const showResortList  = isResorts && !selectedResort
 
-  // Per-resort progress for the resort-selection list
-  const resortStats = RESORTS.map(name => {
-    const exps = experiences.filter(e => e.location === name)
-    const done = exps.filter(e => userExps[e.id]?.completed).length
-    return { name, total: exps.length, done }
-  })
+  // Per-resort progress for the resort-selection list (alphabetical)
+  const resortStats = RESORTS
+    .map(name => {
+      const exps = experiences.filter(e => e.location === name)
+      const done = exps.filter(e => userExps[e.id]?.completed).length
+      return { name, total: exps.length, done }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   // Experiences in scope for the current view — a single resort when drilled in
   const viewExps = selectedResort
