@@ -19,9 +19,9 @@ WHERE park = 'Epcot' AND category = 'Entertainment';
 
 INSERT INTO experiences (name, park, category, type, description, opening_year, duration, is_active, sort_name, location) VALUES
 ('Acrobatico', 'Epcot', 'Entertainment', 'Street Entertainment', 'Acrobatic performance in the Italy pavilion.', NULL, NULL, true, 'Acrobatico', 'Italy'),
-('Atlas Fusion', 'Epcot', 'Entertainment', 'Street Entertainment', 'Live performance act at World Showcase.', NULL, NULL, true, 'Atlas Fusion', NULL),
-('Celebration Encanto', 'Epcot', 'Entertainment', 'Stage Show', 'Musical celebration inspired by Encanto.', NULL, NULL, true, 'Celebration Encanto', NULL),
-('Command Performance', 'Epcot', 'Entertainment', 'Live Music', 'Live musical act at World Showcase.', NULL, NULL, true, 'Command Performance', NULL),
+('Atlas Fusion', 'Epcot', 'Entertainment', 'Street Entertainment', 'Acrobatic and martial-arts fusion act in the China pavilion.', NULL, NULL, true, 'Atlas Fusion', 'China'),
+('Celebration Encanto', 'Epcot', 'Entertainment', 'Stage Show', 'Musical celebration inspired by Encanto in the Mexico pavilion.', NULL, NULL, true, 'Celebration Encanto', 'Mexico'),
+('Command Performance', 'Epcot', 'Entertainment', 'Live Music', 'British-style musical act in the United Kingdom pavilion.', NULL, NULL, true, 'Command Performance', 'United Kingdom'),
 ('Disney Fab 50 Character Collection Opportunity at EPCOT', 'Epcot', 'Entertainment', 'Character Meet', 'Photo opportunity with the Disney Fab 50 golden character statues.', NULL, NULL, true, 'Disney Fab 50 Character Collection Opportunity at EPCOT', NULL),
 ('Disney® Visa® Cardmember Photo', 'Epcot', 'Entertainment', 'Character Meet', 'Special character photo opportunity for Disney Visa cardmembers.', NULL, NULL, true, 'Disney® Visa® Cardmember Photo', NULL),
 ('Entertainment at Canada Mill Stage', 'Epcot', 'Entertainment', 'Live Music', 'Live performances on the Mill Stage in the Canada pavilion.', NULL, NULL, true, 'Entertainment at Canada Mill Stage', 'Canada'),
@@ -32,7 +32,7 @@ INSERT INTO experiences (name, park, category, type, description, opening_year, 
 ('Luminous The Symphony of Us', 'Epcot', 'Entertainment', 'Nighttime Show', 'Nighttime fireworks and fountain spectacular over World Showcase Lagoon.', NULL, NULL, true, 'Luminous The Symphony of Us', 'World Showcase'),
 ('Mariachi Cobre', 'Epcot', 'Entertainment', 'Live Music', 'Traditional mariachi band performing in the Mexico pavilion.', NULL, NULL, true, 'Mariachi Cobre', 'Mexico'),
 ('Matsuriza', 'Epcot', 'Entertainment', 'Live Music', 'Taiko drummers performing in the Japan pavilion.', NULL, NULL, true, 'Matsuriza', 'Japan'),
-('Max & Aydar', 'Epcot', 'Entertainment', 'Live Music', 'Live musical duo performing at World Showcase.', NULL, NULL, true, 'Max & Aydar', NULL),
+('Max & Aydar', 'Epcot', 'Entertainment', 'Live Music', 'Live musical duo performing in the Morocco pavilion.', NULL, NULL, true, 'Max & Aydar', 'Morocco'),
 ('Rose & Crown Pub Musician', 'Epcot', 'Entertainment', 'Live Music', 'Pub entertainer taking requests in the United Kingdom pavilion.', NULL, NULL, true, 'Rose & Crown Pub Musician', 'United Kingdom'),
 ('Sergio', 'Epcot', 'Entertainment', 'Street Entertainment', 'Comedic juggler performing in the Italy pavilion.', NULL, NULL, true, 'Sergio', 'Italy'),
 ('Voices of Liberty', 'Epcot', 'Entertainment', 'Live Music', 'A cappella ensemble performing patriotic songs in the American Adventure rotunda.', NULL, NULL, true, 'Voices of Liberty', 'The American Adventure');
