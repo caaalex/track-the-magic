@@ -51,7 +51,7 @@ export const RESORTS = [
   'Animal Kingdom Lodge',
   'Beach Club',
   'Yacht Club',
-  'BoardWalk Inn',
+  'BoardWalk',
   'Riviera',
   // Moderate
   'Caribbean Beach',
