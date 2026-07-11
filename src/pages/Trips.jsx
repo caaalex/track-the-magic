@@ -400,13 +400,15 @@ function TripRow({ trip, last }) {
       <ParkIcon park={trip.park} size={18} color="#78716C" />
       <div className="flex-1 min-w-0">
         <p className="text-[14px] text-gray-900">{trip.park}</p>
-        <p className="text-[12px] text-gray-400 mt-0.5">{dateDisplay}</p>
+        <div className="flex items-baseline justify-between gap-2 mt-0.5">
+          <p className="text-[12px] text-gray-400">{dateDisplay}</p>
+          {expCount > 0 && (
+            <span className="text-[12px] text-gray-400 tabular-nums flex-shrink-0">
+              {expCount} {expCount === 1 ? 'experience' : 'experiences'}
+            </span>
+          )}
+        </div>
       </div>
-      {expCount > 0 && (
-        <span className="text-[12px] text-gray-400 tabular-nums flex-shrink-0">
-          {expCount} {expCount === 1 ? 'experience' : 'experiences'}
-        </span>
-      )}
       <ChevronRight size={15} color="#D6D3D1" strokeWidth={2} className="flex-shrink-0" />
     </button>
   )
