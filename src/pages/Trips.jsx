@@ -403,7 +403,7 @@ function TripRow({ trip, last }) {
         <p className="text-[12px] text-gray-400 mt-0.5">{dateDisplay}</p>
       </div>
       {expCount > 0 && (
-        <span className="text-[14px] text-gray-400 tabular-nums flex-shrink-0">
+        <span className="text-[12px] text-gray-400 tabular-nums flex-shrink-0">
           {expCount} {expCount === 1 ? 'experience' : 'experiences'}
         </span>
       )}
