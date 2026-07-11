@@ -227,7 +227,7 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
       </h1>
       <p className="text-gray-500 text-[14px] leading-relaxed mt-3">
         {isSignup
-          ? 'Hundreds of experiences are waiting to be checked off. Free during early access, $20/year at launch.'
+          ? 'Hundreds of experiences are waiting to be checked off. Free during early access, then $5/month or $20/year.'
           : 'Sign in to keep tracking the magic.'}
       </p>
 

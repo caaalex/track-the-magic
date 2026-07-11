@@ -196,7 +196,7 @@ export default function Landing({ onGetStarted, onSignIn }) {
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
               <CtaButton onClick={onGetStarted}>Start tracking free</CtaButton>
               <p className="text-xs text-gray-400">
-                Free during early access · $20/year at launch
+                Free during early access · $5/month or $20/year at launch
               </p>
             </div>
           </div>
@@ -274,8 +274,8 @@ export default function Landing({ onGetStarted, onSignIn }) {
               </span>
             </div>
             <p className="text-[13px] text-gray-500 leading-relaxed mt-3">
-              Free while we build. When pricing launches at $20/year, founding
-              members hear about it first, and keep every bit of their progress.
+              Free while we build. When pricing launches at $5/month or $20/year,
+              founding members hear about it first, and keep every bit of their progress.
             </p>
             <div className="mt-6 flex flex-col gap-2.5 text-left mx-auto" style={{ maxWidth: 280 }}>
               {['Every experience, every destination', 'Unlimited trips and history', 'Every challenge and ranking', 'Updated frequently with new experiences'].map(line => (
@@ -298,8 +298,8 @@ export default function Landing({ onGetStarted, onSignIn }) {
           </h2>
           <div style={{ borderBottom: HAIRLINE }}>
             <Faq q="Is it really free?">
-              Yes, completely free during early access. We plan to charge $20/year once the
-              app is fully grown, and early members will hear from us well before anything changes.
+              Yes, completely free during early access. We plan to charge $5/month or $20/year once
+              the app is fully grown, and early members will hear from us well before anything changes.
             </Faq>
             <Faq q="Does it work on my phone?">
               Track the Magic is a web app that works on iPhone, Android, and any computer.
