@@ -335,10 +335,16 @@ export default function Landing({ onGetStarted, onSignIn }) {
             <LogoMark size={24} />
             <span className="text-[13px] font-semibold text-gray-700">Track the Magic</span>
           </div>
-          <p className="text-[11px] text-gray-400 text-center md:text-right leading-relaxed" style={{ maxWidth: 420 }}>
-            © 2026 Track the Magic. A fan-made project, not affiliated with, endorsed by,
-            or sponsored by The Walt Disney Company.
-          </p>
+          <div className="flex flex-col items-center md:items-end gap-2" style={{ maxWidth: 420 }}>
+            <div className="flex items-center gap-4">
+              <a href="/privacy" className="text-[12px] font-semibold text-gray-500 hover:text-gray-700">Privacy</a>
+              <a href="/terms" className="text-[12px] font-semibold text-gray-500 hover:text-gray-700">Terms</a>
+            </div>
+            <p className="text-[11px] text-gray-400 text-center md:text-right leading-relaxed">
+              © 2026 Track the Magic. A fan-made project, not affiliated with, endorsed by,
+              or sponsored by The Walt Disney Company.
+            </p>
+          </div>
         </footer>
 
       </div>

@@ -338,6 +338,12 @@ export default function Profile() {
           </button>
         </div>
 
+        {/* ── Legal ── */}
+        <div className="mt-6 flex items-center gap-4">
+          <a href="/privacy" className="text-[12px] text-gray-400 active:opacity-60">Privacy Policy</a>
+          <a href="/terms" className="text-[12px] text-gray-400 active:opacity-60">Terms of Service</a>
+        </div>
+
       </div>
     </div>
   )

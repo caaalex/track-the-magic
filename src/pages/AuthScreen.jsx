@@ -146,6 +146,7 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
   const [loading,           setLoading]           = useState(false)
   const [needsConfirmation, setNeedsConfirmation] = useState(false)
   const [confirmedEmail,    setConfirmedEmail]    = useState('')
+  const [agreed,            setAgreed]            = useState(false)
 
   const isSignup = mode === 'signup'
 
@@ -154,6 +155,7 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
     setError('')
     setEmail('')
     setPassword('')
+    setAgreed(false)
   }
 
   const handleSubmit = async (e) => {
@@ -162,6 +164,11 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
 
     if (isSignup && password.length < 6) {
       setError('Password must be at least 6 characters.')
+      return
+    }
+
+    if (isSignup && !agreed) {
+      setError('Please confirm you are 13+ and agree to the Terms and Privacy Policy.')
       return
     }
 
@@ -240,6 +247,26 @@ export default function AuthScreen({ initialMode = 'signup', onBack }) {
           placeholder={isSignup ? 'Password (min. 6 characters)' : 'Password'}
           autoComplete={isSignup ? 'new-password' : 'current-password'}
         />
+
+        {isSignup && (
+          <label className="flex items-start gap-2.5 mt-1 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={e => setAgreed(e.target.checked)}
+              className="mt-0.5 w-4 h-4 flex-shrink-0 rounded"
+              style={{ accentColor: GREEN }}
+            />
+            <span className="text-[12px] text-gray-500 leading-relaxed">
+              I&apos;m at least 13 years old and I agree to the{' '}
+              <a href="/terms" target="_blank" rel="noopener noreferrer"
+                 className="font-semibold" style={{ color: GREEN }}>Terms of Service</a>{' '}
+              and{' '}
+              <a href="/privacy" target="_blank" rel="noopener noreferrer"
+                 className="font-semibold" style={{ color: GREEN }}>Privacy Policy</a>.
+            </span>
+          </label>
+        )}
 
         {error && (
           <p className="text-red-600 text-[12px] leading-snug rounded-xl px-4 py-3"

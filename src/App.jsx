@@ -12,11 +12,16 @@ import TripDetail from './pages/TripDetail'
 import Profile from './pages/Profile'
 import ExperienceDetail from './pages/ExperienceDetail'
 import AuthScreen from './pages/AuthScreen'
+import { PrivacyPolicy, TermsOfService } from './pages/Legal'
 import { LogVisitProvider } from './contexts/LogVisitContext'
 
 function AuthGate() {
   const { user, loading } = useAuth()
   const [authMode, setAuthMode] = useState(null) // null → landing; 'signup'/'signin' → auth form
+
+  // Public legal pages — reachable with or without an account
+  if (window.location.pathname === '/privacy') return <PrivacyPolicy />
+  if (window.location.pathname === '/terms')   return <TermsOfService />
 
   // Shareable marketing page, viewable even while logged in
   if (window.location.pathname === '/welcome') {
