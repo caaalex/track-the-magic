@@ -28,7 +28,7 @@ INSERT INTO experiences (name, park, category, type, description, duration, is_a
 
 -- ── Entertainment ────────────────────────────────────────────
 INSERT INTO experiences (name, park, category, type, description, duration, is_active, sort_name, location) VALUES
-('Live music at Scat Cat''s Club', 'Resorts', 'Entertainment', 'Live Music', 'Live jazz and music at Scat Cat''s Club.', 'Varies', true, 'Live music at Scat Cat''s Club', 'Port Orleans French Quarter');
+('Entertainment at Scat Cat''s Club', 'Resorts', 'Entertainment', 'Live Music', 'Live jazz and music at Scat Cat''s Club.', 'Varies', true, 'Entertainment at Scat Cat''s Club', 'Port Orleans French Quarter');
 
 COMMIT;
 
