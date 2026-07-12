@@ -1,7 +1,7 @@
 // Shown once after a new user's first login.
 // Dismissed state is persisted in localStorage so it never appears again.
 
-import { Map, CalendarDays, Trophy, Plane } from 'lucide-react'
+import { Map, CalendarDays, Trophy, Plane, Smartphone } from 'lucide-react'
 
 const GREEN = '#1D9E75'
 
@@ -87,6 +87,11 @@ export default function Onboarding({ onDismiss }) {
             icon={Plane}
             title="Build your history"
             description="Every trip you log becomes part of your own Disney World journal."
+          />
+          <OnboardingRow
+            icon={Smartphone}
+            title="Add it to your home screen"
+            description="Tap Share in your browser (iPhone) or the ⋮ menu (Android), then “Add to Home Screen,” to launch Track the Magic full screen, just like a native app."
             last
           />
         </div>
