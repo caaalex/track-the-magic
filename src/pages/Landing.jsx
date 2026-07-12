@@ -68,7 +68,7 @@ function PhoneMock() {
           <p className="text-[11px] text-gray-400">Experiences completed</p>
           <div className="flex items-end justify-between">
             <p className="text-gray-900 tabular-nums leading-tight" style={{ fontSize: 35, fontWeight: 300, letterSpacing: '-0.02em' }}>
-              212 <span className="text-[13px] font-normal text-gray-300">/ 348</span>
+              488 <span className="text-[13px] font-normal text-gray-300">/ 800</span>
             </p>
             <span className="text-[11px] font-semibold flex items-center gap-1 mb-1.5" style={{ color: GREEN }}>
               Log a visit <ArrowRight size={11} strokeWidth={2} />
@@ -81,8 +81,8 @@ function PhoneMock() {
 
           <div className="mt-4 pt-3 flex items-center gap-2.5" style={{ borderTop: HAIRLINE }}>
             <Trophy size={13} color="#A8A29E" strokeWidth={1.5} />
-            <p className="flex-1 text-[11px] text-gray-500">Top 1% of all users</p>
-            <p className="text-[11px] font-semibold text-gray-900">1%</p>
+            <p className="flex-1 text-[11px] text-gray-500">Top 71% of all users</p>
+            <p className="text-[11px] font-semibold text-gray-900">71%</p>
           </div>
 
           <div className="mt-3 pt-3" style={{ borderTop: HAIRLINE }}>
@@ -208,7 +208,7 @@ export default function Landing({ onGetStarted, onSignIn }) {
         {/* ── Stats strip ── */}
         <section className="py-10" style={{ borderTop: HAIRLINE, borderBottom: HAIRLINE }}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <Stat value="300+" label="experiences to collect" />
+            <Stat value="800+" label="experiences to collect" />
             <Stat value="9" label="destinations covered" />
             <Stat value="24" label="resorts included" />
             <Stat value="100%" label="made by fans" />
