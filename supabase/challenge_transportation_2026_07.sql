@@ -10,8 +10,8 @@
 WITH new_challenge AS (
   INSERT INTO challenges (title, description, park, icon, checklist_label, is_active)
   VALUES (
-    'All Aboard',
-    'Get around the World the Disney way — ride every mode of Disney transportation.',
+    'Ride all 6 types of Disney transportation',
+    'Disney World gets you around by monorail, Skyliner, boat, ferry, bus, and Minnie Van. Ride every one!',
     NULL,
     '🧭',
     'Transportation to ride',
@@ -36,5 +36,5 @@ FROM new_challenge,
 -- ------------------------------------------------------------
 -- SELECT c.title, i.sort_order, i.title, i.subtitle
 --   FROM challenges c JOIN challenge_items i ON i.challenge_id = c.id
---   WHERE c.title = 'All Aboard'
+--   WHERE c.title = 'Ride all 6 types of Disney transportation'
 --   ORDER BY i.sort_order;
