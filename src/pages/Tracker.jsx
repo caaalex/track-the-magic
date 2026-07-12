@@ -14,15 +14,23 @@ export default function Tracker() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [selectedPark, setSelectedPark]       = useState(() => {
+  const initialPark = (() => {
     if (location.state?.park) return location.state.park
     const saved = sessionStorage.getItem('ttm_selected_park')
     return PARKS.some(p => p.name === saved) ? saved : PARKS[0].name
-  })
+  })()
+  const [selectedPark, setSelectedPark]       = useState(initialPark)
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedStatus, setSelectedStatus]   = useState('All')
   const [searchQuery, setSearchQuery]         = useState('')
-  const [selectedResort, setSelectedResort]   = useState(null) // Resorts second level
+  // Resorts second level — restore the drilled-in resort so returning from an
+  // experience detail lands back on that resort, not the full resort list.
+  const [selectedResort, setSelectedResort]   = useState(() => {
+    if (location.state?.resort) return location.state.resort
+    if (initialPark !== 'Resorts') return null
+    const savedResort = sessionStorage.getItem('ttm_selected_resort')
+    return RESORTS.includes(savedResort) ? savedResort : null
+  })
   const [experiences, setExperiences]         = useState([])
   const [userExps, setUserExps]               = useState({}) // keyed by experience_id
   const [loading, setLoading]                 = useState(false)
@@ -33,6 +41,13 @@ export default function Tracker() {
   useEffect(() => {
     sessionStorage.setItem('ttm_selected_park', selectedPark)
   }, [selectedPark])
+
+  // Remember the drilled-in resort too, so returning from an experience
+  // detail restores that resort instead of the full resort list.
+  useEffect(() => {
+    if (selectedResort) sessionStorage.setItem('ttm_selected_resort', selectedResort)
+    else sessionStorage.removeItem('ttm_selected_resort')
+  }, [selectedResort])
 
   const handlePillsScroll = () => {
     const el = pillsRef.current
