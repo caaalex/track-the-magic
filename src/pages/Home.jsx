@@ -11,7 +11,9 @@ import Onboarding from './Onboarding'
 import ShareProgressModal from '../components/ShareCard'
 import { useReveal } from '../lib/useReveal'
 
-const ONBOARDING_KEY = 'ttm_onboarded'
+// Onboarding is tracked per-user so each new account sees it once, even on
+// a browser where another account already dismissed it.
+export const onboardingKey = (userId) => `ttm_onboarded_${userId}`
 
 // ── Main screen ───────────────────────────────────────────────────────────
 export default function Home() {
@@ -19,6 +21,7 @@ export default function Home() {
   const { openLogVisit } = useLogVisit()
   const navigate         = useNavigate()
 
+  const ONBOARDING_KEY = onboardingKey(user.id)
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(ONBOARDING_KEY))
   const [allExps,        setAllExps]        = useState([])
   const [completedIds,   setCompletedIds]   = useState(new Set())

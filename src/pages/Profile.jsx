@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabaseClient'
 import { PARKS } from '../lib/constants'
 import Avatar from '../components/Avatar'
 import ShareProgressModal from '../components/ShareCard'
+import { onboardingKey } from './Home'
 
 // ── Stat row ──────────────────────────────────────────────────────────────
 function StatRow({ label, value, last = false }) {
@@ -333,7 +334,7 @@ export default function Profile() {
             <p className="text-[14px] text-gray-500">Welcome screen</p>
             <button
               onClick={() => {
-                localStorage.removeItem('ttm_onboarded')
+                localStorage.removeItem(onboardingKey(user.id))
                 navigate('/')
               }}
               className="text-xs font-semibold active:opacity-60"
